@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { FlatList, StyleSheet, View, Text, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useState, useRef, useCallback } from 'react';
+import { FlatList, StyleSheet, View, Text, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Minus, Plus, Trash2, Circle } from 'lucide-react-native';
@@ -35,6 +35,17 @@ export default function FeedScreen() {
   const [showFavorites, setShowFavorites] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showPhotoGallery, setShowPhotoGallery] = useState(false);
+  const [sidebarFixed, setSidebarFixed] = useState(false);
+  const [mainScrollEnabled, setMainScrollEnabled] = useState(true);
+  const [sidebarScrollEnabled, setSidebarScrollEnabled] = useState(true);
+  
+  const mainScrollRef = useRef<FlatList>(null);
+  const sidebarScrollRef = useRef<ScrollView>(null);
+  const mainScrollY = useRef(0);
+  const sidebarScrollY = useRef(0);
+  const isScrollingMain = useRef(false);
+  const isScrollingSidebar = useRef(false);
+  
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { items: cartItems, updateQuantity, removeItem, getTotalPrice } = useCartStore();
@@ -118,6 +129,71 @@ export default function FeedScreen() {
   const handleRemoveItem = (itemId: string) => {
     removeItem(itemId);
   };
+
+  // スクロール連動のためのイベントハンドラー
+  const handleMainScroll = useCallback((event: any) => {
+    const currentScrollY = event.nativeEvent.contentOffset.y;
+    mainScrollY.current = currentScrollY;
+    
+    if (isScrollingSidebar.current) return;
+    
+    isScrollingMain.current = true;
+    
+    // Live Streamsの高さを正確に計算（約120px）
+    const liveStreamsHeight = activeStreams.length > 0 ? 120 : 0;
+    const threshold = liveStreamsHeight;
+    
+    console.log('Main scroll:', currentScrollY, 'threshold:', threshold, 'sidebarFixed:', sidebarFixed);
+    
+    if (currentScrollY >= threshold && !sidebarFixed) {
+      // 帯を固定する
+      console.log('Fixing sidebar at threshold:', threshold);
+      setSidebarFixed(true);
+      setSidebarScrollEnabled(false);
+    } else if (currentScrollY < threshold && sidebarFixed) {
+      // 帯の固定を解除する
+      console.log('Unfixing sidebar');
+      setSidebarFixed(false);
+      setSidebarScrollEnabled(true);
+    }
+    
+    // 常に連動スクロール（固定されるまで）
+    if (sidebarScrollRef.current && currentScrollY < threshold) {
+      console.log('Syncing sidebar scroll to:', currentScrollY);
+      sidebarScrollRef.current.scrollTo({
+        y: currentScrollY,
+        animated: false,
+      });
+      sidebarScrollY.current = currentScrollY;
+    } else if (sidebarScrollRef.current && currentScrollY >= threshold && !sidebarFixed) {
+      // 閾値に達したら帯を閾値位置で固定
+      console.log('Setting sidebar to threshold position:', threshold);
+      sidebarScrollRef.current.scrollTo({
+        y: threshold,
+        animated: false,
+      });
+      sidebarScrollY.current = threshold;
+    }
+    
+    setTimeout(() => {
+      isScrollingMain.current = false;
+    }, 100);
+  }, [sidebarFixed, activeStreams.length]);
+
+  const handleSidebarScroll = useCallback((event: any) => {
+    const currentScrollY = event.nativeEvent.contentOffset.y;
+    sidebarScrollY.current = currentScrollY;
+    
+    if (isScrollingMain.current || sidebarFixed) return;
+    
+    isScrollingSidebar.current = true;
+    
+    // サイドバー単独スクロール時は、メインスクロールに影響しない
+    
+    setTimeout(() => {
+      isScrollingSidebar.current = false;
+    }, 100);
+  }, [sidebarFixed]);
 
 
 
@@ -268,16 +344,10 @@ export default function FeedScreen() {
         onPhotoGalleryPress={handlePhotoGalleryPress}
       />
       
-      {/* Full width Live Streams section */}
-      {activeStreams.length > 0 && (
-        <View style={styles.fullWidthLiveSection}>
-          <LiveStreamsList streams={activeStreams} />
-        </View>
-      )}
-      
       <View style={styles.splitContainer}>
         <View style={styles.mainContent}>
           <FlatList
+            ref={mainScrollRef}
             key="main-feed"
             data={postsWithRecommendations}
             keyExtractor={(item) => item.id}
@@ -311,17 +381,54 @@ export default function FeedScreen() {
             }}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.listContent}
+            onScroll={handleMainScroll}
+            scrollEventThrottle={16}
+            scrollEnabled={mainScrollEnabled}
+            ListHeaderComponent={
+              activeStreams.length > 0 ? (
+                <View style={styles.fullWidthLiveSection}>
+                  <LiveStreamsList streams={activeStreams} />
+                </View>
+              ) : null
+            }
           />
         </View>
         
         <View style={styles.sidebar}>
-          <FlatList
-            data={sidebarUsers}
-            keyExtractor={(item) => item.id}
-            renderItem={renderSidebarUser}
+          <ScrollView
+            ref={sidebarScrollRef}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.sidebarContent}
-          />
+            onScroll={handleSidebarScroll}
+            scrollEventThrottle={16}
+            scrollEnabled={sidebarScrollEnabled}
+          >
+            {sidebarUsers.map((item) => (
+              <View key={item.id} style={styles.sidebarUserItem}>
+                <View style={styles.sidebarUserContainer}>
+                  <View style={styles.sidebarAvatarContainer}>
+                    <Image
+                      source={{ uri: item.avatar }}
+                      style={styles.sidebarAvatar}
+                      contentFit="cover"
+                    />
+                    <View style={[styles.statusIndicator, { backgroundColor: 
+                      item.status === 'live' ? Colors.light.shopSale :
+                      item.status === 'new_post' ? Colors.light.shopAccent :
+                      item.status === 'online' ? '#4CAF50' : Colors.light.border
+                    }]} />
+                  </View>
+                  {(item.status === 'live' || item.status === 'new_post') && (
+                    <Text style={[styles.statusText, { color: 
+                      item.status === 'live' ? Colors.light.shopSale : Colors.light.shopAccent
+                    }]}>
+                      {item.status === 'live' ? 'Live' : '新規'}
+                    </Text>
+                  )}
+                </View>
+              </View>
+            ))}
+          </ScrollView>
         </View>
       </View>
     </View>
@@ -346,6 +453,9 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.background,
     borderLeftWidth: 0.5,
     borderLeftColor: Colors.light.border,
+  },
+  sidebarFixed: {
+    // 固定時も同じ幅を維持
   },
   sidebarContent: {
     paddingTop: 8,
