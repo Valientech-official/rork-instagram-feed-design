@@ -1,27 +1,18 @@
 import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity, Text, Platform, Alert } from 'react-native';
-import { Search, X, Heart, ShoppingCart, NotebookPen } from 'lucide-react-native';
-import { useFavoritesStore } from '@/store/favoritesStore';
-import { useCartStore } from '@/store/cartStore';
-import { usePhotoGalleryStore } from '@/store/photoGalleryStore';
+import { Search, X } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
 
 interface SearchBarProps {
   onSearch?: (text: string) => void;
-  onFavoritesPress?: () => void;
-  onCartPress?: () => void;
   onSearchPress?: () => void;
-  onPhotoGalleryPress?: () => void;
   placeholder?: string;
 }
 
-export default function SearchBar({ onSearch, onFavoritesPress, onCartPress, onSearchPress, onPhotoGalleryPress, placeholder = "Search..." }: SearchBarProps) {
+export default function SearchBar({ onSearch, onSearchPress, placeholder = "Search..." }: SearchBarProps) {
   const [searchText, setSearchText] = useState('');
-  const { items: favoriteItems } = useFavoritesStore();
-  const { items: cartItems, getTotalItems } = useCartStore();
-  const { addPhoto } = usePhotoGalleryStore();
 
   const handleClear = () => {
     setSearchText('');
@@ -122,7 +113,6 @@ export default function SearchBar({ onSearch, onFavoritesPress, onCartPress, onS
     }
   };
 
-  const totalCartItems = getTotalItems();
 
   return (
     <View style={styles.container}>
@@ -144,45 +134,7 @@ export default function SearchBar({ onSearch, onFavoritesPress, onCartPress, onS
         )}
       </TouchableOpacity>
       
-      <TouchableOpacity 
-        style={styles.notebookButton} 
-        onPress={onPhotoGalleryPress}
-        activeOpacity={0.7}
-      >
-        <NotebookPen size={20} color={Colors.light.secondaryText} />
-      </TouchableOpacity>
-      
-      <TouchableOpacity 
-        style={styles.favoriteButton} 
-        onPress={onFavoritesPress}
-        activeOpacity={0.7}
-      >
-        <Heart 
-          size={20} 
-          color={favoriteItems.length > 0 ? Colors.light.shopSale : Colors.light.secondaryText}
-          fill={favoriteItems.length > 0 ? Colors.light.shopSale : 'transparent'}
-        />
-        {favoriteItems.length > 0 && (
-          <View style={styles.favoriteBadge}>
-            <View style={styles.favoriteBadgeInner} />
-          </View>
-        )}
-      </TouchableOpacity>
 
-      <TouchableOpacity 
-        style={styles.cartButton} 
-        onPress={onCartPress}
-        activeOpacity={0.7}
-      >
-        <ShoppingCart size={20} color={Colors.light.text} />
-        {totalCartItems > 0 && (
-          <View style={styles.cartBadge}>
-            <Text style={styles.cartBadgeText}>
-              {totalCartItems > 99 ? '99+' : totalCartItems.toString()}
-            </Text>
-          </View>
-        )}
-      </TouchableOpacity>
     </View>
   );
 }

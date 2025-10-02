@@ -1,30 +1,50 @@
+import React, { useState } from 'react';
 import { Platform, Alert } from 'react-native';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Heart, Video, ShoppingCart, NotebookPen } from 'lucide-react-native';
+import { Video, Menu } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
-import { useFavoritesStore } from '@/store/favoritesStore';
-import { useCartStore } from '@/store/cartStore';
-import { usePhotoGalleryStore } from '@/store/photoGalleryStore';
 import Colors from '@/constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
+import DMIcon from './icons/DMIcon';
+import NotificationIcon from './icons/NotificationIcon';
+import SearchIcon from './icons/SearchIcon';
+import MenuDrawer from './MenuDrawer';
 
-interface FeedHeaderProps {
-  onFavoritesPress?: () => void;
-  onCartPress?: () => void;
-  onPhotoGalleryPress?: () => void;
-}
+interface FeedHeaderProps {}
 
-export default function FeedHeader({ onFavoritesPress, onCartPress, onPhotoGalleryPress }: FeedHeaderProps) {
+export default function FeedHeader({}: FeedHeaderProps) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { items: favoriteItems } = useFavoritesStore();
-  const { items: cartItems, getTotalItems } = useCartStore();
-  const { addPhoto } = usePhotoGalleryStore();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const handleLivePress = () => {
     router.push('/live');
+  };
+
+  const handleNotificationPress = () => {
+    console.log('Notification pressed');
+    router.push('/notification');
+  };
+
+  const handleSearchPress = () => {
+    console.log('User search pressed');
+    router.push('/user_search');
+  };
+
+  const handleDMPress = () => {
+    console.log('DM pressed');
+    // TODO: Navigate to DM
+  };
+
+  const handleMenuPress = () => {
+    console.log('Menu pressed');
+    setIsMenuOpen(true);
+  };
+
+  const handleMenuClose = () => {
+    setIsMenuOpen(false);
   };
   
   const handleShopPress = () => {
@@ -35,17 +55,7 @@ export default function FeedHeader({ onFavoritesPress, onCartPress, onPhotoGalle
     router.push('/profile');
   };
 
-  const handleFavoritesPress = () => {
-    if (onFavoritesPress) {
-      onFavoritesPress();
-    }
-  };
 
-  const handleCartPress = () => {
-    if (onCartPress) {
-      onCartPress();
-    }
-  };
 
   const handleImageSave = async () => {
     try {
@@ -126,8 +136,6 @@ export default function FeedHeader({ onFavoritesPress, onCartPress, onPhotoGalle
     }
   };
 
-  const totalCartItems = getTotalItems();
-
   return (
     <View style={[styles.container, { paddingTop: Math.max(insets.top + 8, 16) }]}>
       <View style={styles.logoContainer}>
@@ -140,33 +148,28 @@ export default function FeedHeader({ onFavoritesPress, onCartPress, onPhotoGalle
         </Text>
       </View>
       <View style={styles.actions}>
-        <TouchableOpacity style={styles.iconButton} onPress={onPhotoGalleryPress}>
-          <NotebookPen size={24} color={Colors.light.icon} />
-        </TouchableOpacity>
         <TouchableOpacity style={styles.iconButton} onPress={handleLivePress}>
           <Video size={24} color={Colors.light.icon} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.favoriteButton} onPress={handleFavoritesPress}>
-          <Heart 
-            size={24} 
-            color={favoriteItems.length > 0 ? Colors.light.shopSale : Colors.light.icon}
-            fill={favoriteItems.length > 0 ? Colors.light.shopSale : 'transparent'}
-          />
-          {favoriteItems.length > 0 && (
-            <View style={styles.favoriteBadge}>
-              <View style={styles.favoriteBadgeInner} />
-            </View>
-          )}
+
+        <TouchableOpacity style={styles.iconButton} onPress={handleNotificationPress}>
+          <NotificationIcon size={24} color={Colors.light.icon} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.cartButton} onPress={handleCartPress}>
-          <ShoppingCart size={24} color={Colors.light.icon} />
-          {totalCartItems > 0 && (
-            <View style={styles.cartBadge}>
-              <Text style={styles.cartBadgeText}>{totalCartItems > 99 ? '99+' : totalCartItems}</Text>
-            </View>
-          )}
+
+        <TouchableOpacity style={styles.iconButton} onPress={handleSearchPress}>
+          <SearchIcon size={24} color={Colors.light.icon} />
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.iconButton} onPress={handleDMPress}>
+          <DMIcon size={24} color={Colors.light.icon} />
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.iconButton} onPress={handleMenuPress}>
+          <Menu size={24} color={Colors.light.icon} />
         </TouchableOpacity>
       </View>
+
+      <MenuDrawer isOpen={isMenuOpen} onClose={handleMenuClose} />
     </View>
   );
 }

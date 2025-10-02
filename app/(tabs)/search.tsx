@@ -383,12 +383,9 @@ export default function SearchScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <SearchBar 
-        onSearch={handleSearch} 
-        onFavoritesPress={handleFavoritesPress}
-        onCartPress={handleCartPress}
+      <SearchBar
+        onSearch={handleSearch}
         onSearchPress={handleSearchPress}
-        onPhotoGalleryPress={handlePhotoGalleryPress}
         placeholder="ブランド&Shop"
       />
       

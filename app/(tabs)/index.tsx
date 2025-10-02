@@ -90,9 +90,6 @@ export default function FeedScreen() {
     postsWithRecommendations.splice(15, 0, { id: 'rec4', isRecommendationSlider: true } as any);
   }
 
-  const handleFavoritesPress = () => {
-    setShowFavorites(true);
-  };
 
   const handleCloseFavorites = () => {
     setShowFavorites(false);
@@ -338,11 +335,7 @@ export default function FeedScreen() {
 
   return (
     <View style={styles.container}>
-      <FeedHeader 
-        onFavoritesPress={handleFavoritesPress} 
-        onCartPress={handleCartPress}
-        onPhotoGalleryPress={handlePhotoGalleryPress}
-      />
+      <FeedHeader />
       
       <View style={styles.splitContainer}>
         <View style={styles.mainContent}>

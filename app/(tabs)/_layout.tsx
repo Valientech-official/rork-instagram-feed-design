@@ -78,6 +78,20 @@ export default function TabLayout() {
           href: null, // Hide from tab bar
         }}
       />
+      <Tabs.Screen
+        name="user_search"
+        options={{
+          href: null, // Hide from tab bar (access via header icon only)
+          title: "User Search",
+        }}
+      />
+      <Tabs.Screen
+        name="notification"
+        options={{
+          href: null, // Hide from tab bar (access via header icon only)
+          title: "Notifications",
+        }}
+      />
     </Tabs>
   );
 }
