@@ -22,6 +22,7 @@ import { Post as PostType } from '@/mocks/posts';
 import RecommendationCard from '@/components/RecommendationCard';
 import RecommendationsSlider from '@/components/RecommendationsSlider';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import MenuDrawer from '@/components/MenuDrawer';
 
 const { width } = Dimensions.get('window');
 const MAIN_CONTENT_WIDTH = (width * 5) / 6;
@@ -38,6 +39,7 @@ export default function FeedScreen() {
   const [sidebarFixed, setSidebarFixed] = useState(false);
   const [mainScrollEnabled, setMainScrollEnabled] = useState(true);
   const [sidebarScrollEnabled, setSidebarScrollEnabled] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const mainScrollRef = useRef<FlatList>(null);
   const sidebarScrollRef = useRef<ScrollView>(null);
@@ -109,6 +111,14 @@ export default function FeedScreen() {
 
   const handleClosePhotoGallery = () => {
     setShowPhotoGallery(false);
+  };
+
+  const handleMenuPress = () => {
+    setIsMenuOpen(true);
+  };
+
+  const handleMenuClose = () => {
+    setIsMenuOpen(false);
   };
 
   const handleProductPress = (productId: string) => {
@@ -335,7 +345,7 @@ export default function FeedScreen() {
 
   return (
     <View style={styles.container}>
-      <FeedHeader />
+      <FeedHeader onMenuPress={handleMenuPress} />
       
       <View style={styles.splitContainer}>
         <View style={styles.mainContent}>
@@ -424,6 +434,8 @@ export default function FeedScreen() {
           </ScrollView>
         </View>
       </View>
+
+      <MenuDrawer isOpen={isMenuOpen} onClose={handleMenuClose} />
     </View>
   );
 }

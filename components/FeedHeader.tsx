@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Platform, Alert } from 'react-native';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Video, Menu } from 'lucide-react-native';
@@ -10,14 +10,14 @@ import * as MediaLibrary from 'expo-media-library';
 import DMIcon from './icons/DMIcon';
 import NotificationIcon from './icons/NotificationIcon';
 import SearchIcon from './icons/SearchIcon';
-import MenuDrawer from './MenuDrawer';
 
-interface FeedHeaderProps {}
+interface FeedHeaderProps {
+  onMenuPress?: () => void;
+}
 
-export default function FeedHeader({}: FeedHeaderProps) {
+export default function FeedHeader({ onMenuPress }: FeedHeaderProps) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   
   const handleLivePress = () => {
     router.push('/live');
@@ -40,11 +40,9 @@ export default function FeedHeader({}: FeedHeaderProps) {
 
   const handleMenuPress = () => {
     console.log('Menu pressed');
-    setIsMenuOpen(true);
-  };
-
-  const handleMenuClose = () => {
-    setIsMenuOpen(false);
+    if (onMenuPress) {
+      onMenuPress();
+    }
   };
   
   const handleShopPress = () => {
@@ -168,8 +166,6 @@ export default function FeedHeader({}: FeedHeaderProps) {
           <Menu size={24} color={Colors.light.icon} />
         </TouchableOpacity>
       </View>
-
-      <MenuDrawer isOpen={isMenuOpen} onClose={handleMenuClose} />
     </View>
   );
 }
