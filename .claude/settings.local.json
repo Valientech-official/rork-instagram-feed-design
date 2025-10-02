@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//mnt/c/Users/manat/OneDrive/デスクトップ/**)",
+      "Read(//mnt/c/Users/manat/OneDrive/画像/スクリーンショット/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
