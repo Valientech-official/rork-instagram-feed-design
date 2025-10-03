@@ -25,9 +25,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import MenuDrawer from '@/components/MenuDrawer';
 
 const { width } = Dimensions.get('window');
-const MAIN_CONTENT_WIDTH = (width * 5) / 6;
-const SIDEBAR_WIDTH = (width * 1) / 6;
-const CARD_WIDTH = (MAIN_CONTENT_WIDTH / 2) - 24;
+const CARD_WIDTH = (width / 2) - 24;
 
 // Define a union type for the combined posts
 type CombinedPostType = PostType | ShoppingPostType;
@@ -36,17 +34,7 @@ export default function FeedScreen() {
   const [showFavorites, setShowFavorites] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showPhotoGallery, setShowPhotoGallery] = useState(false);
-  const [sidebarFixed, setSidebarFixed] = useState(false);
-  const [mainScrollEnabled, setMainScrollEnabled] = useState(true);
-  const [sidebarScrollEnabled, setSidebarScrollEnabled] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
-  const mainScrollRef = useRef<FlatList>(null);
-  const sidebarScrollRef = useRef<ScrollView>(null);
-  const mainScrollY = useRef(0);
-  const sidebarScrollY = useRef(0);
-  const isScrollingMain = useRef(false);
-  const isScrollingSidebar = useRef(false);
   
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -55,13 +43,6 @@ export default function FeedScreen() {
   // Create a combined array of posts and shopping posts
   const combinedPosts: CombinedPostType[] = [...posts, ...shoppingPosts].sort(() => Math.random() - 0.5);
   const activeStreams = liveStreams.filter(stream => stream.isActive);
-  
-  // Create sidebar users with status (3x more users)
-  const sidebarUsers = [
-    ...users.slice(0, 12).map(user => ({ ...user, status: 'live' as const })),
-    ...users.slice(0, 12).map(user => ({ ...user, status: 'new_post' as const, id: user.id + '_new' })),
-    ...users.slice(0, 12).map(user => ({ ...user, status: 'online' as const, id: user.id + '_online' })),
-  ];
 
   // Insert recommendation cards, room lives, and recommended users at specific positions
   const postsWithRecommendations = [...combinedPosts];
@@ -136,73 +117,6 @@ export default function FeedScreen() {
   const handleRemoveItem = (itemId: string) => {
     removeItem(itemId);
   };
-
-  // スクロール連動のためのイベントハンドラー
-  const handleMainScroll = useCallback((event: any) => {
-    const currentScrollY = event.nativeEvent.contentOffset.y;
-    mainScrollY.current = currentScrollY;
-    
-    if (isScrollingSidebar.current) return;
-    
-    isScrollingMain.current = true;
-    
-    // Live Streamsの高さを正確に計算（約120px）
-    const liveStreamsHeight = activeStreams.length > 0 ? 120 : 0;
-    const threshold = liveStreamsHeight;
-    
-    console.log('Main scroll:', currentScrollY, 'threshold:', threshold, 'sidebarFixed:', sidebarFixed);
-    
-    if (currentScrollY >= threshold && !sidebarFixed) {
-      // 帯を固定する
-      console.log('Fixing sidebar at threshold:', threshold);
-      setSidebarFixed(true);
-      setSidebarScrollEnabled(false);
-    } else if (currentScrollY < threshold && sidebarFixed) {
-      // 帯の固定を解除する
-      console.log('Unfixing sidebar');
-      setSidebarFixed(false);
-      setSidebarScrollEnabled(true);
-    }
-    
-    // 常に連動スクロール（固定されるまで）
-    if (sidebarScrollRef.current && currentScrollY < threshold) {
-      console.log('Syncing sidebar scroll to:', currentScrollY);
-      sidebarScrollRef.current.scrollTo({
-        y: currentScrollY,
-        animated: false,
-      });
-      sidebarScrollY.current = currentScrollY;
-    } else if (sidebarScrollRef.current && currentScrollY >= threshold && !sidebarFixed) {
-      // 閾値に達したら帯を閾値位置で固定
-      console.log('Setting sidebar to threshold position:', threshold);
-      sidebarScrollRef.current.scrollTo({
-        y: threshold,
-        animated: false,
-      });
-      sidebarScrollY.current = threshold;
-    }
-    
-    setTimeout(() => {
-      isScrollingMain.current = false;
-    }, 100);
-  }, [sidebarFixed, activeStreams.length]);
-
-  const handleSidebarScroll = useCallback((event: any) => {
-    const currentScrollY = event.nativeEvent.contentOffset.y;
-    sidebarScrollY.current = currentScrollY;
-    
-    if (isScrollingMain.current || sidebarFixed) return;
-    
-    isScrollingSidebar.current = true;
-    
-    // サイドバー単独スクロール時は、メインスクロールに影響しない
-    
-    setTimeout(() => {
-      isScrollingSidebar.current = false;
-    }, 100);
-  }, [sidebarFixed]);
-
-
 
   const renderCartItem = ({ item, index }: { item: CartItem; index: number }) => {
     return (
@@ -303,137 +217,52 @@ export default function FeedScreen() {
     );
   }
 
-  const renderSidebarUser = ({ item }: { item: typeof sidebarUsers[0] }) => {
-    const getStatusColor = () => {
-      switch (item.status) {
-        case 'live': return Colors.light.shopSale;
-        case 'new_post': return Colors.light.shopAccent;
-        case 'online': return '#4CAF50';
-        default: return Colors.light.border;
-      }
-    };
-
-    const getStatusText = () => {
-      switch (item.status) {
-        case 'live': return 'Live';
-        case 'new_post': return '新規';
-        case 'online': return '';
-        default: return '';
-      }
-    };
-
-    return (
-      <TouchableOpacity style={styles.sidebarUserItem}>
-        <View style={styles.sidebarUserContainer}>
-          <View style={styles.sidebarAvatarContainer}>
-            <Image
-              source={{ uri: item.avatar }}
-              style={styles.sidebarAvatar}
-              contentFit="cover"
-            />
-            <View style={[styles.statusIndicator, { backgroundColor: getStatusColor() }]} />
-          </View>
-          {getStatusText() && (
-            <Text style={[styles.statusText, { color: getStatusColor() }]}>
-              {getStatusText()}
-            </Text>
-          )}
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
   return (
     <View style={styles.container}>
       <FeedHeader onMenuPress={handleMenuPress} />
-      
-      <View style={styles.splitContainer}>
-        <View style={styles.mainContent}>
-          <FlatList
-            ref={mainScrollRef}
-            key="main-feed"
-            data={postsWithRecommendations}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => {
-              // Check if this is a recommendation card
-              if ('isRecommendation' in item) {
-                return <RecommendationCard />;
-              }
-              
-              // Check if this is a recommendation slider
-              if ('isRecommendationSlider' in item) {
-                return <RecommendationsSlider />;
-              }
-              
-              // Check if this is a room live section
-              if ('isRoomLive' in item) {
-                return <RoomLivesList />;
-              }
-              
-              // Check if this is a recommended users section
-              if ('isRecommendedUsers' in item) {
-                return <RecommendedUsersSlider />;
-              }
-              
-              // Check if the item is a ShoppingPost by checking if productId exists
-              if ('productId' in item) {
-                return <ShoppingPost post={item as ShoppingPostType} width={MAIN_CONTENT_WIDTH} />;
-              } else {
-                return <Post post={item as PostType} width={MAIN_CONTENT_WIDTH} />;
-              }
-            }}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listContent}
-            onScroll={handleMainScroll}
-            scrollEventThrottle={16}
-            scrollEnabled={mainScrollEnabled}
-            ListHeaderComponent={
-              activeStreams.length > 0 ? (
-                <View style={styles.fullWidthLiveSection}>
-                  <LiveStreamsList streams={activeStreams} />
-                </View>
-              ) : null
-            }
-          />
-        </View>
-        
-        <View style={styles.sidebar}>
-          <ScrollView
-            ref={sidebarScrollRef}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.sidebarContent}
-            onScroll={handleSidebarScroll}
-            scrollEventThrottle={16}
-            scrollEnabled={sidebarScrollEnabled}
-          >
-            {sidebarUsers.map((item) => (
-              <View key={item.id} style={styles.sidebarUserItem}>
-                <View style={styles.sidebarUserContainer}>
-                  <View style={styles.sidebarAvatarContainer}>
-                    <Image
-                      source={{ uri: item.avatar }}
-                      style={styles.sidebarAvatar}
-                      contentFit="cover"
-                    />
-                    <View style={[styles.statusIndicator, { backgroundColor: 
-                      item.status === 'live' ? Colors.light.shopSale :
-                      item.status === 'new_post' ? Colors.light.shopAccent :
-                      item.status === 'online' ? '#4CAF50' : Colors.light.border
-                    }]} />
-                  </View>
-                  {(item.status === 'live' || item.status === 'new_post') && (
-                    <Text style={[styles.statusText, { color: 
-                      item.status === 'live' ? Colors.light.shopSale : Colors.light.shopAccent
-                    }]}>
-                      {item.status === 'live' ? 'Live' : '新規'}
-                    </Text>
-                  )}
-                </View>
-              </View>
-            ))}
-          </ScrollView>
-        </View>
-      </View>
+
+      <FlatList
+        key="main-feed"
+        data={postsWithRecommendations}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => {
+          // Check if this is a recommendation card
+          if ('isRecommendation' in item) {
+            return <RecommendationCard />;
+          }
+
+          // Check if this is a recommendation slider
+          if ('isRecommendationSlider' in item) {
+            return <RecommendationsSlider />;
+          }
+
+          // Check if this is a room live section
+          if ('isRoomLive' in item) {
+            return <RoomLivesList />;
+          }
+
+          // Check if this is a recommended users section
+          if ('isRecommendedUsers' in item) {
+            return <RecommendedUsersSlider />;
+          }
+
+          // Check if the item is a ShoppingPost by checking if productId exists
+          if ('productId' in item) {
+            return <ShoppingPost post={item as ShoppingPostType} />;
+          } else {
+            return <Post post={item as PostType} />;
+          }
+        }}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.listContent}
+        ListHeaderComponent={
+          activeStreams.length > 0 ? (
+            <View style={styles.fullWidthLiveSection}>
+              <LiveStreamsList streams={activeStreams} />
+            </View>
+          ) : null
+        }
+      />
 
       <MenuDrawer isOpen={isMenuOpen} onClose={handleMenuClose} />
     </View>
@@ -445,63 +274,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.light.background,
   },
-  splitContainer: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  mainContent: {
-    width: MAIN_CONTENT_WIDTH,
-    flex: 1,
-  },
-  sidebar: {
-    width: SIDEBAR_WIDTH,
-    backgroundColor: Colors.light.background,
-    borderLeftWidth: 0.5,
-    borderLeftColor: Colors.light.border,
-  },
-  sidebarFixed: {
-    // 固定時も同じ幅を維持
-  },
-  sidebarContent: {
-    paddingTop: 8,
-    paddingBottom: 8,
-  },
-  sidebarUserItem: {
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-  },
-  sidebarUserContainer: {
-    alignItems: 'center',
-  },
-  sidebarAvatarContainer: {
-    position: 'relative',
-    marginBottom: 4,
-  },
-  sidebarAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    borderWidth: 2,
-    borderColor: Colors.light.background,
-  },
-  statusIndicator: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    borderWidth: 2,
-    borderColor: Colors.light.background,
-  },
-  statusText: {
-    fontSize: 10,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
   listContent: {
     paddingBottom: 20,
-    paddingHorizontal: 0,
+    paddingHorizontal: 12,
   },
   fullWidthLiveSection: {
     width: '100%',

@@ -1,128 +1,170 @@
-import React, { useState, useCallback } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Image } from 'expo-image';
+import { Heart, MessageCircle } from 'lucide-react-native';
 import { Post as PostType } from '@/mocks/posts';
-import PostHeader from './PostHeader';
-import ImageCarousel from './ImageCarousel';
-import PostFooter from './PostFooter';
-import PostActions from './PostActions';
-import DoubleTapLike from './DoubleTapLike';
 import ProfileCommentModal from './ProfileCommentModal';
-import * as Haptics from 'expo-haptics';
-import { Platform } from 'react-native';
 import Colors from '@/constants/colors';
-
-const { width } = Dimensions.get('window');
-const MAIN_CONTENT_WIDTH = (width * 5) / 6;
 
 interface PostProps {
   post: PostType;
-  width?: number;
 }
 
-export default function Post({ post, width: containerWidth = MAIN_CONTENT_WIDTH }: PostProps) {
+export default function Post({ post }: PostProps) {
   const [liked, setLiked] = useState(post.liked);
   const [likes, setLikes] = useState(post.likes);
-  const [showLikeAnimation, setShowLikeAnimation] = useState(false);
   const [showCommentModal, setShowCommentModal] = useState(false);
 
-  const handleLike = useCallback(() => {
-    if (!liked) {
-      setLiked(true);
-      setLikes(prev => prev + 1);
-      if (Platform.OS !== 'web') {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      }
-    } else {
-      setLiked(false);
-      setLikes(prev => prev - 1);
-    }
-  }, [liked]);
+  const handleLike = () => {
+    setLiked(!liked);
+    setLikes(prev => liked ? prev - 1 : prev + 1);
+  };
 
-  const handleDoubleTap = useCallback(() => {
-    // Toggle like status on double tap
-    if (!liked) {
-      setLiked(true);
-      setLikes(prev => prev + 1);
-      setShowLikeAnimation(true);
-      if (Platform.OS !== 'web') {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      }
-    } else {
-      setLiked(false);
-      setLikes(prev => prev - 1);
-      setShowLikeAnimation(true);
-      if (Platform.OS !== 'web') {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      }
-    }
-  }, [liked]);
-
-  const handleAnimationComplete = useCallback(() => {
-    setShowLikeAnimation(false);
-  }, []);
-
-  const handleCommentPress = useCallback(() => {
+  const handleCommentPress = () => {
     setShowCommentModal(true);
-  }, []);
+  };
 
-  const handleCloseCommentModal = useCallback(() => {
-    setShowCommentModal(false);
-  }, []);
+  const truncateText = (text: string, maxLength: number = 80) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '…';
+  };
 
   return (
-    <View style={styles.container}>
-      <PostHeader 
-        username={post.user.username} 
-        avatar={post.user.avatar} 
-        location={post.location}
-      />
-      
-      <View style={styles.imageContainer}>
-        <ImageCarousel 
-          images={post.images} 
-          onDoubleTap={handleDoubleTap}
-          width={containerWidth}
-        />
-        <DoubleTapLike 
-          visible={showLikeAnimation} 
-          liked={liked}
-          onAnimationComplete={handleAnimationComplete}
-        />
-        <PostActions 
-          liked={liked}
-          onLikePress={handleLike}
-          onCommentPress={handleCommentPress}
-        />
+    <>
+      <View style={styles.container}>
+        <View style={styles.contentRow}>
+          {/* Left: Image */}
+          <View style={styles.imageSection}>
+            <Image
+              source={{ uri: post.images[0] }}
+              style={styles.image}
+              contentFit="cover"
+              transition={200}
+            />
+          </View>
+
+          {/* Right: User Info & Caption */}
+          <View style={styles.infoSection}>
+            <View style={styles.userInfo}>
+              <Image
+                source={{ uri: post.user.avatar }}
+                style={styles.avatar}
+                contentFit="cover"
+              />
+              <View style={styles.userTextContainer}>
+                <Text style={styles.username}>{post.user.username}</Text>
+                {post.location && (
+                  <Text style={styles.location}>{post.location}</Text>
+                )}
+              </View>
+            </View>
+
+            <Text style={styles.caption} numberOfLines={3}>
+              {truncateText(post.caption)}
+            </Text>
+
+            <View style={styles.stats}>
+              <TouchableOpacity style={styles.statItem} onPress={handleLike}>
+                <Heart
+                  size={18}
+                  color={liked ? Colors.light.like : Colors.light.icon}
+                  fill={liked ? Colors.light.like : 'transparent'}
+                />
+                <Text style={styles.statText}>{likes}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.statItem} onPress={handleCommentPress}>
+                <MessageCircle size={18} color={Colors.light.icon} />
+                <Text style={styles.statText}>{post.comments}</Text>
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.timestamp}>{post.timestamp}</Text>
+          </View>
+        </View>
       </View>
-      
-      <PostFooter 
-        username={post.user.username}
-        caption={post.caption}
-        likes={likes}
-        comments={post.comments}
-        timestamp={post.timestamp}
-      />
 
       <ProfileCommentModal
         visible={showCommentModal}
         postId={post.id}
-        onClose={handleCloseCommentModal}
+        onClose={() => setShowCommentModal(false)}
       />
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.light.background,
-    marginBottom: 8,
-    borderRadius: 8,
+    marginBottom: 12,
+    borderRadius: 12,
     overflow: 'hidden',
+    backgroundColor: 'white',
     borderWidth: 1,
     borderColor: Colors.light.border,
-    marginHorizontal: 0,
   },
-  imageContainer: {
-    position: 'relative',
+  contentRow: {
+    flexDirection: 'row',
+  },
+  imageSection: {
+    width: '50%',
+  },
+  image: {
+    width: '100%',
+    height: 280,
+  },
+  infoSection: {
+    width: '50%',
+    padding: 12,
+    justifyContent: 'space-between',
+  },
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  avatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    marginRight: 8,
+  },
+  userTextContainer: {
+    flex: 1,
+  },
+  username: {
+    color: Colors.light.text,
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  location: {
+    fontSize: 11,
+    color: Colors.light.secondaryText,
+    marginTop: 2,
+  },
+  caption: {
+    fontSize: 13,
+    color: Colors.light.text,
+    lineHeight: 18,
+    marginBottom: 8,
+  },
+  stats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  statItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  statText: {
+    color: Colors.light.text,
+    marginLeft: 6,
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  timestamp: {
+    fontSize: 11,
+    color: Colors.light.secondaryText,
   },
 });
