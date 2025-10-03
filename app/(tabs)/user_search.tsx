@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, ScrollView, PanResponder, Animated, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { Search, UserPlus, X } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { users } from '@/mocks/users';
@@ -28,6 +28,13 @@ export default function UserSearchScreen() {
   const [followingStatus, setFollowingStatus] = useState<{[key: string]: boolean}>({});
 
   const translateX = useRef(new Animated.Value(0)).current;
+
+  // Reset translateX when screen is focused
+  useFocusEffect(
+    React.useCallback(() => {
+      translateX.setValue(0);
+    }, [translateX])
+  );
 
   const panResponder = useRef(
     PanResponder.create({

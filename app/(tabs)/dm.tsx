@@ -1,7 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, PanResponder, Animated, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { Search, Plus, Circle, Check, CheckCheck } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -99,6 +99,13 @@ export default function DMScreen() {
   const [messages, setMessages] = useState<Message[]>(mockMessages);
 
   const translateX = useRef(new Animated.Value(0)).current;
+
+  // Reset translateX when screen is focused
+  useFocusEffect(
+    React.useCallback(() => {
+      translateX.setValue(0);
+    }, [translateX])
+  );
 
   const panResponder = useRef(
     PanResponder.create({
