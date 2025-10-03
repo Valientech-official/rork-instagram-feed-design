@@ -3,7 +3,11 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Switch
 import { Video, Users, Lock, Globe, ChevronRight } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 
-export default function LiveStart() {
+interface LiveStartProps {
+  onClose?: () => void;
+}
+
+export default function LiveStart({ onClose }: LiveStartProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
@@ -21,8 +25,18 @@ export default function LiveStart() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>ライブ配信を開始</Text>
+    <View style={styles.wrapper}>
+      {onClose && (
+        <View style={styles.header}>
+          <TouchableOpacity onPress={onClose}>
+            <Text style={styles.closeText}>キャンセル</Text>
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>ライブ配信</Text>
+          <View style={{ width: 80 }} />
+        </View>
+      )}
+      <ScrollView style={styles.container}>
+        <Text style={styles.title}>ライブ配信を開始</Text>
 
       <View style={styles.previewSection}>
         <View style={styles.cameraPreview}>
@@ -162,10 +176,32 @@ export default function LiveStart() {
         </Text>
       </View>
     </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.light.border,
+  },
+  headerTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: Colors.light.text,
+  },
+  closeText: {
+    fontSize: 15,
+    color: Colors.light.primary,
+  },
   container: {
     flex: 1,
     padding: 16,

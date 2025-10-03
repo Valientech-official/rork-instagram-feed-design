@@ -1,8 +1,9 @@
 import React from "react";
 import { Tabs } from "expo-router";
-import { Home, Search, PlusSquare, Heart, User, DoorOpen } from "lucide-react-native";
+import { Home, Search, PlusSquare, Heart, User, DoorOpen, Plus } from "lucide-react-native";
 import Colors from "@/constants/colors";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { View, StyleSheet } from "react-native";
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
@@ -42,7 +43,11 @@ export default function TabLayout() {
         name="create"
         options={{
           title: "Create",
-          tabBarIcon: ({ color, size }) => <PlusSquare size={size} color={color} />,
+          tabBarIcon: ({ focused }) => (
+            <View style={styles.createButton}>
+              <Plus size={28} color="white" strokeWidth={3} />
+            </View>
+          ),
         }}
       />
       <Tabs.Screen
@@ -102,3 +107,23 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  createButton: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: Colors.light.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
+  },
+});

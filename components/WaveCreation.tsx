@@ -3,7 +3,11 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 
 import { Camera, Music, Sparkles, Timer, X, Check } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 
-export default function WaveCreation() {
+interface WaveCreationProps {
+  onClose?: () => void;
+}
+
+export default function WaveCreation({ onClose }: WaveCreationProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [recordedDuration, setRecordedDuration] = useState(0);
   const [step, setStep] = useState<'record' | 'edit' | 'publish'>('record');
@@ -33,13 +37,22 @@ export default function WaveCreation() {
 
   return (
     <View style={styles.container}>
+      {onClose && step !== 'record' && (
+        <View style={styles.header}>
+          <TouchableOpacity onPress={onClose}>
+            <Text style={styles.closeText}>キャンセル</Text>
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>ウェーブ</Text>
+          <View style={{ width: 80 }} />
+        </View>
+      )}
       {step === 'record' && (
         <View style={styles.recordContainer}>
           <View style={styles.cameraPreview}>
             <Text style={styles.cameraPlaceholder}>カメラプレビュー</Text>
 
             <View style={styles.topControls}>
-              <TouchableOpacity style={styles.controlButton}>
+              <TouchableOpacity style={styles.controlButton} onPress={onClose}>
                 <X size={24} color="white" />
               </TouchableOpacity>
               <View style={styles.timerDisplay}>
@@ -191,6 +204,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.light.background,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.light.border,
+  },
+  headerTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: Colors.light.text,
+  },
+  closeText: {
+    fontSize: 15,
+    color: Colors.light.primary,
   },
   recordContainer: {
     flex: 1,

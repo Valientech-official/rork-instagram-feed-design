@@ -10,7 +10,11 @@ interface ProductImage {
   id: string;
 }
 
-export default function ProductListingFlow() {
+interface ProductListingFlowProps {
+  onClose?: () => void;
+}
+
+export default function ProductListingFlow({ onClose }: ProductListingFlowProps) {
   const [images, setImages] = useState<ProductImage[]>([]);
   const [productName, setProductName] = useState('');
   const [category, setCategory] = useState('');
@@ -66,8 +70,18 @@ export default function ProductListingFlow() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>商品を出品</Text>
+    <View style={styles.wrapper}>
+      {onClose && (
+        <View style={styles.header}>
+          <TouchableOpacity onPress={onClose}>
+            <Text style={styles.closeText}>キャンセル</Text>
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>商品を出品</Text>
+          <View style={{ width: 80 }} />
+        </View>
+      )}
+      <ScrollView style={styles.container}>
+        <Text style={styles.title}>商品を出品</Text>
 
       {/* 写真追加 */}
       <View style={styles.section}>
@@ -256,10 +270,32 @@ export default function ProductListingFlow() {
         <Text style={styles.publishButtonText}>出品する</Text>
       </TouchableOpacity>
     </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  wrapper: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.light.border,
+  },
+  headerTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: Colors.light.text,
+  },
+  closeText: {
+    fontSize: 15,
+    color: Colors.light.primary,
+  },
   container: {
     flex: 1,
     padding: 16,

@@ -16,7 +16,11 @@ interface SelectedMedia {
   type: 'image' | 'video';
 }
 
-export default function PostCreationFlow() {
+interface PostCreationFlowProps {
+  onClose?: () => void;
+}
+
+export default function PostCreationFlow({ onClose }: PostCreationFlowProps) {
   const [currentStep, setCurrentStep] = useState<Step>('select');
   const [selectedMedia, setSelectedMedia] = useState<SelectedMedia | null>(null);
   const [showAIModal, setShowAIModal] = useState(false);
@@ -348,6 +352,15 @@ export default function PostCreationFlow() {
 
   return (
     <View style={styles.wrapper}>
+      {onClose && (
+        <View style={styles.header}>
+          <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <Text style={styles.closeText}>キャンセル</Text>
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>新規投稿</Text>
+          <View style={styles.closeButton} />
+        </View>
+      )}
       {currentStep === 'select' && renderSelectStep()}
       {currentStep === 'edit' && renderEditStep()}
       {currentStep === 'caption' && renderCaptionStep()}
@@ -358,6 +371,27 @@ export default function PostCreationFlow() {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.light.border,
+  },
+  headerTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: Colors.light.text,
+  },
+  closeButton: {
+    width: 80,
+  },
+  closeText: {
+    fontSize: 15,
+    color: Colors.light.primary,
   },
   container: {
     flex: 1,
