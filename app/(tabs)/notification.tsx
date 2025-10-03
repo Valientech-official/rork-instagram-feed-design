@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView, PanResponder, Animated, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Heart, MessageCircle, UserPlus, ShoppingBag, Video, Users } from 'lucide-react-native';
@@ -102,11 +102,47 @@ const mockNotifications: Notification[] = [
   },
 ];
 
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
 export default function NotificationScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
+
+  const translateX = useRef(new Animated.Value(0)).current;
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: (evt, gestureState) => {
+        return evt.nativeEvent.pageX < 30 && gestureState.dx > 0;
+      },
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        return evt.nativeEvent.pageX < 30 && gestureState.dx > 5;
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        if (gestureState.dx > 0) {
+          translateX.setValue(Math.min(gestureState.dx, SCREEN_WIDTH));
+        }
+      },
+      onPanResponderRelease: (evt, gestureState) => {
+        if (gestureState.dx > 100) {
+          Animated.timing(translateX, {
+            toValue: SCREEN_WIDTH,
+            duration: 200,
+            useNativeDriver: true,
+          }).start(() => {
+            router.back();
+          });
+        } else {
+          Animated.spring(translateX, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
 
   const getNotificationIcon = (type: NotificationType) => {
     switch (type) {
@@ -196,7 +232,16 @@ export default function NotificationScreen() {
   );
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <Animated.View
+      style={[
+        styles.container,
+        {
+          paddingTop: insets.top,
+          transform: [{ translateX }]
+        }
+      ]}
+      {...panResponder.panHandlers}
+    >
       <View style={styles.header}>
         <Text style={styles.title}>通知</Text>
         <TouchableOpacity onPress={() => setNotifications([])}>
@@ -241,7 +286,7 @@ export default function NotificationScreen() {
           </View>
         }
       />
-    </View>
+    </Animated.View>
   );
 }
 

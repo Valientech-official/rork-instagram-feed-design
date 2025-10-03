@@ -35,7 +35,7 @@ export default function FeedHeader({ onMenuPress }: FeedHeaderProps) {
 
   const handleDMPress = () => {
     console.log('DM pressed');
-    // TODO: Navigate to DM
+    router.push('/dm');
   };
 
   const handleMenuPress = () => {

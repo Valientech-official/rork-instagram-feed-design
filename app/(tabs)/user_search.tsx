@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, ScrollView, PanResponder, Animated, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Search, UserPlus, X } from 'lucide-react-native';
@@ -18,12 +18,48 @@ interface User {
   following?: number;
 }
 
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
 export default function UserSearchScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [searchText, setSearchText] = useState('');
   const [filteredUsers, setFilteredUsers] = useState<User[]>(users);
   const [followingStatus, setFollowingStatus] = useState<{[key: string]: boolean}>({});
+
+  const translateX = useRef(new Animated.Value(0)).current;
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: (evt, gestureState) => {
+        return evt.nativeEvent.pageX < 30 && gestureState.dx > 0;
+      },
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        return evt.nativeEvent.pageX < 30 && gestureState.dx > 5;
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        if (gestureState.dx > 0) {
+          translateX.setValue(Math.min(gestureState.dx, SCREEN_WIDTH));
+        }
+      },
+      onPanResponderRelease: (evt, gestureState) => {
+        if (gestureState.dx > 100) {
+          Animated.timing(translateX, {
+            toValue: SCREEN_WIDTH,
+            duration: 200,
+            useNativeDriver: true,
+          }).start(() => {
+            router.back();
+          });
+        } else {
+          Animated.spring(translateX, {
+            toValue: 0,
+            useNativeDriver: true,
+          }).start();
+        }
+      },
+    })
+  ).current;
 
   const handleSearch = (text: string) => {
     setSearchText(text);
@@ -89,7 +125,16 @@ export default function UserSearchScreen() {
   };
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
+    <Animated.View
+      style={[
+        styles.container,
+        {
+          paddingTop: insets.top,
+          transform: [{ translateX }]
+        }
+      ]}
+      {...panResponder.panHandlers}
+    >
       <View style={styles.header}>
         <Text style={styles.title}>ユーザー検索</Text>
       </View>
@@ -132,7 +177,7 @@ export default function UserSearchScreen() {
         contentContainerStyle={styles.listContainer}
         showsVerticalScrollIndicator={false}
       />
-    </View>
+    </Animated.View>
   );
 }
 

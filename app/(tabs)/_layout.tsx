@@ -92,6 +92,13 @@ export default function TabLayout() {
           title: "Notifications",
         }}
       />
+      <Tabs.Screen
+        name="dm"
+        options={{
+          href: null, // Hide from tab bar (access via header icon only)
+          title: "Messages",
+        }}
+      />
     </Tabs>
   );
 }
