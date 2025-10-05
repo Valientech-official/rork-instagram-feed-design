@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView, Dimensions, Platform } from 'react-native';
 import { Image } from 'expo-image';
 import { X, Camera, Heart, Library, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -94,12 +94,6 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
     setError(null);
 
     try {
-      // Get API key from environment
-      const apiKey = Constants.expoConfig?.extra?.geminiApiKey || process.env.EXPO_PUBLIC_GEMINI_API_KEY;
-      if (!apiKey) {
-        throw new Error('GEMINI_API_KEY not configured');
-      }
-
       // Convert images to base64
       const avatarBase64 = await convertImageToBase64(selectedAvatar.imageUrl);
       const itemBase64 = await convertImageToBase64(selectedItem.imageUrl);
@@ -114,50 +108,83 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
 
       const prompt = `Transform the person in the first image to wear the clothing item shown in the second image. The fit should be ${sizeDescriptions[selectedSize]}. Maintain the person's pose and background. Professional fashion photography style, studio lighting, clean composition.`;
 
-      // Initialize Gemini AI
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-image' });
+      // Environment detection: Use server API for app builds, client-side for web
+      const useServerAPI = Platform.OS !== 'web';
 
-      // Call Gemini API directly
-      const result = await model.generateContent({
-        contents: [{
-          role: 'user',
-          parts: [
-            {
-              inlineData: {
-                mimeType: 'image/jpeg',
-                data: avatarBase64,
+      if (useServerAPI) {
+        // App version: Call server-side API (secure, API key not exposed)
+        const response = await fetch('/api/genimage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            prompt,
+            avatarImage: avatarBase64,
+            itemImage: itemBase64,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.error || 'Image generation failed');
+        }
+
+        // Convert base64 to data URL
+        const imageDataUrl = `data:image/png;base64,${data.image}`;
+        setGeneratedImageUrl(imageDataUrl);
+      } else {
+        // Web version: Call Gemini API directly from client (development only)
+        const apiKey = Constants.expoConfig?.extra?.geminiApiKey || process.env.EXPO_PUBLIC_GEMINI_API_KEY;
+        if (!apiKey) {
+          throw new Error('GEMINI_API_KEY not configured');
+        }
+
+        // Initialize Gemini AI
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-image' });
+
+        // Call Gemini API directly
+        const result = await model.generateContent({
+          contents: [{
+            role: 'user',
+            parts: [
+              {
+                inlineData: {
+                  mimeType: 'image/jpeg',
+                  data: avatarBase64,
+                },
               },
-            },
-            {
-              inlineData: {
-                mimeType: 'image/jpeg',
-                data: itemBase64,
+              {
+                inlineData: {
+                  mimeType: 'image/jpeg',
+                  data: itemBase64,
+                },
               },
-            },
-            { text: prompt },
-          ],
-        }],
-        generationConfig: {
-          responseModalities: ['image'],
-        },
-      });
+              { text: prompt },
+            ],
+          }],
+          generationConfig: {
+            responseModalities: ['image'],
+          },
+        });
 
-      // Extract base64 image from response
-      const response = result as any;
-      const imagePart = response?.response?.candidates?.[0]?.content?.parts?.find(
-        (part: any) => part.inlineData
-      );
+        // Extract base64 image from response
+        const response = result as any;
+        const imagePart = response?.response?.candidates?.[0]?.content?.parts?.find(
+          (part: any) => part.inlineData
+        );
 
-      if (!imagePart?.inlineData?.data) {
-        throw new Error('No image data in response');
+        if (!imagePart?.inlineData?.data) {
+          throw new Error('No image data in response');
+        }
+
+        const base64Image = imagePart.inlineData.data;
+
+        // Convert base64 to data URL
+        const imageDataUrl = `data:image/png;base64,${base64Image}`;
+        setGeneratedImageUrl(imageDataUrl);
       }
 
-      const base64Image = imagePart.inlineData.data;
-
-      // Convert base64 to data URL
-      const imageDataUrl = `data:image/png;base64,${base64Image}`;
-      setGeneratedImageUrl(imageDataUrl);
       setRemainingCount(prev => prev - 1);
       setCurrentStep(4);
     } catch (err: any) {
