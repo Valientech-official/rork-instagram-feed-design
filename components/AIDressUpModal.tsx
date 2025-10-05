@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView, Dimensions
 import { Image } from 'expo-image';
 import { X, Camera, Heart, Library, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 import Colors from '@/constants/colors';
 import { avatars, Avatar } from '@/mocks/avatars';
 import { dressUpItems, sizeOptions, SizeOption, DressUpItem } from '@/mocks/dressUpItems';
@@ -24,6 +25,8 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
   const [selectedSize, setSelectedSize] = useState<SizeOption>('just');
   const [generatedImageUrl, setGeneratedImageUrl] = useState<string>('');
   const [remainingCount, setRemainingCount] = useState(5);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const favoriteAvatars = avatars.filter(a => a.isFavorite);
   const allItems = dressUpItems;
@@ -53,15 +56,85 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
     }
   };
 
-  const handleGenerate = () => {
+  const convertImageToBase64 = async (imageUri: string): Promise<string> => {
+    try {
+      // If it's a local file URI (from camera/library)
+      if (imageUri.startsWith('file://')) {
+        const base64 = await FileSystem.readAsStringAsync(imageUri, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
+        return base64;
+      }
+
+      // If it's a remote URL, fetch and convert
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64 = (reader.result as string).split(',')[1];
+          resolve(base64);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch (error) {
+      console.error('Error converting image to base64:', error);
+      throw error;
+    }
+  };
+
+  const handleGenerate = async () => {
+    if (!selectedItem || !selectedAvatar) return;
+
     setCurrentStep(3);
-    // 3秒後に結果表示
-    setTimeout(() => {
-      // モック生成画像（実際はAPI呼び出し）
-      setGeneratedImageUrl('https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&h=800&fit=crop');
+    setIsGenerating(true);
+    setError(null);
+
+    try {
+      // Convert images to base64
+      const avatarBase64 = await convertImageToBase64(selectedAvatar.imageUrl);
+      const itemBase64 = await convertImageToBase64(selectedItem.imageUrl);
+
+      // Build English prompt
+      const sizeDescriptions = {
+        oversized: 'oversized fit, loose and comfortable',
+        just: 'perfect fit, tailored to body',
+        small: 'tight fit, form-fitting',
+      };
+
+      const prompt = `Transform the person in the first image to wear the clothing item shown in the second image. The fit should be ${sizeDescriptions[selectedSize]}. Maintain the person's pose and background. Professional fashion photography style, studio lighting, clean composition.`;
+
+      // Call API
+      const response = await fetch('/api/genimage', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          prompt,
+          avatarImage: avatarBase64,
+          itemImage: itemBase64,
+          aspectRatio: '2:3',
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.error || 'Image generation failed');
+      }
+
+      // Convert base64 to data URL
+      const imageDataUrl = `data:image/png;base64,${data.image}`;
+      setGeneratedImageUrl(imageDataUrl);
       setRemainingCount(prev => prev - 1);
       setCurrentStep(4);
-    }, 3000);
+    } catch (err: any) {
+      console.error('Generation error:', err);
+      setError(err.message || 'Failed to generate image');
+      setCurrentStep(4); // Show result screen with error
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleTakePhoto = async () => {
@@ -278,38 +351,64 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
 
   const renderStep4 = () => (
     <ScrollView style={styles.stepContainer}>
-      <Text style={styles.title}>生成完了！</Text>
+      {error ? (
+        <>
+          <Text style={styles.title}>エラーが発生しました</Text>
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.retryButton}
+            onPress={() => {
+              setError(null);
+              setCurrentStep(2);
+            }}
+          >
+            <Text style={styles.retryButtonText}>再試行</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.tryAgainButton}
+            onPress={() => setCurrentStep(1)}
+          >
+            <Text style={styles.tryAgainText}>最初からやり直す</Text>
+          </TouchableOpacity>
+        </>
+      ) : (
+        <>
+          <Text style={styles.title}>生成完了！</Text>
 
-      <View style={styles.resultContainer}>
-        <Image
-          source={{ uri: generatedImageUrl }}
-          style={styles.resultImage}
-          contentFit="cover"
-        />
-      </View>
+          <View style={styles.resultContainer}>
+            <Image
+              source={{ uri: generatedImageUrl }}
+              style={styles.resultImage}
+              contentFit="cover"
+            />
+          </View>
 
-      <View style={styles.resultActions}>
-        <TouchableOpacity style={styles.resultButton}>
-          <Text style={styles.resultButtonText}>💾 保存する</Text>
-        </TouchableOpacity>
+          <View style={styles.resultActions}>
+            <TouchableOpacity style={styles.resultButton}>
+              <Text style={styles.resultButtonText}>💾 保存する</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity style={styles.resultButton}>
-          <Text style={styles.resultButtonText}>📤 共有する</Text>
-        </TouchableOpacity>
+            <TouchableOpacity style={styles.resultButton}>
+              <Text style={styles.resultButtonText}>📤 共有する</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.resultButton, styles.resultButtonPrimary]}>
-          <Text style={[styles.resultButtonText, styles.resultButtonTextPrimary]}>
-            📝 投稿する
-          </Text>
-        </TouchableOpacity>
-      </View>
+            <TouchableOpacity style={[styles.resultButton, styles.resultButtonPrimary]}>
+              <Text style={[styles.resultButtonText, styles.resultButtonTextPrimary]}>
+                📝 投稿する
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-      <TouchableOpacity
-        style={styles.tryAgainButton}
-        onPress={() => setCurrentStep(1)}
-      >
-        <Text style={styles.tryAgainText}>もう一度試す</Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.tryAgainButton}
+            onPress={() => setCurrentStep(1)}
+          >
+            <Text style={styles.tryAgainText}>もう一度試す</Text>
+          </TouchableOpacity>
+        </>
+      )}
     </ScrollView>
   );
 
@@ -643,5 +742,31 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
     color: Colors.light.primary,
+  },
+  errorContainer: {
+    backgroundColor: '#FEE2E2',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#FCA5A5',
+  },
+  errorText: {
+    fontSize: 15,
+    color: '#DC2626',
+    lineHeight: 22,
+    textAlign: 'center',
+  },
+  retryButton: {
+    backgroundColor: Colors.light.primary,
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  retryButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: 'white',
   },
 });
