@@ -4,6 +4,8 @@ import { Image } from 'expo-image';
 import { X, Camera, Heart, Library, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import Constants from 'expo-constants';
 import Colors from '@/constants/colors';
 import { avatars, Avatar } from '@/mocks/avatars';
 import { dressUpItems, sizeOptions, SizeOption, DressUpItem } from '@/mocks/dressUpItems';
@@ -92,6 +94,12 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
     setError(null);
 
     try {
+      // Get API key from environment
+      const apiKey = Constants.expoConfig?.extra?.geminiApiKey || process.env.EXPO_PUBLIC_GEMINI_API_KEY;
+      if (!apiKey) {
+        throw new Error('GEMINI_API_KEY not configured');
+      }
+
       // Convert images to base64
       const avatarBase64 = await convertImageToBase64(selectedAvatar.imageUrl);
       const itemBase64 = await convertImageToBase64(selectedItem.imageUrl);
@@ -106,26 +114,49 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
 
       const prompt = `Transform the person in the first image to wear the clothing item shown in the second image. The fit should be ${sizeDescriptions[selectedSize]}. Maintain the person's pose and background. Professional fashion photography style, studio lighting, clean composition.`;
 
-      // Call API
-      const response = await fetch('/api/genimage', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          prompt,
-          avatarImage: avatarBase64,
-          itemImage: itemBase64,
-          aspectRatio: '2:3',
-        }),
+      // Initialize Gemini AI
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-image' });
+
+      // Call Gemini API directly
+      const result = await model.generateContent({
+        contents: [{
+          role: 'user',
+          parts: [
+            {
+              inlineData: {
+                mimeType: 'image/jpeg',
+                data: avatarBase64,
+              },
+            },
+            {
+              inlineData: {
+                mimeType: 'image/jpeg',
+                data: itemBase64,
+              },
+            },
+            { text: prompt },
+          ],
+        }],
+        generationConfig: {
+          responseModalities: ['image'],
+        },
       });
 
-      const data = await response.json();
+      // Extract base64 image from response
+      const response = result as any;
+      const imagePart = response?.response?.candidates?.[0]?.content?.parts?.find(
+        (part: any) => part.inlineData
+      );
 
-      if (!data.success) {
-        throw new Error(data.error || 'Image generation failed');
+      if (!imagePart?.inlineData?.data) {
+        throw new Error('No image data in response');
       }
 
+      const base64Image = imagePart.inlineData.data;
+
       // Convert base64 to data URL
-      const imageDataUrl = `data:image/png;base64,${data.image}`;
+      const imageDataUrl = `data:image/png;base64,${base64Image}`;
       setGeneratedImageUrl(imageDataUrl);
       setRemainingCount(prev => prev - 1);
       setCurrentStep(4);
