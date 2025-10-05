@@ -98,9 +98,10 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
 
       // Build English prompt
       const sizeDescriptions = {
-        oversized: 'oversized fit, loose and comfortable',
+        tight: 'tight fit, form-fitting, snug to the body',
         just: 'perfect fit, tailored to body',
-        small: 'tight fit, form-fitting',
+        relaxed: 'relaxed fit, slightly loose and comfortable',
+        oversize: 'oversized fit, loose and very comfortable',
       };
 
       const prompt = `Transform the person in the first image to wear the clothing item shown in the second image. The fit should be ${sizeDescriptions[selectedSize]}. Maintain the person's pose and background. Professional fashion photography style, studio lighting, clean composition.`;
