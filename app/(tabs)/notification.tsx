@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView, PanResponder, Animated, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { useRouter, useFocusEffect } from 'expo-router';
-import { Heart, MessageCircle, UserPlus, ShoppingBag, Video, Users } from 'lucide-react-native';
+import { Heart, MessageCircle, UserPlus, ShoppingBag, Video, Users, ArrowLeft } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -250,6 +250,9 @@ export default function NotificationScreen() {
       {...panResponder.panHandlers}
     >
       <View style={styles.header}>
+        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+          <ArrowLeft size={24} color={Colors.light.text} />
+        </TouchableOpacity>
         <Text style={styles.title}>通知</Text>
         <TouchableOpacity onPress={() => setNotifications([])}>
           <Text style={styles.clearButton}>すべて削除</Text>
@@ -311,10 +314,16 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: Colors.light.border,
   },
+  backButton: {
+    padding: 8,
+    marginLeft: -8,
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     color: Colors.light.text,
+    flex: 1,
+    marginLeft: 8,
   },
   clearButton: {
     fontSize: 14,
