@@ -12,6 +12,7 @@ export interface Post {
   comments: number;
   timestamp: string;
   location?: string;
+  aspectRatio: '1:1' | '16:9' | '9:16';
 }
 
 export const posts: Post[] = [
@@ -32,6 +33,7 @@ export const posts: Post[] = [
     comments: 42,
     timestamp: "2h ago",
     location: "Fashion District",
+    aspectRatio: '1:1',
   },
   {
     id: "2",
@@ -48,6 +50,7 @@ export const posts: Post[] = [
     liked: true,
     comments: 89,
     timestamp: "5h ago",
+    aspectRatio: '9:16',
   },
   {
     id: "3",
@@ -66,6 +69,7 @@ export const posts: Post[] = [
     liked: false,
     comments: 63,
     timestamp: "1d ago",
+    aspectRatio: '16:9',
   },
   {
     id: "4",
@@ -82,5 +86,6 @@ export const posts: Post[] = [
     liked: false,
     comments: 75,
     timestamp: "2d ago",
+    aspectRatio: '1:1',
   },
 ];

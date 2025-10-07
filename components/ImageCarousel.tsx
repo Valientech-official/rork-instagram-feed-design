@@ -8,10 +8,12 @@ const { width: screenWidth } = Dimensions.get('window');
 interface ImageCarouselProps {
   images: string[];
   onDoubleTap: () => void;
+  onPress?: () => void;
   width?: number;
+  aspectRatio?: '1:1' | '16:9' | '9:16';
 }
 
-export default function ImageCarousel({ images, onDoubleTap, width = screenWidth }: ImageCarouselProps) {
+export default function ImageCarousel({ images, onDoubleTap, onPress, width = screenWidth, aspectRatio = '1:1' }: ImageCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const lastTap = useRef<number>(0);
   
@@ -35,18 +37,39 @@ export default function ImageCarousel({ images, onDoubleTap, width = screenWidth
   const handleImagePress = () => {
     const now = Date.now();
     const DOUBLE_PRESS_DELAY = 300;
-    
+
     if (lastTap.current && (now - lastTap.current) < DOUBLE_PRESS_DELAY) {
       // Double tap detected
       onDoubleTap();
       lastTap.current = 0; // Reset to prevent triple tap
     } else {
-      // Single tap - store the time
+      // Single tap - store the time and schedule single tap action
       lastTap.current = now;
+
+      // Wait for potential double tap, then trigger single tap action
+      setTimeout(() => {
+        if (lastTap.current === now && onPress) {
+          onPress();
+        }
+      }, DOUBLE_PRESS_DELAY);
     }
   };
 
-  const dynamicStyles = createStyles(width);
+  // Calculate height based on aspect ratio
+  const getHeight = () => {
+    switch (aspectRatio) {
+      case '16:9':
+        return width * (9 / 16);
+      case '9:16':
+        return width * (16 / 9);
+      case '1:1':
+      default:
+        return width;
+    }
+  };
+
+  const height = getHeight();
+  const dynamicStyles = createStyles(width, height);
 
   return (
     <View style={dynamicStyles.container}>
@@ -86,15 +109,15 @@ export default function ImageCarousel({ images, onDoubleTap, width = screenWidth
   );
 }
 
-const createStyles = (containerWidth: number) => StyleSheet.create({
+const createStyles = (containerWidth: number, containerHeight: number) => StyleSheet.create({
   container: {
     width: containerWidth,
-    height: containerWidth,
+    height: containerHeight,
     backgroundColor: Colors.light.background,
   },
   image: {
     width: containerWidth,
-    height: containerWidth,
+    height: containerHeight,
   },
 });
 

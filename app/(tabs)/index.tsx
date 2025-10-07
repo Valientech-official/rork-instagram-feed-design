@@ -264,7 +264,7 @@ export default function FeedScreen() {
         }
       />
 
-      <MenuDrawer isOpen={isMenuOpen} onClose={handleMenuClose} />
+      <MenuDrawer visible={isMenuOpen} onClose={handleMenuClose} />
     </View>
   );
 }
