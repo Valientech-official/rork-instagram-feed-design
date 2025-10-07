@@ -1,7 +1,7 @@
 import React from 'react';
 import { Platform, Alert } from 'react-native';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Video, Menu } from 'lucide-react-native';
+import { Video } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import Colors from '@/constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -160,10 +160,6 @@ export default function FeedHeader({ onMenuPress }: FeedHeaderProps) {
 
         <TouchableOpacity style={styles.iconButton} onPress={handleDMPress}>
           <DMIcon size={24} color={Colors.light.icon} />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.iconButton} onPress={handleMenuPress}>
-          <Menu size={24} color={Colors.light.icon} />
         </TouchableOpacity>
       </View>
     </View>

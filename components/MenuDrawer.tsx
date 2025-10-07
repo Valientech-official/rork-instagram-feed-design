@@ -30,7 +30,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const DRAWER_WIDTH = SCREEN_WIDTH * 0.8;
 
 interface MenuDrawerProps {
-  isOpen: boolean;
+  visible: boolean;
   onClose: () => void;
 }
 
@@ -43,14 +43,14 @@ interface MenuItem {
   action?: () => void;
 }
 
-export default function MenuDrawer({ isOpen, onClose }: MenuDrawerProps) {
+export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const translateX = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    if (isOpen) {
+    if (visible) {
       Animated.parallel([
         Animated.timing(translateX, {
           toValue: 0,
@@ -77,7 +77,7 @@ export default function MenuDrawer({ isOpen, onClose }: MenuDrawerProps) {
         }),
       ]).start();
     }
-  }, [isOpen]);
+  }, [visible]);
 
   const menuItems: MenuItem[] = [
     {
@@ -148,10 +148,10 @@ export default function MenuDrawer({ isOpen, onClose }: MenuDrawerProps) {
     }, 300);
   };
 
-  if (!isOpen) return null;
+  if (!visible) return null;
 
   return (
-    <View style={StyleSheet.absoluteFillObject} pointerEvents={isOpen ? 'auto' : 'none'}>
+    <View style={StyleSheet.absoluteFillObject} pointerEvents={visible ? 'auto' : 'none'}>
       <TouchableWithoutFeedback onPress={onClose}>
         <Animated.View
           style={[

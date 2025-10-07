@@ -1,5 +1,6 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { Menu } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import ProfileIconRow from '@/components/ProfileIconRow';
 import ProfileStylesSection from '@/components/ProfileStylesSection';
@@ -10,26 +11,34 @@ import ProfileRoomsSection from '@/components/ProfileRoomsSection';
 import ProfilePostsGrid from '@/components/ProfilePostsGrid';
 import { profilePosts } from '@/mocks/profilePosts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import MenuDrawer from '@/components/MenuDrawer';
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <Image 
-            source={{ uri: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80" }} 
-            style={styles.profileImage} 
+          <Image
+            source={{ uri: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80" }}
+            style={styles.profileImage}
           />
           <View style={styles.userInfo}>
             <Text style={styles.username}>username</Text>
             <Text style={styles.bio}>This is a sample bio. Edit your profile to change this text.</Text>
           </View>
+          <TouchableOpacity
+            style={styles.menuButton}
+            onPress={() => setIsMenuOpen(true)}
+          >
+            <Menu size={24} color={Colors.light.icon} />
+          </TouchableOpacity>
         </View>
         
         <ProfileIconRow />
@@ -48,6 +57,11 @@ export default function ProfileScreen() {
         {/* Posts Grid Section */}
         <ProfilePostsGrid posts={profilePosts} />
       </ScrollView>
+
+      <MenuDrawer
+        visible={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+      />
     </View>
   );
 }
@@ -66,7 +80,8 @@ const styles = StyleSheet.create({
   header: {
     padding: 12,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    position: 'relative',
   },
   profileImage: {
     width: 70,
@@ -105,5 +120,11 @@ const styles = StyleSheet.create({
   emptyStateText: {
     fontSize: 14,
     color: Colors.light.secondaryText,
+  },
+  menuButton: {
+    padding: 8,
+    position: 'absolute',
+    right: 12,
+    top: 12,
   },
 });
