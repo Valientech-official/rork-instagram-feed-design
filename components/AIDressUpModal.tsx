@@ -100,10 +100,10 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
 
       // Build English prompt
       const sizeDescriptions = {
-        tight: 'tight fit, form-fitting, snug to the body',
-        just: 'perfect fit, tailored to body',
-        relaxed: 'relaxed fit, slightly loose and comfortable',
-        oversize: 'oversized fit, loose and very comfortable',
+        tight: 'The outfit should be rendered with a **tight fit** or **snug fit**, appearing body-hugging and form-fitting, emphasizing the body\'s contours without constriction.',
+        just: 'The outfit should be rendered with a **perfect fit** or **true-to-size fit**, conforming to standard measurements, neither loose nor tight, and tailored precisely to the body\'s shape.',
+        relaxed: 'The outfit should be rendered with a **relaxed fit** or **slightly loose fit**, providing a comfortable amount of extra room, not clinging to the body, and allowing for ease of movement with a gentle drape.',
+        oversize: 'The outfit should be rendered with an **oversized fit**, appearing significantly larger than standard, with ample room, a voluminous and flowing silhouette, and a noticeable dropped shoulder and elongated hemline where applicable.',
       };
 
       const prompt = `Transform the person in the first image to wear the clothing item shown in the second image. The fit should be ${sizeDescriptions[selectedSize]}. Maintain the person's pose and background. Professional fashion photography style, studio lighting, clean composition.`;
