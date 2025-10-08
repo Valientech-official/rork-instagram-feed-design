@@ -39,9 +39,9 @@ export default function RecommendationCard() {
             <View style={styles.overlay}>
               <DoorOpen size={32} color="white" />
               <Text style={styles.title}>Room</Text>
-              <Text style={styles.description}>Discover exclusive fashion content and styling tips</Text>
+              <Text style={styles.description}>限定のファッションコンテンツとスタイリングのヒントを発見</Text>
               <TouchableOpacity style={styles.button} onPress={handlePress}>
-                <Text style={styles.buttonText}>Enter Now</Text>
+                <Text style={styles.buttonText}>今すぐ入る</Text>
               </TouchableOpacity>
             </View>
           </>
@@ -58,9 +58,9 @@ export default function RecommendationCard() {
             <View style={styles.overlay}>
               <ShoppingBag size={32} color="white" />
               <Text style={styles.title}>ウェーブ</Text>
-              <Text style={styles.description}>Check out our featured fashion products</Text>
+              <Text style={styles.description}>厳選されたファッション商品をチェック</Text>
               <TouchableOpacity style={styles.button} onPress={handlePress}>
-                <Text style={styles.buttonText}>Shop Now</Text>
+                <Text style={styles.buttonText}>今すぐ買う</Text>
               </TouchableOpacity>
             </View>
           </>
@@ -77,9 +77,9 @@ export default function RecommendationCard() {
             <View style={styles.overlay}>
               <Video size={32} color="white" />
               <Text style={styles.title}>Live</Text>
-              <Text style={styles.description}>Join fashion live streams and styling sessions</Text>
+              <Text style={styles.description}>ファッションライブ配信とスタイリングセッションに参加</Text>
               <TouchableOpacity style={styles.button} onPress={handlePress}>
-                <Text style={styles.buttonText}>Watch Now</Text>
+                <Text style={styles.buttonText}>今すぐ見る</Text>
               </TouchableOpacity>
             </View>
           </>

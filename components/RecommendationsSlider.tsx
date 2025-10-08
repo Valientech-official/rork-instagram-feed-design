@@ -17,28 +17,28 @@ export default function RecommendationsSlider() {
     {
       id: 'room',
       title: 'Room',
-      description: 'Discover exclusive fashion content and styling tips',
+      description: '限定のファッションコンテンツとスタイリングのヒントを発見',
       icon: <DoorOpen size={32} color="white" />,
       image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1000",
-      buttonText: 'Enter Now',
+      buttonText: '今すぐ入る',
       onPress: () => router.push('/live')
     },
     {
       id: 'cm',
       title: 'ウェーブ',
-      description: 'Check out our featured fashion products',
+      description: '厳選されたファッション商品をチェック',
       icon: <ShoppingBag size={32} color="white" />,
       image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=1000",
-      buttonText: 'Shop Now',
+      buttonText: '今すぐ買う',
       onPress: () => router.push('/shop')
     },
     {
       id: 'live',
       title: 'Live',
-      description: 'Join fashion live streams and styling sessions',
+      description: 'ファッションライブ配信とスタイリングセッションに参加',
       icon: <Video size={32} color="white" />,
       image: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?q=80&w=1000",
-      buttonText: 'Watch Now',
+      buttonText: '今すぐ見る',
       onPress: () => router.push('/live')
     }
   ];
@@ -48,7 +48,7 @@ export default function RecommendationsSlider() {
   
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Recommended for You</Text>
+      <Text style={styles.title}>おすすめ</Text>
       
       <ScrollView
         horizontal
