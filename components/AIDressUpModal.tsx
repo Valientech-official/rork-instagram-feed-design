@@ -242,6 +242,52 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
     }
   };
 
+  const handleTakeItemPhoto = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert('カメラへのアクセス許可が必要です');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [3, 4],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      const newItem: DressUpItem = {
+        id: `camera_item_${Date.now()}`,
+        name: 'カスタムアイテム',
+        imageUrl: result.assets[0].uri,
+        category: 'カスタム',
+        isFavorite: false,
+      };
+      setSelectedItem(newItem);
+    }
+  };
+
+  const handlePickItemFromLibrary = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [3, 4],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      const newItem: DressUpItem = {
+        id: `library_item_${Date.now()}`,
+        name: 'カスタムアイテム',
+        imageUrl: result.assets[0].uri,
+        category: 'カスタム',
+        isFavorite: false,
+      };
+      setSelectedItem(newItem);
+    }
+  };
+
   const renderStep1 = () => (
     <ScrollView style={styles.stepContainer}>
       <Text style={styles.title}>AI着せ替えを始めましょう</Text>
@@ -363,6 +409,25 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
             <Text style={styles.itemName} numberOfLines={1}>{item.name}</Text>
           </TouchableOpacity>
         ))}
+      </View>
+
+      {/* カメラ・ライブラリ */}
+      <View style={styles.actionButtons}>
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={handleTakeItemPhoto}
+        >
+          <Camera size={24} color={Colors.light.primary} />
+          <Text style={styles.actionButtonText}>写真を撮る</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={handlePickItemFromLibrary}
+        >
+          <Library size={24} color={Colors.light.primary} />
+          <Text style={styles.actionButtonText}>ライブラリから選ぶ</Text>
+        </TouchableOpacity>
       </View>
 
       {/* サイズ選択 */}
