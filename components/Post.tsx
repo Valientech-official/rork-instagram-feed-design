@@ -50,27 +50,9 @@ export default function Post({ post }: PostProps) {
   return (
     <>
       <View style={styles.container}>
-        <View style={styles.contentRow}>
-          {/* Left: Image */}
-          <View style={styles.imageSection}>
-            <View style={styles.imageWrapper}>
-              <ImageCarousel
-                images={post.images}
-                onDoubleTap={handleDoubleTap}
-                onPress={handleImagePress}
-                width={screenWidth * 0.6}
-                aspectRatio={post.aspectRatio}
-              />
-              <DoubleTapLike
-                visible={showLikeAnimation}
-                liked={liked}
-                onAnimationComplete={handleLikeAnimationComplete}
-              />
-            </View>
-          </View>
-
-          {/* Right: User Info & Caption */}
-          <View style={styles.infoSection}>
+        {/* Row 1: User Info, Caption & Actions */}
+        <View style={styles.headerRow}>
+          <View style={styles.topLine}>
             <View style={styles.userInfo}>
               <Image
                 source={{ uri: post.user.avatar }}
@@ -85,14 +67,10 @@ export default function Post({ post }: PostProps) {
               </View>
             </View>
 
-            <Text style={styles.caption} numberOfLines={3}>
-              {truncateText(post.caption)}
-            </Text>
-
             <View style={styles.stats}>
               <TouchableOpacity style={styles.statItem} onPress={handleLike}>
                 <Heart
-                  size={18}
+                  size={20}
                   color={liked ? Colors.light.like : Colors.light.icon}
                   fill={liked ? Colors.light.like : 'transparent'}
                 />
@@ -100,13 +78,36 @@ export default function Post({ post }: PostProps) {
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.statItem} onPress={handleImagePress}>
-                <MessageCircle size={18} color={Colors.light.icon} />
+                <MessageCircle size={20} color={Colors.light.icon} />
                 <Text style={styles.statText}>{post.comments}</Text>
               </TouchableOpacity>
             </View>
-
-            <Text style={styles.timestamp}>{post.timestamp}</Text>
           </View>
+
+          <Text style={styles.caption} numberOfLines={2}>
+            {truncateText(post.caption, 120)}
+          </Text>
+        </View>
+
+        {/* Row 2: Image */}
+        <View style={styles.imageWrapper}>
+          <ImageCarousel
+            images={post.images}
+            onDoubleTap={handleDoubleTap}
+            onPress={handleImagePress}
+            width={CARD_WIDTH}
+            aspectRatio={post.aspectRatio}
+          />
+          <DoubleTapLike
+            visible={showLikeAnimation}
+            liked={liked}
+            onAnimationComplete={handleLikeAnimationComplete}
+          />
+        </View>
+
+        {/* Footer: Timestamp */}
+        <View style={styles.footer}>
+          <Text style={styles.timestamp}>{post.timestamp}</Text>
         </View>
       </View>
 
@@ -121,39 +122,34 @@ export default function Post({ post }: PostProps) {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 12,
+    marginBottom: 16,
     borderRadius: 12,
     overflow: 'hidden',
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: Colors.light.border,
   },
-  contentRow: {
-    flexDirection: 'row',
-    minHeight: 360,
-  },
-  imageSection: {
-    width: '60%',
-  },
-  imageWrapper: {
-    position: 'relative',
-    width: '100%',
-  },
-  infoSection: {
-    width: '40%',
+  headerRow: {
     padding: 12,
+    borderBottomWidth: 0.5,
+    borderBottomColor: Colors.light.border,
+  },
+  topLine: {
+    flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
   },
   userInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    flex: 1,
   },
   avatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    marginRight: 8,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    marginRight: 10,
   },
   userTextContainer: {
     flex: 1,
@@ -161,38 +157,43 @@ const styles = StyleSheet.create({
   username: {
     color: Colors.light.text,
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: 15,
   },
   location: {
-    fontSize: 11,
+    fontSize: 12,
     color: Colors.light.secondaryText,
     marginTop: 2,
   },
   caption: {
-    fontSize: 13,
+    fontSize: 14,
     color: Colors.light.text,
-    lineHeight: 18,
-    marginBottom: 8,
+    lineHeight: 19,
   },
   stats: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
-    flexWrap: 'wrap',
   },
   statItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 12,
+    marginLeft: 16,
   },
   statText: {
     color: Colors.light.text,
     marginLeft: 6,
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '500',
   },
+  imageWrapper: {
+    position: 'relative',
+    width: '100%',
+  },
+  footer: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
   timestamp: {
-    fontSize: 11,
+    fontSize: 12,
     color: Colors.light.secondaryText,
   },
 });

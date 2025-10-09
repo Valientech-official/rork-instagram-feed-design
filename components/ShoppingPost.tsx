@@ -31,22 +31,9 @@ export default function ShoppingPost({ post }: ShoppingPostProps) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.contentRow}>
-        {/* Left: Image */}
-        <View style={styles.imageSection}>
-          <Image
-            source={{ uri: post.images[0] }}
-            style={styles.image}
-            contentFit="cover"
-            transition={200}
-          />
-          <View style={styles.shopBadge}>
-            <ShoppingBag size={14} color="white" />
-          </View>
-        </View>
-
-        {/* Right: User Info & Caption */}
-        <View style={styles.infoSection}>
+      {/* Row 1: User Info, Caption & Actions */}
+      <View style={styles.headerRow}>
+        <View style={styles.topLine}>
           <View style={styles.userInfo}>
             <Image
               source={{ uri: post.user.avatar }}
@@ -61,14 +48,10 @@ export default function ShoppingPost({ post }: ShoppingPostProps) {
             </View>
           </View>
 
-          <Text style={styles.caption} numberOfLines={3}>
-            {truncateText(post.caption)}
-          </Text>
-
           <View style={styles.stats}>
             <TouchableOpacity style={styles.statItem} onPress={handleLike}>
               <Heart
-                size={18}
+                size={20}
                 color={liked ? Colors.light.like : Colors.light.icon}
                 fill={liked ? Colors.light.like : 'transparent'}
               />
@@ -76,18 +59,38 @@ export default function ShoppingPost({ post }: ShoppingPostProps) {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.statItem}>
-              <MessageCircle size={18} color={Colors.light.icon} />
+              <MessageCircle size={20} color={Colors.light.icon} />
               <Text style={styles.statText}>{post.comments}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.shopButton} onPress={handleShopPress}>
               <ShoppingBag size={16} color="white" />
-              <Text style={styles.shopButtonText}>商品を見る</Text>
+              <Text style={styles.shopButtonText}>商品</Text>
             </TouchableOpacity>
           </View>
-
-          <Text style={styles.timestamp}>{post.timestamp}</Text>
         </View>
+
+        <Text style={styles.caption} numberOfLines={2}>
+          {truncateText(post.caption, 120)}
+        </Text>
+      </View>
+
+      {/* Row 2: Image */}
+      <View style={styles.imageSection}>
+        <Image
+          source={{ uri: post.images[0] }}
+          style={styles.image}
+          contentFit="cover"
+          transition={200}
+        />
+        <View style={styles.shopBadge}>
+          <ShoppingBag size={14} color="white" />
+        </View>
+      </View>
+
+      {/* Footer: Timestamp */}
+      <View style={styles.footer}>
+        <Text style={styles.timestamp}>{post.timestamp}</Text>
       </View>
     </View>
   );
@@ -95,20 +98,86 @@ export default function ShoppingPost({ post }: ShoppingPostProps) {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 12,
+    marginBottom: 16,
     borderRadius: 12,
     overflow: 'hidden',
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: Colors.light.border,
   },
-  contentRow: {
+  headerRow: {
+    padding: 12,
+    borderBottomWidth: 0.5,
+    borderBottomColor: Colors.light.border,
+  },
+  topLine: {
     flexDirection: 'row',
-    minHeight: 360,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  avatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    marginRight: 10,
+  },
+  userTextContainer: {
+    flex: 1,
+  },
+  username: {
+    color: Colors.light.text,
+    fontWeight: '600',
+    fontSize: 15,
+  },
+  location: {
+    fontSize: 12,
+    color: Colors.light.secondaryText,
+    marginTop: 2,
+  },
+  caption: {
+    fontSize: 14,
+    color: Colors.light.text,
+    lineHeight: 19,
+  },
+  stats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 16,
+  },
+  statText: {
+    color: Colors.light.text,
+    marginLeft: 6,
+    fontSize: 15,
+    fontWeight: '500',
+  },
+  shopButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.light.shopAccent,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+    marginLeft: 16,
+  },
+  shopButtonText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '600',
+    marginLeft: 4,
   },
   imageSection: {
-    width: '60%',
     position: 'relative',
+    width: '100%',
   },
   image: {
     width: '100%',
@@ -122,74 +191,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 4,
   },
-  infoSection: {
-    width: '40%',
-    padding: 12,
-    justifyContent: 'space-between',
-  },
-  userInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  avatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    marginRight: 8,
-  },
-  userTextContainer: {
-    flex: 1,
-  },
-  username: {
-    color: Colors.light.text,
-    fontWeight: '600',
-    fontSize: 14,
-  },
-  location: {
-    fontSize: 11,
-    color: Colors.light.secondaryText,
-    marginTop: 2,
-  },
-  caption: {
-    fontSize: 13,
-    color: Colors.light.text,
-    lineHeight: 18,
-    marginBottom: 8,
-  },
-  stats: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-    flexWrap: 'wrap',
-  },
-  statItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  statText: {
-    color: Colors.light.text,
-    marginLeft: 6,
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  shopButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.light.shopAccent,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  shopButtonText: {
-    color: 'white',
-    fontSize: 11,
-    fontWeight: '600',
-    marginLeft: 4,
+  footer: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   timestamp: {
-    fontSize: 11,
+    fontSize: 12,
     color: Colors.light.secondaryText,
   },
 });
