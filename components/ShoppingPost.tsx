@@ -104,14 +104,15 @@ const styles = StyleSheet.create({
   },
   contentRow: {
     flexDirection: 'row',
+    minHeight: 360,
   },
   imageSection: {
-    width: '50%',
+    width: '60%',
     position: 'relative',
   },
   image: {
     width: '100%',
-    height: 280,
+    height: 360,
   },
   shopBadge: {
     position: 'absolute',
@@ -122,7 +123,7 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   infoSection: {
-    width: '50%',
+    width: '40%',
     padding: 12,
     justifyContent: 'space-between',
   },

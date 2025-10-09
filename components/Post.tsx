@@ -50,62 +50,63 @@ export default function Post({ post }: PostProps) {
   return (
     <>
       <View style={styles.container}>
-        {/* User Info Header */}
-        <View style={styles.header}>
-          <Image
-            source={{ uri: post.user.avatar }}
-            style={styles.avatar}
-            contentFit="cover"
-          />
-          <View style={styles.userTextContainer}>
-            <Text style={styles.username}>{post.user.username}</Text>
-            {post.location && (
-              <Text style={styles.location}>{post.location}</Text>
-            )}
-          </View>
-        </View>
-
-        {/* Image Carousel with Double Tap */}
-        <View style={styles.imageContainer}>
-          <ImageCarousel
-            images={post.images}
-            onDoubleTap={handleDoubleTap}
-            onPress={handleImagePress}
-            width={CARD_WIDTH}
-            aspectRatio={post.aspectRatio}
-          />
-          <DoubleTapLike
-            visible={showLikeAnimation}
-            liked={liked}
-            onAnimationComplete={handleLikeAnimationComplete}
-          />
-        </View>
-
-        {/* Actions & Info */}
-        <View style={styles.footer}>
-          <View style={styles.actions}>
-            <TouchableOpacity style={styles.actionButton} onPress={handleLike}>
-              <Heart
-                size={24}
-                color={liked ? Colors.light.like : Colors.light.icon}
-                fill={liked ? Colors.light.like : 'transparent'}
+        <View style={styles.contentRow}>
+          {/* Left: Image */}
+          <View style={styles.imageSection}>
+            <View style={styles.imageWrapper}>
+              <ImageCarousel
+                images={post.images}
+                onDoubleTap={handleDoubleTap}
+                onPress={handleImagePress}
+                width={screenWidth * 0.6}
+                aspectRatio={post.aspectRatio}
               />
-              <Text style={styles.actionText}>{likes}</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.actionButton} onPress={handleImagePress}>
-              <MessageCircle size={24} color={Colors.light.icon} />
-              <Text style={styles.actionText}>{post.comments}</Text>
-            </TouchableOpacity>
+              <DoubleTapLike
+                visible={showLikeAnimation}
+                liked={liked}
+                onAnimationComplete={handleLikeAnimationComplete}
+              />
+            </View>
           </View>
 
-          <Text style={styles.caption} numberOfLines={2}>
-            <Text style={styles.captionUsername}>{post.user.username}</Text>
-            {' '}
-            {truncateText(post.caption)}
-          </Text>
+          {/* Right: User Info & Caption */}
+          <View style={styles.infoSection}>
+            <View style={styles.userInfo}>
+              <Image
+                source={{ uri: post.user.avatar }}
+                style={styles.avatar}
+                contentFit="cover"
+              />
+              <View style={styles.userTextContainer}>
+                <Text style={styles.username}>{post.user.username}</Text>
+                {post.location && (
+                  <Text style={styles.location}>{post.location}</Text>
+                )}
+              </View>
+            </View>
 
-          <Text style={styles.timestamp}>{post.timestamp}</Text>
+            <Text style={styles.caption} numberOfLines={3}>
+              {truncateText(post.caption)}
+            </Text>
+
+            <View style={styles.stats}>
+              <TouchableOpacity style={styles.statItem} onPress={handleLike}>
+                <Heart
+                  size={18}
+                  color={liked ? Colors.light.like : Colors.light.icon}
+                  fill={liked ? Colors.light.like : 'transparent'}
+                />
+                <Text style={styles.statText}>{likes}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.statItem} onPress={handleImagePress}>
+                <MessageCircle size={18} color={Colors.light.icon} />
+                <Text style={styles.statText}>{post.comments}</Text>
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.timestamp}>{post.timestamp}</Text>
+          </View>
         </View>
       </View>
 
@@ -120,23 +121,39 @@ export default function Post({ post }: PostProps) {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
+    marginBottom: 12,
     borderRadius: 12,
     overflow: 'hidden',
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: Colors.light.border,
   },
-  header: {
+  contentRow: {
+    flexDirection: 'row',
+    minHeight: 360,
+  },
+  imageSection: {
+    width: '60%',
+  },
+  imageWrapper: {
+    position: 'relative',
+    width: '100%',
+  },
+  infoSection: {
+    width: '40%',
+    padding: 12,
+    justifyContent: 'space-between',
+  },
+  userInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
+    marginBottom: 8,
   },
   avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    marginRight: 10,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    marginRight: 8,
   },
   userTextContainer: {
     flex: 1,
@@ -144,46 +161,38 @@ const styles = StyleSheet.create({
   username: {
     color: Colors.light.text,
     fontWeight: '600',
-    fontSize: 15,
+    fontSize: 14,
   },
   location: {
-    fontSize: 12,
+    fontSize: 11,
     color: Colors.light.secondaryText,
     marginTop: 2,
   },
-  imageContainer: {
-    position: 'relative',
+  caption: {
+    fontSize: 13,
+    color: Colors.light.text,
+    lineHeight: 18,
+    marginBottom: 8,
   },
-  footer: {
-    padding: 12,
-  },
-  actions: {
+  stats: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
+    flexWrap: 'wrap',
   },
-  actionButton: {
+  statItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 16,
+    marginRight: 12,
   },
-  actionText: {
+  statText: {
     color: Colors.light.text,
     marginLeft: 6,
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '500',
   },
-  caption: {
-    fontSize: 14,
-    color: Colors.light.text,
-    lineHeight: 20,
-    marginBottom: 6,
-  },
-  captionUsername: {
-    fontWeight: '600',
-  },
   timestamp: {
-    fontSize: 12,
+    fontSize: 11,
     color: Colors.light.secondaryText,
   },
 });
