@@ -107,8 +107,8 @@ export const dressUpModes: DressUpMode[] = [
 ];
 
 export const sizeOptions = [
-  { value: 'tight' as SizeOption, label: 'ぴちぴち', emoji: '🔴' },
-  { value: 'just' as SizeOption, label: 'ジャスト', emoji: '🟡' },
-  { value: 'relaxed' as SizeOption, label: 'すこしゆったり', emoji: '🟢' },
+  { value: 'tight' as SizeOption, label: 'タイト', emoji: '🔴' },
+  { value: 'just' as SizeOption, label: '普通', emoji: '🟡' },
+  { value: 'relaxed' as SizeOption, label: '少しゆったり', emoji: '🟢' },
   { value: 'oversize' as SizeOption, label: 'オーバーサイズ', emoji: '🔵' },
 ];

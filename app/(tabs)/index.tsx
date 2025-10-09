@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { FlatList, StyleSheet, View, Text, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
+import { FlatList, StyleSheet, View, Text, TouchableOpacity, Dimensions, ScrollView, Animated, NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Minus, Plus, Trash2, Circle } from 'lucide-react-native';
@@ -35,10 +35,15 @@ export default function FeedScreen() {
   const [showCart, setShowCart] = useState(false);
   const [showPhotoGallery, setShowPhotoGallery] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
+
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { items: cartItems, updateQuantity, removeItem, getTotalPrice } = useCartStore();
+
+  // Header animation state
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const lastScrollY = useRef(0);
+  const headerTranslateY = useRef(new Animated.Value(0)).current;
   
   // Create a combined array of posts and shopping posts
   const combinedPosts: CombinedPostType[] = [...posts, ...shoppingPosts].sort(() => Math.random() - 0.5);
@@ -117,6 +122,33 @@ export default function FeedScreen() {
   const handleRemoveItem = (itemId: string) => {
     removeItem(itemId);
   };
+
+  // Handle scroll events for header animation
+  const handleScroll = Animated.event(
+    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+    {
+      useNativeDriver: true,
+      listener: (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const currentScrollY = event.nativeEvent.contentOffset.y;
+        const diff = currentScrollY - lastScrollY.current;
+
+        // Only animate if scroll distance is significant enough
+        if (Math.abs(diff) > 2) {
+          if (diff > 0 && currentScrollY > 30) {
+            // Scrolling down - hide header instantly
+            headerTranslateY.setValue(-100);
+          } else if (diff < 0) {
+            // Scrolling up - show header instantly
+            headerTranslateY.setValue(0);
+          }
+          lastScrollY.current = currentScrollY;
+        }
+      },
+    }
+  );
+
+  // Create Animated FlatList component
+  const AnimatedFlatList = Animated.FlatList;
 
   const renderCartItem = ({ item, index }: { item: CartItem; index: number }) => {
     return (
@@ -219,12 +251,27 @@ export default function FeedScreen() {
 
   return (
     <View style={styles.container}>
-      <FeedHeader onMenuPress={handleMenuPress} />
+      <Animated.View
+        style={[
+          styles.headerContainer,
+          {
+            transform: [{ translateY: headerTranslateY }],
+          },
+        ]}
+      >
+        <FeedHeader onMenuPress={handleMenuPress} />
+      </Animated.View>
 
-      <FlatList
+      <AnimatedFlatList
         key="main-feed"
         data={postsWithRecommendations}
         keyExtractor={(item) => item.id}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        contentContainerStyle={[
+          styles.listContent,
+          { paddingTop: Math.max(insets.top + 8, 16) + 48 } // Header height + safe area
+        ]}
         renderItem={({ item }) => {
           // Check if this is a recommendation card
           if ('isRecommendation' in item) {
@@ -254,7 +301,6 @@ export default function FeedScreen() {
           }
         }}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
         ListHeaderComponent={
           activeStreams.length > 0 ? (
             <View style={styles.fullWidthLiveSection}>
@@ -272,6 +318,14 @@ export default function FeedScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.light.background,
+  },
+  headerContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
     backgroundColor: Colors.light.background,
   },
   listContent: {
