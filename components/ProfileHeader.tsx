@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
-import { Menu, Settings, QrCode, UserPlus } from 'lucide-react-native';
+import { Menu, QrCode, UserPlus } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import Colors from '@/constants/colors';
 
@@ -21,10 +21,6 @@ export default function ProfileHeader({
   onMenuPress,
 }: ProfileHeaderProps) {
   const router = useRouter();
-
-  const handleSettingsPress = () => {
-    router.push('/settings');
-  };
 
   const handleQRCodePress = () => {
     router.push('/qrcode');
@@ -54,10 +50,6 @@ export default function ProfileHeader({
             <Text style={styles.bio}>{bio}</Text>
           </View>
         </View>
-
-        <TouchableOpacity onPress={handleSettingsPress} style={styles.settingsButton}>
-          <Settings size={24} color={Colors.light.icon} />
-        </TouchableOpacity>
       </View>
 
       <View style={styles.actionRow}>
@@ -126,10 +118,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: Colors.light.secondaryText,
     lineHeight: 18,
-  },
-  settingsButton: {
-    padding: 8,
-    marginLeft: 4,
   },
   actionRow: {
     flexDirection: 'row',

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Linking } from 'react-native';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { Image } from 'expo-image';
-import { ChevronLeft, Heart, Share2, Star, ShoppingBag, Plus, Minus } from 'lucide-react-native';
+import { ChevronLeft, Heart, Share2, Star, ShoppingBag, Plus, Minus, ExternalLink } from 'lucide-react-native';
 import { products } from '@/mocks/products';
 import { useCartStore } from '@/store/cartStore';
 import Colors from '@/constants/colors';
@@ -50,6 +50,22 @@ export default function ProductDetailScreen() {
     addToCart(product, quantity);
     if (Platform.OS !== 'web') {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
+  };
+
+  const handleGoToExternalSite = async () => {
+    if (product.externalUrl) {
+      try {
+        const supported = await Linking.canOpenURL(product.externalUrl);
+        if (supported) {
+          await Linking.openURL(product.externalUrl);
+          if (Platform.OS !== 'web') {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to open URL:', error);
+      }
     }
   };
 
@@ -193,7 +209,31 @@ export default function ProductDetailScreen() {
             <Text style={styles.sectionTitle}>Description</Text>
             <Text style={styles.description}>{product.description}</Text>
           </View>
-          
+
+          {/* Shop & Brand Info */}
+          <View style={styles.shopBrandContainer}>
+            <Text style={styles.sectionTitle}>ショップ・ブランド情報</Text>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>ショップ:</Text>
+              <Text style={styles.infoValue}>{product.shopName}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>ブランド:</Text>
+              <Text style={styles.infoValue}>{product.brand}</Text>
+            </View>
+
+            {/* External Site Button */}
+            {product.isExternal && product.externalUrl && (
+              <TouchableOpacity
+                style={styles.externalLinkButton}
+                onPress={handleGoToExternalSite}
+              >
+                <ExternalLink size={20} color="white" />
+                <Text style={styles.externalLinkText}>ECサイトで購入する</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+
           {/* Tags */}
           <View style={styles.tagsContainer}>
             <Text style={styles.sectionTitle}>Tags</Text>
@@ -380,6 +420,44 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     color: Colors.light.text,
+  },
+  shopBrandContainer: {
+    marginBottom: 20,
+    padding: 16,
+    backgroundColor: Colors.light.shopBackground,
+    borderRadius: 12,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  infoLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.light.secondaryText,
+    width: 80,
+  },
+  infoValue: {
+    fontSize: 14,
+    color: Colors.light.text,
+    flex: 1,
+  },
+  externalLinkButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.light.shopAccent,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginTop: 12,
+  },
+  externalLinkText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
   },
   tagsContainer: {
     marginBottom: 20,

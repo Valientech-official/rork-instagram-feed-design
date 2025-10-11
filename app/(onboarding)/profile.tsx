@@ -11,8 +11,8 @@ import {
   Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ChevronLeft } from 'lucide-react-native';
 import { useAuthStore } from '../../store/authStore';
+import OnboardingHeader from '../../components/onboarding/OnboardingHeader';
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -44,18 +44,17 @@ export default function ProfileScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <OnboardingHeader
+        currentStep={2}
+        totalSteps={7}
+        title="プロフィール情報"
+        onBack={() => router.back()}
+      />
       <KeyboardAvoidingView
-        style={styles.container}
+        style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()}>
-            <ChevronLeft size={24} color="#000" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>プロフィール情報</Text>
-          <View style={{ width: 24 }} />
-        </View>
 
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           <Text style={styles.label}>ユーザー名 *</Text>
@@ -114,7 +113,7 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -123,18 +122,8 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
-  },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: '600',
+  flex: {
+    flex: 1,
   },
   content: {
     flex: 1,

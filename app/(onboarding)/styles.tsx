@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ChevronLeft } from 'lucide-react-native';
 import { useAuthStore } from '../../store/authStore';
+import OnboardingHeader from '../../components/onboarding/OnboardingHeader';
 import StyleSelector from '../../components/onboarding/StyleSelector';
 import { FASHION_STYLES } from '../../mocks/onboardingData';
 
@@ -21,14 +21,13 @@ export default function StylesScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <ChevronLeft size={24} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>好きな服を選ぼう</Text>
-        <View style={{ width: 24 }} />
-      </View>
+    <View style={styles.container}>
+      <OnboardingHeader
+        currentStep={4}
+        totalSteps={7}
+        title="好きな服を選ぼう"
+        onBack={() => router.back()}
+      />
 
       <View style={styles.content}>
         <Text style={styles.instruction}>
@@ -49,8 +48,8 @@ export default function StylesScreen() {
         >
           <Text style={styles.buttonText}>次へ ({selectedStyles.length}個選択)</Text>
         </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 }
 
@@ -58,19 +57,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
-  },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: '600',
   },
   content: {
     flex: 1,

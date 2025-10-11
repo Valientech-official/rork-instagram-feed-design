@@ -9,8 +9,9 @@ import {
   ScrollView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ChevronLeft, Instagram, Twitter } from 'lucide-react-native';
+import { Instagram, Twitter } from 'lucide-react-native';
 import { useAuthStore } from '../../store/authStore';
+import OnboardingHeader from '../../components/onboarding/OnboardingHeader';
 
 export default function SocialScreen() {
   const router = useRouter();
@@ -39,16 +40,14 @@ export default function SocialScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <ChevronLeft size={24} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>SNSリンク</Text>
-        <TouchableOpacity onPress={handleSkip}>
-          <Text style={styles.skipText}>スキップ</Text>
-        </TouchableOpacity>
-      </View>
+    <View style={styles.container}>
+      <OnboardingHeader
+        currentStep={7}
+        totalSteps={7}
+        title="SNSリンク"
+        onBack={() => router.back()}
+        onSkip={handleSkip}
+      />
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <Text style={styles.instruction}>
@@ -118,8 +117,8 @@ export default function SocialScreen() {
         <TouchableOpacity style={styles.button} onPress={handleComplete}>
           <Text style={styles.buttonText}>完了してアプリを始める</Text>
         </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 }
 
@@ -127,23 +126,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
-  },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  skipText: {
-    fontSize: 14,
-    color: '#666',
   },
   content: {
     flex: 1,

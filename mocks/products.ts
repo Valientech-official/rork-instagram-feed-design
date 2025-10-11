@@ -18,6 +18,12 @@ export interface Product {
     avatar: string;
     verified: boolean;
   };
+  // ショップ・ブランド情報
+  shopName: string;
+  brand: string;
+  // 外部ECサイト連携
+  isExternal: boolean;
+  externalUrl?: string;
 }
 
 export const products: Product[] = [
@@ -44,7 +50,11 @@ export const products: Product[] = [
       username: "janedoe",
       avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80",
       verified: true
-    }
+    },
+    shopName: "ZOZOTOWN",
+    brand: "UNITED ARROWS",
+    isExternal: true,
+    externalUrl: "https://zozo.jp/shop/unitedarrows/goods/12345678/"
   },
   {
     id: "p2",
@@ -66,7 +76,11 @@ export const products: Product[] = [
       username: "traveler",
       avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80",
       verified: true
-    }
+    },
+    shopName: "ABC-MART",
+    brand: "NIKE",
+    isExternal: true,
+    externalUrl: "https://www.abc-mart.net/shop/g/g5555555/"
   },
   {
     id: "p3",
@@ -89,7 +103,11 @@ export const products: Product[] = [
       username: "foodie",
       avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80",
       verified: false
-    }
+    },
+    shopName: "楽天ファッション",
+    brand: "URBAN RESEARCH",
+    isExternal: true,
+    externalUrl: "https://brandavenue.rakuten.co.jp/item/ABC123/"
   },
   {
     id: "p4",
@@ -112,7 +130,11 @@ export const products: Product[] = [
       username: "fitnessguru",
       avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80",
       verified: true
-    }
+    },
+    shopName: "BUYMA",
+    brand: "COACH",
+    isExternal: true,
+    externalUrl: "https://www.buyma.com/item/12345678/"
   },
   {
     id: "p5",
@@ -134,7 +156,11 @@ export const products: Product[] = [
       username: "janedoe",
       avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80",
       verified: true
-    }
+    },
+    shopName: "ZOZOTOWN",
+    brand: "Levi's",
+    isExternal: true,
+    externalUrl: "https://zozo.jp/shop/levis/goods/87654321/"
   },
   {
     id: "p6",
@@ -157,7 +183,11 @@ export const products: Product[] = [
       username: "traveler",
       avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80",
       verified: true
-    }
+    },
+    shopName: "4℃ Online Shop",
+    brand: "4℃",
+    isExternal: true,
+    externalUrl: "https://www.fdcp.co.jp/4c-jewelry/item/111111111/"
   },
   {
     id: "p7",
@@ -179,7 +209,11 @@ export const products: Product[] = [
       username: "stylishguy",
       avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80",
       verified: true
-    }
+    },
+    shopName: "ユニクロオンラインストア",
+    brand: "UNIQLO",
+    isExternal: true,
+    externalUrl: "https://www.uniqlo.com/jp/ja/products/E123456-000"
   },
   {
     id: "p8",
@@ -202,7 +236,11 @@ export const products: Product[] = [
       username: "stylishguy",
       avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80",
       verified: true
-    }
+    },
+    shopName: "GU オンラインストア",
+    brand: "GU",
+    isExternal: true,
+    externalUrl: "https://www.gu-global.com/jp/ja/products/E987654-000"
   },
   {
     id: "p9",
@@ -224,7 +262,11 @@ export const products: Product[] = [
       username: "cozystyle",
       avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80",
       verified: false
-    }
+    },
+    shopName: "無印良品 公式ストア",
+    brand: "MUJI",
+    isExternal: true,
+    externalUrl: "https://www.muji.com/jp/ja/store/cmdty/detail/4550344012345"
   },
   {
     id: "p10",
@@ -248,7 +290,11 @@ export const products: Product[] = [
       username: "businesspro",
       avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80",
       verified: true
-    }
+    },
+    shopName: "AOKI公式通販",
+    brand: "AOKI",
+    isExternal: true,
+    externalUrl: "https://www.aoki-style.com/shop/g/g123456789/"
   },
   {
     id: "p11",
@@ -270,7 +316,11 @@ export const products: Product[] = [
       username: "fitnessguru",
       avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80",
       verified: true
-    }
+    },
+    shopName: "adidas公式オンラインショップ",
+    brand: "adidas",
+    isExternal: true,
+    externalUrl: "https://shop.adidas.jp/products/ABC123/"
   },
   {
     id: "p12",
@@ -292,6 +342,10 @@ export const products: Product[] = [
       username: "vintagelover",
       avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80",
       verified: false
-    }
+    },
+    shopName: "メルカリShops",
+    brand: "Vintage Select",
+    isExternal: false,
+    externalUrl: undefined
   }
 ];

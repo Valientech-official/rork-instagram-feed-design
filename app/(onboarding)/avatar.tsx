@@ -4,12 +4,12 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   ScrollView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ChevronLeft, Sparkles, Camera } from 'lucide-react-native';
+import { Sparkles, Camera } from 'lucide-react-native';
 import { useAuthStore } from '../../store/authStore';
+import OnboardingHeader from '../../components/onboarding/OnboardingHeader';
 
 export default function AvatarScreen() {
   const router = useRouter();
@@ -30,16 +30,14 @@ export default function AvatarScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <ChevronLeft size={24} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>アバター作成</Text>
-        <TouchableOpacity onPress={handleSkip}>
-          <Text style={styles.skipText}>スキップ</Text>
-        </TouchableOpacity>
-      </View>
+    <View style={styles.container}>
+      <OnboardingHeader
+        currentStep={3}
+        totalSteps={7}
+        title="アバター作成"
+        onBack={() => router.back()}
+        onSkip={handleSkip}
+      />
 
       <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
         <View style={styles.aiSection}>
@@ -75,7 +73,7 @@ export default function AvatarScreen() {
 
         <Text style={styles.laterText}>後で設定することもできます</Text>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -103,23 +101,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E5E5',
-  },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  skipText: {
-    fontSize: 14,
-    color: '#666',
   },
   content: {
     flex: 1,

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   Dimensions,
   ScrollView,
   TouchableWithoutFeedback,
+  Switch,
 } from 'react-native';
 import {
   User,
@@ -20,6 +21,12 @@ import {
   LogOut,
   ChevronRight,
   X,
+  Moon,
+  Globe,
+  Volume2,
+  Mail,
+  Phone,
+  Database,
 } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { Image } from 'expo-image';
@@ -42,6 +49,14 @@ interface MenuItem {
   subtitle?: string;
   route?: string;
   action?: () => void;
+  toggle?: boolean;
+  value?: any;
+  onChange?: (value: any) => void;
+}
+
+interface MenuSection {
+  title?: string;
+  items: MenuItem[];
 }
 
 export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
@@ -50,6 +65,9 @@ export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
   const { logout } = useAuthStore();
   const translateX = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
   const opacity = useRef(new Animated.Value(0)).current;
+
+  const [darkMode, setDarkMode] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
 
   useEffect(() => {
     if (visible) {
@@ -81,64 +99,121 @@ export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
     }
   }, [visible]);
 
-  const menuItems: MenuItem[] = [
+  const menuSections: MenuSection[] = [
     {
-      id: 'profile',
-      icon: User,
-      title: 'プロフィール編集',
-      subtitle: '@username',
-      route: '/profile',
+      title: 'アカウント',
+      items: [
+        {
+          id: 'profile',
+          icon: User,
+          title: 'プロフィール編集',
+          subtitle: '@username',
+          route: '/profile',
+        },
+        {
+          id: 'email',
+          icon: Mail,
+          title: 'メールアドレス',
+          subtitle: 'user@example.com',
+        },
+        {
+          id: 'phone',
+          icon: Phone,
+          title: '電話番号',
+          subtitle: '設定なし',
+        },
+      ],
     },
     {
-      id: 'settings',
-      icon: Settings,
-      title: '設定',
-      subtitle: 'アカウント・表示設定',
-      route: '/settings',
+      title: '表示設定',
+      items: [
+        {
+          id: 'darkmode',
+          icon: Moon,
+          title: 'ダークモード',
+          toggle: true,
+          value: darkMode,
+          onChange: setDarkMode,
+        },
+        {
+          id: 'language',
+          icon: Globe,
+          title: '言語',
+          subtitle: '日本語',
+        },
+        {
+          id: 'sound',
+          icon: Volume2,
+          title: 'サウンド',
+          toggle: true,
+          value: soundEnabled,
+          onChange: setSoundEnabled,
+        },
+      ],
     },
     {
-      id: 'notification',
-      icon: Bell,
-      title: '通知設定',
-      subtitle: 'プッシュ通知の管理',
-      route: '/settings/notification',
+      title: 'プライバシー・セキュリティ',
+      items: [
+        {
+          id: 'notification',
+          icon: Bell,
+          title: '通知設定',
+          subtitle: 'プッシュ通知の管理',
+          route: '/settings/notification',
+        },
+        {
+          id: 'security',
+          icon: Shield,
+          title: 'セキュリティ',
+          subtitle: 'パスワード・認証設定',
+          route: '/settings/security',
+        },
+        {
+          id: 'privacy',
+          icon: Lock,
+          title: 'プライバシー',
+          subtitle: 'アカウント公開設定',
+          route: '/settings/privacy',
+        },
+      ],
     },
     {
-      id: 'security',
-      icon: Shield,
-      title: 'セキュリティ',
-      subtitle: 'パスワード・認証設定',
-      route: '/settings/security',
+      title: 'その他',
+      items: [
+        {
+          id: 'data',
+          icon: Database,
+          title: 'データ使用量',
+          subtitle: '1.2 GB',
+        },
+        {
+          id: 'help',
+          icon: HelpCircle,
+          title: 'ヘルプ',
+          subtitle: 'よくある質問・お問い合わせ',
+          route: '/settings/help',
+        },
+        {
+          id: 'terms',
+          icon: FileText,
+          title: '利用規約',
+          subtitle: '利用規約・プライバシーポリシー',
+          action: () => console.log('Open terms'),
+        },
+      ],
     },
     {
-      id: 'privacy',
-      icon: Lock,
-      title: 'プライバシー',
-      subtitle: 'アカウント公開設定',
-      route: '/settings/privacy',
-    },
-    {
-      id: 'help',
-      icon: HelpCircle,
-      title: 'ヘルプ',
-      subtitle: 'よくある質問・お問い合わせ',
-      route: '/settings/help',
-    },
-    {
-      id: 'terms',
-      icon: FileText,
-      title: '利用規約',
-      subtitle: '利用規約・プライバシーポリシー',
-      action: () => console.log('Open terms'),
-    },
-    {
-      id: 'logout',
-      icon: LogOut,
-      title: 'ログアウト',
-      action: async () => {
-        await logout();
-        router.replace('/(auth)/login');
-      },
+      items: [
+        {
+          id: 'logout',
+          icon: LogOut,
+          title: 'ログアウト',
+          action: async () => {
+            await logout();
+            router.replace('/(auth)/login');
+          },
+        },
+      ],
     },
   ];
 
@@ -194,38 +269,52 @@ export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
         </View>
 
         <ScrollView style={styles.menuContainer} showsVerticalScrollIndicator={false}>
-          {menuItems.map((item, index) => {
-            const Icon = item.icon;
-            const isLogout = item.id === 'logout';
-            const isLastBeforeLogout = index === menuItems.length - 2;
+          {menuSections.map((section, sectionIndex) => (
+            <View key={sectionIndex}>
+              {section.title && (
+                <Text style={styles.sectionTitle}>{section.title}</Text>
+              )}
+              {section.items.map((item) => {
+                const Icon = item.icon;
+                const isLogout = item.id === 'logout';
 
-            return (
-              <View key={item.id}>
-                <TouchableOpacity
-                  style={[styles.menuItem, isLogout && styles.logoutItem]}
-                  onPress={() => handleMenuPress(item)}
-                  activeOpacity={0.7}
-                >
-                  <Icon
-                    size={24}
-                    color={isLogout ? Colors.light.shopSale : Colors.light.icon}
-                  />
-                  <View style={styles.menuTextContainer}>
-                    <Text style={[styles.menuTitle, isLogout && styles.logoutText]}>
-                      {item.title}
-                    </Text>
-                    {item.subtitle && (
-                      <Text style={styles.menuSubtitle}>{item.subtitle}</Text>
+                return (
+                  <TouchableOpacity
+                    key={item.id}
+                    style={[styles.menuItem, isLogout && styles.logoutItem]}
+                    onPress={() => !item.toggle && handleMenuPress(item)}
+                    activeOpacity={item.toggle ? 1 : 0.7}
+                    disabled={item.toggle}
+                  >
+                    <Icon
+                      size={24}
+                      color={isLogout ? Colors.light.shopSale : Colors.light.icon}
+                    />
+                    <View style={styles.menuTextContainer}>
+                      <Text style={[styles.menuTitle, isLogout && styles.logoutText]}>
+                        {item.title}
+                      </Text>
+                      {item.subtitle && (
+                        <Text style={styles.menuSubtitle}>{item.subtitle}</Text>
+                      )}
+                    </View>
+                    {item.toggle ? (
+                      <Switch
+                        value={item.value}
+                        onValueChange={item.onChange}
+                        trackColor={{ false: Colors.light.border, true: Colors.light.primary }}
+                      />
+                    ) : !isLogout && (
+                      <ChevronRight size={20} color={Colors.light.secondaryText} />
                     )}
-                  </View>
-                  {!isLogout && (
-                    <ChevronRight size={20} color={Colors.light.secondaryText} />
-                  )}
-                </TouchableOpacity>
-                {isLastBeforeLogout && <View style={styles.separator} />}
-              </View>
-            );
-          })}
+                  </TouchableOpacity>
+                );
+              })}
+              {sectionIndex < menuSections.length - 1 && (
+                <View style={styles.sectionSeparator} />
+              )}
+            </View>
+          ))}
 
           <View style={styles.footer}>
             <Text style={styles.version}>Version 1.0.0</Text>
@@ -294,6 +383,18 @@ const styles = StyleSheet.create({
   menuContainer: {
     flex: 1,
   },
+  sectionTitle: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: Colors.light.secondaryText,
+    marginLeft: 20,
+    marginTop: 20,
+    marginBottom: 8,
+    textTransform: 'uppercase',
+  },
+  sectionSeparator: {
+    height: 8,
+  },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -312,12 +413,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.light.secondaryText,
     marginTop: 2,
-  },
-  separator: {
-    height: 0.5,
-    backgroundColor: Colors.light.border,
-    marginHorizontal: 20,
-    marginVertical: 8,
   },
   logoutItem: {
     marginTop: 8,

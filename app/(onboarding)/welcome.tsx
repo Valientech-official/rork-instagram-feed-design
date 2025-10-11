@@ -10,14 +10,17 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuthStore } from '../../store/authStore';
 import { WELCOME_IMAGES } from '../../mocks/onboardingData';
+import OnboardingProgress from '../../components/onboarding/OnboardingProgress';
 
 const { width } = Dimensions.get('window');
 const IMAGE_SIZE = (width - 48) / 2;
 
 export default function WelcomeScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { updateOnboardingStep } = useAuthStore();
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
@@ -35,7 +38,10 @@ export default function WelcomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
+      <View style={[styles.progressWrapper, { paddingTop: insets.top }]}>
+        <OnboardingProgress currentStep={1} totalSteps={7} />
+      </View>
       <View style={styles.content}>
         <View style={styles.header}>
           <Text style={styles.title}>ぴーすへようこそ</Text>
@@ -55,12 +61,12 @@ export default function WelcomeScreen() {
         </View>
       </View>
 
-      <View style={styles.footer}>
+      <SafeAreaView style={styles.footer}>
         <TouchableOpacity style={styles.button} onPress={handleNext}>
           <Text style={styles.buttonText}>始める</Text>
         </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 }
 
@@ -68,6 +74,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  progressWrapper: {
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
   },
   content: {
     flex: 1,
