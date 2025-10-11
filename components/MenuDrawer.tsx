@@ -25,6 +25,7 @@ import { useRouter } from 'expo-router';
 import { Image } from 'expo-image';
 import Colors from '@/constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useAuthStore } from '@/store/authStore';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const DRAWER_WIDTH = SCREEN_WIDTH * 0.8;
@@ -46,6 +47,7 @@ interface MenuItem {
 export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { logout } = useAuthStore();
   const translateX = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
@@ -133,7 +135,10 @@ export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
       id: 'logout',
       icon: LogOut,
       title: 'ログアウト',
-      action: () => console.log('Logout'),
+      action: async () => {
+        await logout();
+        router.replace('/(auth)/login');
+      },
     },
   ];
 

@@ -7,7 +7,7 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export const unstable_settings = {
-  initialRouteName: "(tabs)",
+  initialRouteName: "(auth)",
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -48,6 +48,8 @@ function RootLayoutNav() {
           headerBackTitle: "Back",
         }}
       >
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(onboarding)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: "modal" }} />
         <Stack.Screen name="product/[id]" options={{ title: "Product Details" }} />
