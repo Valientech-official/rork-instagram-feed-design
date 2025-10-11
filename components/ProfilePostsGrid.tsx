@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { Play } from 'lucide-react-native';
+import { Play, Heart, MessageCircle } from 'lucide-react-native';
 import { ProfilePost } from '@/mocks/profilePosts';
 import { useFavoritesStore } from '@/store/favoritesStore';
 import Colors from '@/constants/colors';
@@ -28,7 +28,7 @@ export default function ProfilePostsGrid({ posts }: ProfilePostsGridProps) {
 
   const renderPost = ({ item }: { item: ProfilePost }) => {
     return (
-      <TouchableOpacity 
+      <TouchableOpacity
         style={styles.postItem}
         onPress={() => handlePostPress(item.id)}
         activeOpacity={0.9}
@@ -43,6 +43,16 @@ export default function ProfilePostsGrid({ posts }: ProfilePostsGridProps) {
             <Play size={16} color="white" fill="white" />
           </View>
         )}
+        <View style={styles.statsOverlay}>
+          <View style={styles.statItem}>
+            <Heart size={12} color="white" fill="white" />
+            <Text style={styles.statText}>{item.likes}</Text>
+          </View>
+          <View style={styles.statItem}>
+            <MessageCircle size={12} color="white" fill="white" />
+            <Text style={styles.statText}>{item.comments}</Text>
+          </View>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -105,5 +115,27 @@ const styles = StyleSheet.create({
     height: 24,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  statsOverlay: {
+    position: 'absolute',
+    bottom: 4,
+    left: 4,
+    right: 4,
+    flexDirection: 'row',
+    gap: 8,
+  },
+  statItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 10,
+  },
+  statText: {
+    color: 'white',
+    fontSize: 10,
+    fontWeight: '600',
   },
 });

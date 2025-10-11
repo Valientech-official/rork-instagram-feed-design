@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
-import { Menu } from 'lucide-react-native';
+import React, { useState, useRef } from 'react';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import Colors from '@/constants/colors';
+import ProfileHeader from '@/components/ProfileHeader';
+import ProfileStatsRow from '@/components/ProfileStatsRow';
 import ProfileIconRow from '@/components/ProfileIconRow';
 import ProfileStylesSection from '@/components/ProfileStylesSection';
 import ProfileFavoritesSection from '@/components/ProfileFavoritesSection';
@@ -16,46 +17,59 @@ import MenuDrawer from '@/components/MenuDrawer';
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const scrollViewRef = useRef<ScrollView>(null);
+  const postsLayoutY = useRef(0);
+
+  const handlePostsPress = () => {
+    scrollViewRef.current?.scrollTo({
+      y: postsLayoutY.current,
+      animated: true,
+    });
+  };
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <ScrollView
+        ref={scrollViewRef}
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.header}>
-          <Image
-            source={{ uri: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80" }}
-            style={styles.profileImage}
-          />
-          <View style={styles.userInfo}>
-            <Text style={styles.username}>username</Text>
-            <Text style={styles.bio}>This is a sample bio. Edit your profile to change this text.</Text>
-          </View>
-          <TouchableOpacity
-            style={styles.menuButton}
-            onPress={() => setIsMenuOpen(true)}
-          >
-            <Menu size={24} color={Colors.light.icon} />
-          </TouchableOpacity>
-        </View>
-        
+        <ProfileHeader
+          name="山田 太郎"
+          username="yamada_taro"
+          bio="ファッション好きです。コーディネートを楽しんでいます！"
+          profileImageUrl="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80"
+          onMenuPress={() => setIsMenuOpen(true)}
+        />
+
+        <ProfileStatsRow
+          postsCount={profilePosts.length}
+          wavesCount={42}
+          followersCount={1234}
+          followingCount={567}
+          onPostsPress={handlePostsPress}
+        />
+
         <ProfileIconRow />
-        
+
         <ProfileStylesSection />
-        
+
         <ProfileFavoritesSection />
-        
+
         <ProfileSocialAccountsSection />
-        
+
         <ProfileManagementIcons />
-        
-        {/* Room Icons Section */}
+
         <ProfileRoomsSection />
-        
-        {/* Posts Grid Section */}
-        <ProfilePostsGrid posts={profilePosts} />
+
+        <View
+          onLayout={(event) => {
+            postsLayoutY.current = event.nativeEvent.layout.y;
+          }}
+        >
+          <ProfilePostsGrid posts={profilePosts} />
+        </View>
       </ScrollView>
 
       <MenuDrawer
@@ -76,55 +90,5 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-  },
-  header: {
-    padding: 12,
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    position: 'relative',
-  },
-  profileImage: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-  },
-  userInfo: {
-    marginLeft: 12,
-    flex: 1,
-  },
-  username: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.light.text,
-    marginBottom: 2,
-  },
-  bio: {
-    fontSize: 13,
-    color: Colors.light.secondaryText,
-    lineHeight: 18,
-  },
-  content: {
-    padding: 12,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.light.text,
-    marginBottom: 12,
-  },
-  emptyState: {
-    padding: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyStateText: {
-    fontSize: 14,
-    color: Colors.light.secondaryText,
-  },
-  menuButton: {
-    padding: 8,
-    position: 'absolute',
-    right: 12,
-    top: 12,
   },
 });

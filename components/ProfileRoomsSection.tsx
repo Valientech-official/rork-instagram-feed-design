@@ -1,28 +1,28 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
-import { DoorOpen, Users } from 'lucide-react-native';
+import { DoorOpen, FileText } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import Colors from '@/constants/colors';
 
 interface RoomItem {
   id: string;
   name: string;
-  members: number;
+  postsCount: number;
   isLive: boolean;
 }
 
 const rooms: RoomItem[] = [
-  { id: '1', name: 'コーデQ&A Room', members: 24, isLive: true },
-  { id: '2', name: '全身コーデRoom', members: 56, isLive: false },
-  { id: '3', name: 'ペアルックRoom', members: 12, isLive: true },
-  { id: '4', name: 'シチュエーションRoom', members: 8, isLive: false },
-  { id: '5', name: 'オススメALL Room', members: 32, isLive: true },
-  { id: '6', name: 'NextトレンドRoom', members: 18, isLive: false },
+  { id: '1', name: 'コーデQ&A Room', postsCount: 124, isLive: true },
+  { id: '2', name: '全身コーデRoom', postsCount: 256, isLive: false },
+  { id: '3', name: 'ペアルックRoom', postsCount: 89, isLive: true },
+  { id: '4', name: 'シチュエーションRoom', postsCount: 45, isLive: false },
+  { id: '5', name: 'オススメALL Room', postsCount: 312, isLive: true },
+  { id: '6', name: 'NextトレンドRoom', postsCount: 178, isLive: false },
 ];
 
 const { width } = Dimensions.get('window');
-// Calculate item width for 2 columns with space-between
-const ITEM_WIDTH = (width - 48) / 2; // Adjusted to make cards slightly narrower
+// Calculate item width for 2 columns with narrower layout
+const ITEM_WIDTH = (width - 56) / 2; // More narrow spacing
 
 export default function ProfileRoomsSection() {
   const router = useRouter();
@@ -55,25 +55,25 @@ export default function ProfileRoomsSection() {
       rows.push(
         <View key={`row-${i}`} style={styles.row}>
           {rowItems.map((room) => (
-            <TouchableOpacity 
-              key={room.id} 
+            <TouchableOpacity
+              key={room.id}
               style={styles.roomItem}
               onPress={() => handleRoomPress(room.id)}
             >
               <View style={styles.roomContent}>
                 <View style={styles.iconContainer}>
-                  <DoorOpen 
-                    size={16} 
-                    color={room.name === 'コーデQ&A Room' ? '#9ACD32' : room.name === '全身コーデRoom' ? '#FF69B4' : room.name === 'ペアルックRoom' ? '#87CEEB' : room.name === 'シチュエーションRoom' ? '#FFD700' : room.name === 'オススメALL Room' ? '#DDA0DD' : room.name === 'NextトレンドRoom' ? '#D2B48C' : Colors.light.text} 
+                  <DoorOpen
+                    size={28}
+                    color={room.name === 'コーデQ&A Room' ? '#9ACD32' : room.name === '全身コーデRoom' ? '#FF69B4' : room.name === 'ペアルックRoom' ? '#87CEEB' : room.name === 'シチュエーションRoom' ? '#FFD700' : room.name === 'オススメALL Room' ? '#DDA0DD' : room.name === 'NextトレンドRoom' ? '#D2B48C' : Colors.light.text}
                   />
                 </View>
                 <Text style={styles.roomName} numberOfLines={2} ellipsizeMode="tail">
                   {room.name}
                 </Text>
                 <View style={styles.roomInfo}>
-                  <View style={styles.membersContainer}>
-                    <Users size={10} color={Colors.light.secondaryText} />
-                    <Text style={styles.membersText}>{room.members}</Text>
+                  <View style={styles.postsContainer}>
+                    <FileText size={10} color={Colors.light.secondaryText} />
+                    <Text style={styles.postsText}>{room.postsCount}投稿</Text>
                   </View>
                   {room.isLive && (
                     <View style={styles.liveIndicator}>
@@ -103,12 +103,12 @@ export default function ProfileRoomsSection() {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 14, // Increased from 10 to 14 to make section narrower
+    paddingHorizontal: 16,
     paddingVertical: 8,
     backgroundColor: Colors.light.background,
     borderBottomWidth: 1,
     borderBottomColor: Colors.light.border,
-    height: 340, // Increased height to accommodate better text display
+    height: 340,
   },
   sectionTitle: {
     fontSize: 15,
@@ -121,15 +121,15 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // Evenly distribute cards
+    justifyContent: 'space-between',
     marginBottom: 10,
   },
   roomItem: {
     width: ITEM_WIDTH,
-    height: 90, // Increased height to accommodate 2-line text
+    height: 100,
     backgroundColor: Colors.light.shopBackground,
     borderRadius: 12,
-    padding: 8,
+    padding: 10,
     borderWidth: 0.5,
     borderColor: Colors.light.border,
     shadowColor: "#000",
@@ -144,13 +144,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   iconContainer: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: 'rgba(0,0,0,0.03)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 2,
+    marginBottom: 4,
   },
   roomName: {
     fontSize: 10,
@@ -158,8 +158,8 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     textAlign: 'center',
     width: '100%',
-    height: 32, // Increased height for 2 lines
-    lineHeight: 14, // Adjusted line height
+    height: 28,
+    lineHeight: 14,
   },
   roomInfo: {
     flexDirection: 'row',
@@ -169,19 +169,19 @@ const styles = StyleSheet.create({
     height: 16,
     width: '100%',
   },
-  membersContainer: {
+  postsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
   },
-  membersText: {
-    fontSize: 10,
+  postsText: {
+    fontSize: 9,
     color: Colors.light.secondaryText,
     marginLeft: 2,
   },
   liveIndicator: {
-    backgroundColor: '#FF3B30', // Changed from Colors.light.primary to red
+    backgroundColor: '#FF3B30',
     paddingHorizontal: 4,
     paddingVertical: 1,
     borderRadius: 3,
