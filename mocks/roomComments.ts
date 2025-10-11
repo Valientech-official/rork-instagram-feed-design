@@ -7,6 +7,7 @@ export interface RoomComment {
   text: string;
   timestamp: string;
   createdAt: number;
+  likes?: number;
 }
 
 export const roomComments: RoomComment[] = [
@@ -19,7 +20,8 @@ export const roomComments: RoomComment[] = [
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&h=150&fit=crop',
     text: 'このコーデ素敵ですね！どこのブランドですか？',
     timestamp: '2時間前',
-    createdAt: Date.now() - 7200000
+    createdAt: Date.now() - 7200000,
+    likes: 45
   },
   {
     id: 'rc2',
@@ -29,7 +31,8 @@ export const roomComments: RoomComment[] = [
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop',
     text: '色合いがとても綺麗です✨',
     timestamp: '1時間前',
-    createdAt: Date.now() - 3600000
+    createdAt: Date.now() - 3600000,
+    likes: 38
   },
   {
     id: 'rc3',
@@ -39,7 +42,8 @@ export const roomComments: RoomComment[] = [
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop',
     text: '参考にさせていただきます！コーディネートのバランスが本当に素晴らしいと思います。',
     timestamp: '30分前',
-    createdAt: Date.now() - 1800000
+    createdAt: Date.now() - 1800000,
+    likes: 52
   },
   {
     id: 'rc4',
@@ -49,7 +53,8 @@ export const roomComments: RoomComment[] = [
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop',
     text: 'アクセサリーの選び方も勉強になります',
     timestamp: '15分前',
-    createdAt: Date.now() - 900000
+    createdAt: Date.now() - 900000,
+    likes: 23
   },
   // Comments for r1p2
   {

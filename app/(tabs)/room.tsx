@@ -170,10 +170,22 @@ export default function RoomScreen() {
       />
       
       <View style={[styles.container, { paddingTop: insets.top }]}>
+        {/* ヘッダー */}
+        <View style={styles.pageHeader}>
+          <Text style={styles.pageHeaderTitle}>おすすめのRooms</Text>
+          <TouchableOpacity
+            style={styles.liveHeaderButton}
+            onPress={() => toggleViewMode('live')}
+          >
+            <View style={styles.liveIndicatorPulse} />
+            <Text style={styles.liveHeaderButtonText}>おすすめ Room LIVE</Text>
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.viewToggleContainer}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[
-              styles.viewToggleButton, 
+              styles.viewToggleButton,
               viewMode === 'rooms' && styles.activeViewToggleButton
             ]}
             onPress={() => toggleViewMode('rooms')}
@@ -183,10 +195,10 @@ export default function RoomScreen() {
               viewMode === 'rooms' && styles.activeViewToggleText
             ]}>Rooms</Text>
           </TouchableOpacity>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             style={[
-              styles.viewToggleButton, 
+              styles.viewToggleButton,
               viewMode === 'live' && styles.activeViewToggleButton
             ]}
             onPress={() => toggleViewMode('live')}
@@ -291,11 +303,46 @@ const styles = StyleSheet.create({
     padding: 8,
     marginRight: 8,
   },
+  pageHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.light.border,
+  },
+  pageHeaderTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: Colors.light.text,
+  },
+  liveHeaderButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.light.shopBackground,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    gap: 8,
+  },
+  liveIndicatorPulse: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#FF3B30',
+  },
+  liveHeaderButtonText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: Colors.light.text,
+  },
   viewToggleContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 12,
+    marginTop: 12,
     marginBottom: 16,
     backgroundColor: Colors.light.shopBackground,
     borderRadius: 12,

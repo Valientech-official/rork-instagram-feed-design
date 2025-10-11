@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, ScrollView, TextInput, KeyboardAvoidingView, Platform, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
-import { Heart, MessageCircle, X } from 'lucide-react-native';
+import { Heart, MessageCircle, X, Hand } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { RoomPost as RoomPostType } from '@/mocks/roomPosts';
 import { getFirstTwoCommentsForRoomPost, getCommentsForRoomPost, RoomComment } from '@/mocks/roomComments';
+
+const { width } = Dimensions.get('window');
 
 interface RoomPostProps {
   post: RoomPostType;
@@ -14,63 +16,96 @@ interface RoomPostProps {
 export default function RoomPost({ post, onPress }: RoomPostProps) {
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [newComment, setNewComment] = useState('');
-  
+  const [peaceCount, setPeaceCount] = useState(post.likes); // 仮でlikesを使用
+  const [isPeaced, setIsPeaced] = useState(false);
+
   const firstTwoComments = getFirstTwoCommentsForRoomPost(post.id);
   const allComments = getCommentsForRoomPost(post.id);
-  
+
   const truncateText = (text: string, maxLength: number = 50) => {
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + '…';
   };
-  
+
   const handleCommentPress = () => {
     setShowCommentModal(true);
   };
-  
+
+  const handlePeacePress = () => {
+    setIsPeaced(!isPeaced);
+    setPeaceCount(prev => isPeaced ? prev - 1 : prev + 1);
+  };
+
   const handleEmojiPress = (emoji: string) => {
     setNewComment(prev => prev + emoji);
   };
-  
+
   const emojis = ['🔥', '👏', '💕', '😊', '😲', '😍', '😏', '😅'];
-  
+
+  const imageHeight = (width - 32) * 3 / 5; // 5/3比率
+  const userInfoHeight = (width - 32) * 2 / 5; // 5/2比率
+
   return (
     <>
       <View style={styles.container}>
+        <View style={styles.roomBadge}>
+          <Text style={styles.roomName}>{post.roomName}</Text>
+        </View>
+
+        {/* 5/3サイズの画像 */}
         <TouchableOpacity onPress={onPress} activeOpacity={0.9}>
-          <View style={styles.roomBadge}>
-            <Text style={styles.roomName}>{post.roomName}</Text>
-          </View>
-          
           <Image
             source={{ uri: post.images[0] }}
-            style={styles.image}
+            style={[styles.image, { height: imageHeight }]}
             contentFit="cover"
             transition={200}
           />
-          
-          <View style={styles.overlay}>
-            <View style={styles.userInfo}>
-              <Image
-                source={{ uri: post.user.avatar }}
-                style={styles.avatar}
-                contentFit="cover"
-              />
+        </TouchableOpacity>
+
+        {/* 5/2サイズのユーザー情報エリア */}
+        <View style={[styles.userInfoArea, { minHeight: userInfoHeight }]}>
+          <View style={styles.userHeader}>
+            <Image
+              source={{ uri: post.user.avatar }}
+              style={styles.avatar}
+              contentFit="cover"
+            />
+            <View style={styles.userDetails}>
               <Text style={styles.username}>{post.user.username}</Text>
-            </View>
-            
-            <View style={styles.stats}>
-              <View style={styles.statItem}>
-                <Heart size={16} color="white" fill={post.liked ? "white" : "transparent"} />
-                <Text style={styles.statText}>{post.likes}</Text>
-              </View>
-              <TouchableOpacity style={styles.statItem} onPress={handleCommentPress}>
-                <MessageCircle size={16} color="white" />
-                <Text style={styles.statText}>{post.comments}</Text>
-              </TouchableOpacity>
+              <Text style={styles.timestamp}>{post.timestamp}</Text>
             </View>
           </View>
-        </TouchableOpacity>
-        
+
+          <Text style={styles.caption} numberOfLines={3}>
+            {post.caption}
+          </Text>
+
+          {/* アクションエリア */}
+          <View style={styles.actions}>
+            <TouchableOpacity
+              style={styles.actionItem}
+              onPress={handlePeacePress}
+            >
+              <Hand
+                size={20}
+                color={isPeaced ? Colors.light.primary : Colors.light.text}
+                fill={isPeaced ? Colors.light.primary : "transparent"}
+              />
+              <Text style={[styles.actionText, isPeaced && styles.actionTextActive]}>
+                {peaceCount}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.actionItem}
+              onPress={handleCommentPress}
+            >
+              <MessageCircle size={20} color={Colors.light.text} />
+              <Text style={styles.actionText}>{post.comments}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
         {/* Comments Section */}
         <View style={styles.commentsSection}>
           {firstTwoComments.map((comment) => (
@@ -92,9 +127,10 @@ export default function RoomPost({ post, onPress }: RoomPostProps) {
         presentationStyle="pageSheet"
         onRequestClose={() => setShowCommentModal(false)}
       >
-        <KeyboardAvoidingView 
+        <KeyboardAvoidingView
           style={styles.modalContainer}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
         >
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>コメント</Text>
@@ -102,9 +138,21 @@ export default function RoomPost({ post, onPress }: RoomPostProps) {
               <X size={24} color={Colors.light.text} />
             </TouchableOpacity>
           </View>
-          
+
+          {/* 1/4サイズの画像プレビュー */}
+          <View style={styles.miniImageContainer}>
+            <Image
+              source={{ uri: post.images[0] }}
+              style={styles.miniImage}
+              contentFit="cover"
+            />
+          </View>
+
           <ScrollView style={styles.commentsContainer}>
-            {allComments.map((comment) => (
+            {/* いいね数順にソート */}
+            {[...allComments]
+              .sort((a, b) => (b.likes || 0) - (a.likes || 0))
+              .map((comment) => (
               <View key={comment.id} style={styles.modalCommentItem}>
                 <Image
                   source={{ uri: comment.avatar }}
@@ -114,7 +162,15 @@ export default function RoomPost({ post, onPress }: RoomPostProps) {
                 <View style={styles.commentContent}>
                   <Text style={styles.modalCommentUsername}>{comment.username}</Text>
                   <Text style={styles.modalCommentText}>{comment.text}</Text>
-                  <Text style={styles.commentTimestamp}>{comment.timestamp}</Text>
+                  <View style={styles.commentFooter}>
+                    <Text style={styles.commentTimestamp}>{comment.timestamp}</Text>
+                    {comment.likes && (
+                      <View style={styles.commentLikes}>
+                        <Heart size={12} color={Colors.light.like} fill={Colors.light.like} />
+                        <Text style={styles.commentLikesText}>{comment.likes}</Text>
+                      </View>
+                    )}
+                  </View>
                 </View>
               </View>
             ))}
@@ -160,50 +216,6 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 200,
-  },
-  overlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    padding: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  userInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  avatar: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    marginRight: 8,
-    borderWidth: 1,
-    borderColor: 'white',
-  },
-  username: {
-    color: 'white',
-    fontWeight: '600',
-    fontSize: 14,
-  },
-  stats: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  statItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: 12,
-  },
-  statText: {
-    color: 'white',
-    marginLeft: 4,
-    fontSize: 14,
-    fontWeight: '500',
   },
   roomBadge: {
     position: 'absolute',
@@ -219,6 +231,58 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 12,
     fontWeight: '600',
+  },
+  userInfoArea: {
+    padding: 12,
+    backgroundColor: 'white',
+  },
+  userHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  avatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    marginRight: 10,
+  },
+  userDetails: {
+    flex: 1,
+  },
+  username: {
+    fontWeight: '600',
+    fontSize: 14,
+    color: Colors.light.text,
+  },
+  timestamp: {
+    fontSize: 12,
+    color: Colors.light.secondaryText,
+    marginTop: 2,
+  },
+  caption: {
+    fontSize: 14,
+    color: Colors.light.text,
+    lineHeight: 20,
+    marginBottom: 10,
+  },
+  actions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 20,
+  },
+  actionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  actionText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: Colors.light.text,
+  },
+  actionTextActive: {
+    color: Colors.light.primary,
   },
   commentsSection: {
     padding: 12,
@@ -253,6 +317,16 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: Colors.light.text,
   },
+  miniImageContainer: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.light.border,
+  },
+  miniImage: {
+    width: width / 4,
+    height: (width / 4) * 1.2,
+    borderRadius: 8,
+  },
   commentsContainer: {
     flex: 1,
     padding: 16,
@@ -280,11 +354,26 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.light.text,
     lineHeight: 20,
-    marginBottom: 4,
+    marginBottom: 6,
+  },
+  commentFooter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   commentTimestamp: {
     fontSize: 12,
     color: Colors.light.tabIconDefault,
+  },
+  commentLikes: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  commentLikesText: {
+    fontSize: 12,
+    color: Colors.light.like,
+    fontWeight: '600',
   },
   inputContainer: {
     borderTopWidth: 1,

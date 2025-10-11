@@ -1,6 +1,6 @@
 import React from "react";
 import { Tabs } from "expo-router";
-import { Home, Search, PlusSquare, Heart, User, DoorOpen } from "lucide-react-native";
+import { Home, Search, PlusSquare, Heart, User, DoorOpen, Shirt } from "lucide-react-native";
 import Colors from "@/constants/colors";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -43,6 +43,13 @@ export default function TabLayout() {
         options={{
           title: "Create",
           tabBarIcon: ({ color, size }) => <PlusSquare size={size} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="dressup"
+        options={{
+          title: "DressUp",
+          tabBarIcon: ({ color, size }) => <Shirt size={size} color={color} />,
         }}
       />
       <Tabs.Screen
