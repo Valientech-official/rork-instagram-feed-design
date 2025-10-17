@@ -3,20 +3,24 @@ import { Tabs } from "expo-router";
 import { Home, Search, PlusSquare, Heart, User, DoorOpen, Shirt } from "lucide-react-native";
 import Colors from "@/constants/colors";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useThemeStore } from "@/store/themeStore";
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors.light.text,
-        tabBarInactiveTintColor: Colors.light.secondaryText,
+        tabBarActiveTintColor: colors.text,
+        tabBarInactiveTintColor: colors.secondaryText,
         tabBarShowLabel: false,
         headerShown: false,
         tabBarStyle: {
+          backgroundColor: colors.background,
           borderTopWidth: 0.5,
-          borderTopColor: Colors.light.border,
+          borderTopColor: colors.border,
           elevation: 0,
           shadowOpacity: 0,
           height: 50 + insets.bottom, // Adjust for bottom safe area
