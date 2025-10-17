@@ -5,6 +5,7 @@ import { Heart, MessageCircle, ShoppingBag } from 'lucide-react-native';
 import { ShoppingPost as ShoppingPostType } from '@/mocks/shoppingPosts';
 import { useRouter } from 'expo-router';
 import Colors from '@/constants/colors';
+import { useThemeStore } from '@/store/themeStore';
 
 interface ShoppingPostProps {
   post: ShoppingPostType;
@@ -14,6 +15,9 @@ export default function ShoppingPost({ post }: ShoppingPostProps) {
   const [liked, setLiked] = useState(post.liked);
   const [likes, setLikes] = useState(post.likes);
   const router = useRouter();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
+  const styles = createStyles(colors);
 
   const handleLike = () => {
     setLiked(!liked);
@@ -52,14 +56,14 @@ export default function ShoppingPost({ post }: ShoppingPostProps) {
             <TouchableOpacity style={styles.statItem} onPress={handleLike}>
               <Heart
                 size={20}
-                color={liked ? Colors.light.like : Colors.light.icon}
-                fill={liked ? Colors.light.like : 'transparent'}
+                color={liked ? colors.like : colors.icon}
+                fill={liked ? colors.like : 'transparent'}
               />
               <Text style={styles.statText}>{likes}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.statItem}>
-              <MessageCircle size={20} color={Colors.light.icon} />
+              <MessageCircle size={20} color={colors.icon} />
               <Text style={styles.statText}>{post.comments}</Text>
             </TouchableOpacity>
 
@@ -96,19 +100,19 @@ export default function ShoppingPost({ post }: ShoppingPostProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   container: {
     marginBottom: 16,
     borderRadius: 12,
     overflow: 'hidden',
-    backgroundColor: 'white',
+    backgroundColor: colors.shopCard,
     borderWidth: 1,
-    borderColor: Colors.light.border,
+    borderColor: colors.border,
   },
   headerRow: {
     padding: 12,
     borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
+    borderBottomColor: colors.border,
   },
   topLine: {
     flexDirection: 'row',
@@ -131,18 +135,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   username: {
-    color: Colors.light.text,
+    color: colors.text,
     fontWeight: '600',
     fontSize: 15,
   },
   location: {
     fontSize: 12,
-    color: Colors.light.secondaryText,
+    color: colors.secondaryText,
     marginTop: 2,
   },
   caption: {
     fontSize: 14,
-    color: Colors.light.text,
+    color: colors.text,
     lineHeight: 19,
   },
   stats: {
@@ -155,7 +159,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   statText: {
-    color: Colors.light.text,
+    color: colors.text,
     marginLeft: 6,
     fontSize: 15,
     fontWeight: '500',
@@ -163,7 +167,7 @@ const styles = StyleSheet.create({
   shopButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.light.shopAccent,
+    backgroundColor: colors.shopAccent,
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 12,
@@ -187,7 +191,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 8,
     left: 8,
-    backgroundColor: Colors.light.shopAccent,
+    backgroundColor: colors.shopAccent,
     borderRadius: 12,
     padding: 4,
   },
@@ -197,6 +201,6 @@ const styles = StyleSheet.create({
   },
   timestamp: {
     fontSize: 12,
-    color: Colors.light.secondaryText,
+    color: colors.secondaryText,
   },
 });

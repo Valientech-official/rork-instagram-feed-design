@@ -7,6 +7,7 @@ import ImageCarousel from './ImageCarousel';
 import DoubleTapLike from './DoubleTapLike';
 import PostDetailModal from './PostDetailModal';
 import Colors from '@/constants/colors';
+import { useThemeStore } from '@/store/themeStore';
 
 const { width: screenWidth } = Dimensions.get('window');
 const CARD_WIDTH = screenWidth - 24; // 両端余白12px × 2
@@ -20,6 +21,9 @@ export default function Post({ post }: PostProps) {
   const [likes, setLikes] = useState(post.likes);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showLikeAnimation, setShowLikeAnimation] = useState(false);
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
+  const styles = createStyles(colors);
 
   const handleLike = () => {
     setLiked(!liked);
@@ -71,14 +75,14 @@ export default function Post({ post }: PostProps) {
               <TouchableOpacity style={styles.statItem} onPress={handleLike}>
                 <Heart
                   size={20}
-                  color={liked ? Colors.light.like : Colors.light.icon}
-                  fill={liked ? Colors.light.like : 'transparent'}
+                  color={liked ? colors.like : colors.icon}
+                  fill={liked ? colors.like : 'transparent'}
                 />
                 <Text style={styles.statText}>{likes}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.statItem} onPress={handleImagePress}>
-                <MessageCircle size={20} color={Colors.light.icon} />
+                <MessageCircle size={20} color={colors.icon} />
                 <Text style={styles.statText}>{post.comments}</Text>
               </TouchableOpacity>
             </View>
@@ -120,19 +124,19 @@ export default function Post({ post }: PostProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   container: {
     marginBottom: 16,
     borderRadius: 12,
     overflow: 'hidden',
-    backgroundColor: 'white',
+    backgroundColor: colors.shopCard,
     borderWidth: 1,
-    borderColor: Colors.light.border,
+    borderColor: colors.border,
   },
   headerRow: {
     padding: 12,
     borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
+    borderBottomColor: colors.border,
   },
   topLine: {
     flexDirection: 'row',
@@ -155,18 +159,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   username: {
-    color: Colors.light.text,
+    color: colors.text,
     fontWeight: '600',
     fontSize: 15,
   },
   location: {
     fontSize: 12,
-    color: Colors.light.secondaryText,
+    color: colors.secondaryText,
     marginTop: 2,
   },
   caption: {
     fontSize: 14,
-    color: Colors.light.text,
+    color: colors.text,
     lineHeight: 19,
   },
   stats: {
@@ -179,7 +183,7 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   statText: {
-    color: Colors.light.text,
+    color: colors.text,
     marginLeft: 6,
     fontSize: 15,
     fontWeight: '500',
@@ -194,6 +198,6 @@ const styles = StyleSheet.create({
   },
   timestamp: {
     fontSize: 12,
-    color: Colors.light.secondaryText,
+    color: colors.secondaryText,
   },
 });
