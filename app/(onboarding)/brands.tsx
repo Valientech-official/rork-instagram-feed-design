@@ -52,7 +52,7 @@ export default function BrandsScreen() {
             {selectedBrands.length > 0 ? `次へ (${selectedBrands.length}個選択)` : '次へ'}
           </Text>
         </TouchableOpacity>
-      </SafeAreaView>
+      </View>
     </View>
   );
 }

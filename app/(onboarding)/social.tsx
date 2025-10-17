@@ -117,7 +117,7 @@ export default function SocialScreen() {
         <TouchableOpacity style={styles.button} onPress={handleComplete}>
           <Text style={styles.buttonText}>完了してアプリを始める</Text>
         </TouchableOpacity>
-      </SafeAreaView>
+      </View>
     </View>
   );
 }

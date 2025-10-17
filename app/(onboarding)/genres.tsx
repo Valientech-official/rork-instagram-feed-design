@@ -48,7 +48,7 @@ export default function GenresScreen() {
         >
           <Text style={styles.buttonText}>次へ ({selectedGenres.length}個選択)</Text>
         </TouchableOpacity>
-      </SafeAreaView>
+      </View>
     </View>
   );
 }

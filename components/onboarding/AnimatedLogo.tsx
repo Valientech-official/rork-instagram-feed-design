@@ -7,7 +7,7 @@ import Animated, {
   withSpring,
   withSequence,
 } from 'react-native-reanimated';
-import { Peace } from 'lucide-react-native';
+import { Image } from 'expo-image';
 
 export default function AnimatedLogo() {
   const opacity = useSharedValue(0);
@@ -34,7 +34,11 @@ export default function AnimatedLogo() {
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.logoWrapper, animatedStyle]}>
-        <Peace size={120} color="#000" strokeWidth={2} />
+        <Image
+          source={require('../../assets/images/piece.svg')}
+          style={{ width: 120, height: 120 }}
+          contentFit="contain"
+        />
       </Animated.View>
     </View>
   );

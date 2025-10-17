@@ -48,7 +48,7 @@ export default function StylesScreen() {
         >
           <Text style={styles.buttonText}>次へ ({selectedStyles.length}個選択)</Text>
         </TouchableOpacity>
-      </SafeAreaView>
+      </View>
     </View>
   );
 }
