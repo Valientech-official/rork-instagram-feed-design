@@ -1,9 +1,10 @@
 import React from 'react';
 import { Platform, Alert } from 'react-native';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Video } from 'lucide-react-native';
+import { Video, Moon, Sun } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import Colors from '@/constants/colors';
+import { useThemeStore } from '@/store/themeStore';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
@@ -18,6 +19,8 @@ interface FeedHeaderProps {
 export default function FeedHeader({ onMenuPress }: FeedHeaderProps) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { theme, toggleTheme } = useThemeStore();
+  const colors = Colors[theme];
   
   const handleLivePress = () => {
     router.push('/live');
@@ -134,6 +137,8 @@ export default function FeedHeader({ onMenuPress }: FeedHeaderProps) {
     }
   };
 
+  const styles = createStyles(colors);
+
   return (
     <View style={[styles.container, { paddingTop: Math.max(insets.top + 8, 16) }]}>
       <View style={styles.logoContainer}>
@@ -146,27 +151,35 @@ export default function FeedHeader({ onMenuPress }: FeedHeaderProps) {
         </Text>
       </View>
       <View style={styles.actions}>
+        <TouchableOpacity style={styles.iconButton} onPress={toggleTheme}>
+          {theme === 'light' ? (
+            <Moon size={24} color={colors.icon} />
+          ) : (
+            <Sun size={24} color={colors.icon} />
+          )}
+        </TouchableOpacity>
+
         <TouchableOpacity style={styles.iconButton} onPress={handleLivePress}>
-          <Video size={24} color={Colors.light.icon} />
+          <Video size={24} color={colors.icon} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.iconButton} onPress={handleNotificationPress}>
-          <NotificationIcon size={24} color={Colors.light.icon} />
+          <NotificationIcon size={24} color={colors.icon} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.iconButton} onPress={handleSearchPress}>
-          <SearchIcon size={24} color={Colors.light.icon} />
+          <SearchIcon size={24} color={colors.icon} />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.iconButton} onPress={handleDMPress}>
-          <DMIcon size={24} color={Colors.light.icon} />
+          <DMIcon size={24} color={colors.icon} />
         </TouchableOpacity>
       </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -174,8 +187,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 12,
     borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-    backgroundColor: Colors.light.background,
+    borderBottomColor: colors.border,
+    backgroundColor: colors.background,
   },
   logoContainer: {
     flex: 1,
@@ -225,7 +238,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: Colors.light.background,
+    backgroundColor: colors.background,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -233,7 +246,7 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: Colors.light.shopSale,
+    backgroundColor: colors.shopSale,
   },
   cartButton: {
     position: 'relative',
@@ -244,7 +257,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 2,
     right: 2,
-    backgroundColor: Colors.light.shopAccent,
+    backgroundColor: colors.shopAccent,
     borderRadius: 10,
     minWidth: 20,
     height: 20,

@@ -3,7 +3,7 @@ export default {
     primary: "#0095F6",
     primaryLight: "#E3F2FD",
     secondary: "#FF375F",
-    background: "#FFFFFF", // Changed back to white
+    background: "#FFFFFF",
     text: "#262626",
     secondaryText: "#8E8E8E",
     border: "#DBDBDB",
@@ -16,12 +16,35 @@ export default {
     warning: "#FFD700",
     error: "#FF3B30",
     shopAccent: "#FF375F",
-    shopBackground: "#FFFFFF", // Changed back to white
+    shopBackground: "#FFFFFF",
     shopCard: "#FFFFFF",
     shopPrice: "#111111",
     shopSale: "#FF3B30",
-    // New colors for search page selections
-    clothingItemSelected: "#FFB366", // Light orange for clothing items
-    styleCategorySelected: "#9ACD32", // Yellow-green for style categories
+    clothingItemSelected: "#FFB366",
+    styleCategorySelected: "#9ACD32",
+  },
+  dark: {
+    primary: "#0095F6",
+    primaryLight: "#1E3A5F",
+    secondary: "#FF375F",
+    background: "#1A1A1A",
+    text: "#FFFFFF",
+    secondaryText: "#B0B0B0",
+    border: "#3A3A3A",
+    icon: "#FFFFFF",
+    iconActive: "#0095F6",
+    like: "#ED4956",
+    separator: "#2A2A2A",
+    overlay: "rgba(0, 0, 0, 0.7)",
+    success: "#4BB543",
+    warning: "#FFD700",
+    error: "#FF3B30",
+    shopAccent: "#FF375F",
+    shopBackground: "#1A1A1A",
+    shopCard: "#2A2A2A",
+    shopPrice: "#FFFFFF",
+    shopSale: "#FF3B30",
+    clothingItemSelected: "#FFB366",
+    styleCategorySelected: "#9ACD32",
   }
 }

@@ -16,6 +16,7 @@ import RecommendedUsersSlider from '@/components/RecommendedUsersSlider';
 import FavoritesGrid from '@/components/FavoritesGrid';
 import PhotoGallery from '@/components/PhotoGallery';
 import { useCartStore, CartItem } from '@/store/cartStore';
+import { useThemeStore } from '@/store/themeStore';
 import Colors from '@/constants/colors';
 import { ShoppingPost as ShoppingPostType } from '@/mocks/shoppingPosts';
 import { Post as PostType } from '@/mocks/posts';
@@ -39,6 +40,8 @@ export default function FeedScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { items: cartItems, updateQuantity, removeItem, getTotalPrice } = useCartStore();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
 
   // Header animation state
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -150,6 +153,9 @@ export default function FeedScreen() {
   // Create Animated FlatList component
   const AnimatedFlatList = Animated.FlatList;
 
+  // Create styles with current theme colors
+  const styles = createStyles(colors);
+
   const renderCartItem = ({ item, index }: { item: CartItem; index: number }) => {
     return (
       <TouchableOpacity 
@@ -171,7 +177,7 @@ export default function FeedScreen() {
             style={styles.removeButton}
             onPress={() => handleRemoveItem(item.id)}
           >
-            <Trash2 size={16} color={Colors.light.shopSale} />
+            <Trash2 size={16} color={colors.shopSale} />
           </TouchableOpacity>
         </View>
         
@@ -184,14 +190,14 @@ export default function FeedScreen() {
               style={styles.quantityButton}
               onPress={() => handleQuantityChange(item.id, item.quantity - 1)}
             >
-              <Minus size={16} color={Colors.light.icon} />
+              <Minus size={16} color={colors.icon} />
             </TouchableOpacity>
             <Text style={styles.quantityText}>{item.quantity}</Text>
             <TouchableOpacity 
               style={styles.quantityButton}
               onPress={() => handleQuantityChange(item.id, item.quantity + 1)}
             >
-              <Plus size={16} color={Colors.light.icon} />
+              <Plus size={16} color={colors.icon} />
             </TouchableOpacity>
           </View>
         </View>
@@ -315,10 +321,10 @@ export default function FeedScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
+    backgroundColor: colors.background,
   },
   headerContainer: {
     position: 'absolute',
@@ -326,7 +332,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 1000,
-    backgroundColor: Colors.light.background,
+    backgroundColor: colors.background,
   },
   listContent: {
     paddingBottom: 20,
@@ -334,9 +340,9 @@ const styles = StyleSheet.create({
   },
   fullWidthLiveSection: {
     width: '100%',
-    backgroundColor: Colors.light.background,
+    backgroundColor: colors.background,
     borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
+    borderBottomColor: colors.border,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -345,13 +351,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 16,
     borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-    backgroundColor: Colors.light.background,
+    borderBottomColor: colors.border,
+    backgroundColor: colors.background,
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: Colors.light.text,
+    color: colors.text,
   },
   cartHeader: {
     flexDirection: 'row',
@@ -360,13 +366,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 16,
     borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-    backgroundColor: Colors.light.background,
+    borderBottomColor: colors.border,
+    backgroundColor: colors.background,
   },
   cartTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: Colors.light.text,
+    color: colors.text,
   },
   closeButton: {
     paddingHorizontal: 12,
@@ -374,14 +380,14 @@ const styles = StyleSheet.create({
   },
   closeText: {
     fontSize: 16,
-    color: Colors.light.shopAccent,
+    color: colors.shopAccent,
   },
   cartContent: {
     paddingVertical: 16,
   },
   cartCard: {
     width: CARD_WIDTH,
-    backgroundColor: Colors.light.shopCard,
+    backgroundColor: colors.shopCard,
     borderRadius: 12,
     marginBottom: 16,
     shadowColor: '#000',
@@ -416,14 +422,14 @@ const styles = StyleSheet.create({
   cartName: {
     fontSize: 14,
     fontWeight: '500',
-    color: Colors.light.text,
+    color: colors.text,
     marginBottom: 4,
     lineHeight: 18,
   },
   cartPrice: {
     fontSize: 16,
     fontWeight: '600',
-    color: Colors.light.shopPrice,
+    color: colors.shopPrice,
     marginBottom: 8,
   },
   quantityContainer: {
@@ -432,14 +438,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   quantityButton: {
-    backgroundColor: Colors.light.border,
+    backgroundColor: colors.border,
     borderRadius: 16,
     padding: 6,
   },
   quantityText: {
     fontSize: 16,
     fontWeight: '600',
-    color: Colors.light.text,
+    color: colors.text,
     marginHorizontal: 12,
     minWidth: 20,
     textAlign: 'center',
@@ -447,14 +453,14 @@ const styles = StyleSheet.create({
   totalContainer: {
     margin: 16,
     padding: 16,
-    backgroundColor: Colors.light.shopCard,
+    backgroundColor: colors.shopCard,
     borderRadius: 12,
     alignItems: 'center',
   },
   totalText: {
     fontSize: 18,
     fontWeight: '600',
-    color: Colors.light.shopPrice,
+    color: colors.shopPrice,
   },
   emptyContainer: {
     flex: 1,
@@ -464,6 +470,6 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: Colors.light.secondaryText,
+    color: colors.secondaryText,
   },
 });
