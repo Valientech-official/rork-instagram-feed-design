@@ -7,99 +7,6 @@ import { useRouter } from 'expo-router';
 import Colors from '@/constants/colors';
 import { useThemeStore } from '@/store/themeStore';
 
-interface ShoppingPostProps {
-  post: ShoppingPostType;
-}
-
-export default function ShoppingPost({ post }: ShoppingPostProps) {
-  const [liked, setLiked] = useState(post.liked);
-  const [likes, setLikes] = useState(post.likes);
-  const router = useRouter();
-  const { theme } = useThemeStore();
-  const colors = Colors[theme];
-  const styles = createStyles(colors);
-
-  const handleLike = () => {
-    setLiked(!liked);
-    setLikes(prev => liked ? prev - 1 : prev + 1);
-  };
-
-  const handleShopPress = () => {
-    router.push(`/product/${post.productId}`);
-  };
-
-  const truncateText = (text: string, maxLength: number = 80) => {
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '…';
-  };
-
-  return (
-    <View style={styles.container}>
-      {/* Row 1: User Info, Caption & Actions */}
-      <View style={styles.headerRow}>
-        <View style={styles.topLine}>
-          <View style={styles.userInfo}>
-            <Image
-              source={{ uri: post.user.avatar }}
-              style={styles.avatar}
-              contentFit="cover"
-            />
-            <View style={styles.userTextContainer}>
-              <Text style={styles.username}>{post.user.username}</Text>
-              {post.location && (
-                <Text style={styles.location}>{post.location}</Text>
-              )}
-            </View>
-          </View>
-
-          <View style={styles.stats}>
-            <TouchableOpacity style={styles.statItem} onPress={handleLike}>
-              <Heart
-                size={20}
-                color={liked ? colors.like : colors.icon}
-                fill={liked ? colors.like : 'transparent'}
-              />
-              <Text style={styles.statText}>{likes}</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.statItem}>
-              <MessageCircle size={20} color={colors.icon} />
-              <Text style={styles.statText}>{post.comments}</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.shopButton} onPress={handleShopPress}>
-              <ShoppingBag size={16} color="white" />
-              <Text style={styles.shopButtonText}>商品</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <Text style={styles.caption} numberOfLines={2}>
-          {truncateText(post.caption, 120)}
-        </Text>
-      </View>
-
-      {/* Row 2: Image */}
-      <View style={styles.imageSection}>
-        <Image
-          source={{ uri: post.images[0] }}
-          style={styles.image}
-          contentFit="cover"
-          transition={200}
-        />
-        <View style={styles.shopBadge}>
-          <ShoppingBag size={14} color="white" />
-        </View>
-      </View>
-
-      {/* Footer: Timestamp */}
-      <View style={styles.footer}>
-        <Text style={styles.timestamp}>{post.timestamp}</Text>
-      </View>
-    </View>
-  );
-}
-
 const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   container: {
     marginBottom: 16,
@@ -204,3 +111,96 @@ const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
     color: colors.secondaryText,
   },
 });
+
+interface ShoppingPostProps {
+  post: ShoppingPostType;
+}
+
+export default function ShoppingPost({ post }: ShoppingPostProps) {
+  const [liked, setLiked] = useState(post.liked);
+  const [likes, setLikes] = useState(post.likes);
+  const router = useRouter();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
+  const styles = createStyles(colors);
+
+  const handleLike = () => {
+    setLiked(!liked);
+    setLikes(prev => liked ? prev - 1 : prev + 1);
+  };
+
+  const handleShopPress = () => {
+    router.push(`/product/${post.productId}`);
+  };
+
+  const truncateText = (text: string, maxLength: number = 80) => {
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength) + '…';
+  };
+
+  return (
+    <View style={styles.container}>
+      {/* Row 1: User Info, Caption & Actions */}
+      <View style={styles.headerRow}>
+        <View style={styles.topLine}>
+          <View style={styles.userInfo}>
+            <Image
+              source={{ uri: post.user.avatar }}
+              style={styles.avatar}
+              contentFit="cover"
+            />
+            <View style={styles.userTextContainer}>
+              <Text style={styles.username}>{post.user.username}</Text>
+              {post.location && (
+                <Text style={styles.location}>{post.location}</Text>
+              )}
+            </View>
+          </View>
+
+          <View style={styles.stats}>
+            <TouchableOpacity style={styles.statItem} onPress={handleLike}>
+              <Heart
+                size={20}
+                color={liked ? colors.like : colors.icon}
+                fill={liked ? colors.like : 'transparent'}
+              />
+              <Text style={styles.statText}>{likes}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.statItem}>
+              <MessageCircle size={20} color={colors.icon} />
+              <Text style={styles.statText}>{post.comments}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.shopButton} onPress={handleShopPress}>
+              <ShoppingBag size={16} color="white" />
+              <Text style={styles.shopButtonText}>商品</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <Text style={styles.caption} numberOfLines={2}>
+          {truncateText(post.caption, 120)}
+        </Text>
+      </View>
+
+      {/* Row 2: Image */}
+      <View style={styles.imageSection}>
+        <Image
+          source={{ uri: post.images[0] }}
+          style={styles.image}
+          contentFit="cover"
+          transition={200}
+        />
+        <View style={styles.shopBadge}>
+          <ShoppingBag size={14} color="white" />
+        </View>
+      </View>
+
+      {/* Footer: Timestamp */}
+      <View style={styles.footer}>
+        <Text style={styles.timestamp}>{post.timestamp}</Text>
+      </View>
+    </View>
+  );
+}

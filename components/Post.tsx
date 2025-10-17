@@ -12,6 +12,84 @@ import { useThemeStore } from '@/store/themeStore';
 const { width: screenWidth } = Dimensions.get('window');
 const CARD_WIDTH = screenWidth - 24; // 両端余白12px × 2
 
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
+  container: {
+    marginBottom: 16,
+    borderRadius: 12,
+    overflow: 'hidden',
+    backgroundColor: colors.shopCard,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  headerRow: {
+    padding: 12,
+    borderBottomWidth: 0.5,
+    borderBottomColor: colors.border,
+  },
+  topLine: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  avatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    marginRight: 10,
+  },
+  userTextContainer: {
+    flex: 1,
+  },
+  username: {
+    color: colors.text,
+    fontWeight: '600',
+    fontSize: 15,
+  },
+  location: {
+    fontSize: 12,
+    color: colors.secondaryText,
+    marginTop: 2,
+  },
+  caption: {
+    fontSize: 14,
+    color: colors.text,
+    lineHeight: 19,
+  },
+  stats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 16,
+  },
+  statText: {
+    color: colors.text,
+    marginLeft: 6,
+    fontSize: 15,
+    fontWeight: '500',
+  },
+  imageWrapper: {
+    position: 'relative',
+    width: '100%',
+  },
+  footer: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  timestamp: {
+    fontSize: 12,
+    color: colors.secondaryText,
+  },
+});
+
 interface PostProps {
   post: PostType;
 }
@@ -123,81 +201,3 @@ export default function Post({ post }: PostProps) {
     </>
   );
 }
-
-const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
-  container: {
-    marginBottom: 16,
-    borderRadius: 12,
-    overflow: 'hidden',
-    backgroundColor: colors.shopCard,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  headerRow: {
-    padding: 12,
-    borderBottomWidth: 0.5,
-    borderBottomColor: colors.border,
-  },
-  topLine: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  userInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  avatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    marginRight: 10,
-  },
-  userTextContainer: {
-    flex: 1,
-  },
-  username: {
-    color: colors.text,
-    fontWeight: '600',
-    fontSize: 15,
-  },
-  location: {
-    fontSize: 12,
-    color: colors.secondaryText,
-    marginTop: 2,
-  },
-  caption: {
-    fontSize: 14,
-    color: colors.text,
-    lineHeight: 19,
-  },
-  stats: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  statItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: 16,
-  },
-  statText: {
-    color: colors.text,
-    marginLeft: 6,
-    fontSize: 15,
-    fontWeight: '500',
-  },
-  imageWrapper: {
-    position: 'relative',
-    width: '100%',
-  },
-  footer: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  timestamp: {
-    fontSize: 12,
-    color: colors.secondaryText,
-  },
-});
