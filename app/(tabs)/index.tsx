@@ -28,6 +28,7 @@ import TopStylists from '@/components/home/TopStylists';
 import RecommendedGrid from '@/components/home/RecommendedGrid';
 import DailyChallengeCard from '@/components/home/DailyChallengeCard';
 import TrendingQA from '@/components/home/TrendingQA';
+import ShopTheLook from '@/components/home/ShopTheLook';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width / 2) - 24;
@@ -262,6 +263,9 @@ export default function FeedScreen() {
 
         {/* Trending Q&A Section */}
         <TrendingQA />
+
+        {/* Shop the Look Section - 2x4 Grid */}
+        <ShopTheLook />
 
         {/* Room Lives Section */}
         <RoomLivesList />
