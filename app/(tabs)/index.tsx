@@ -24,12 +24,13 @@ import RecommendationCard from '@/components/RecommendationCard';
 import RecommendationsSlider from '@/components/RecommendationsSlider';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import MenuDrawer from '@/components/MenuDrawer';
+import TopStylists from '@/components/home/TopStylists';
+import RecommendedGrid from '@/components/home/RecommendedGrid';
+import DailyChallengeCard from '@/components/home/DailyChallengeCard';
+import TrendingQA from '@/components/home/TrendingQA';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width / 2) - 24;
-
-// Define a union type for the combined posts
-type CombinedPostType = PostType | ShoppingPostType;
 
 export default function FeedScreen() {
   const [showFavorites, setShowFavorites] = useState(false);
@@ -47,39 +48,8 @@ export default function FeedScreen() {
   const scrollY = useRef(new Animated.Value(0)).current;
   const lastScrollY = useRef(0);
   const headerTranslateY = useRef(new Animated.Value(0)).current;
-  
-  // Create a combined array of posts and shopping posts
-  const combinedPosts: CombinedPostType[] = [...posts, ...shoppingPosts].sort(() => Math.random() - 0.5);
-  const activeStreams = liveStreams.filter(stream => stream.isActive);
 
-  // Insert recommendation cards, room lives, and recommended users at specific positions
-  const postsWithRecommendations = [...combinedPosts];
-  
-  // Insert various content types throughout the feed
-  if (postsWithRecommendations.length > 1) {
-    postsWithRecommendations.splice(1, 0, { id: 'rec1', isRecommendation: true } as any);
-  }
-  if (postsWithRecommendations.length > 3) {
-    postsWithRecommendations.splice(3, 0, { id: 'room-live1', isRoomLive: true } as any);
-  }
-  if (postsWithRecommendations.length > 5) {
-    postsWithRecommendations.splice(5, 0, { id: 'users1', isRecommendedUsers: true } as any);
-  }
-  if (postsWithRecommendations.length > 7) {
-    postsWithRecommendations.splice(7, 0, { id: 'rec2', isRecommendationSlider: true } as any);
-  }
-  if (postsWithRecommendations.length > 9) {
-    postsWithRecommendations.splice(9, 0, { id: 'rec3', isRecommendation: true } as any);
-  }
-  if (postsWithRecommendations.length > 11) {
-    postsWithRecommendations.splice(11, 0, { id: 'room-live2', isRoomLive: true } as any);
-  }
-  if (postsWithRecommendations.length > 13) {
-    postsWithRecommendations.splice(13, 0, { id: 'users2', isRecommendedUsers: true } as any);
-  }
-  if (postsWithRecommendations.length > 15) {
-    postsWithRecommendations.splice(15, 0, { id: 'rec4', isRecommendationSlider: true } as any);
-  }
+  const activeStreams = liveStreams.filter(stream => stream.isActive);
 
 
   const handleCloseFavorites = () => {
@@ -149,9 +119,6 @@ export default function FeedScreen() {
       },
     }
   );
-
-  // Create Animated FlatList component
-  const AnimatedFlatList = Animated.FlatList;
 
   // Create styles with current theme colors
   const styles = createStyles(colors);
@@ -268,53 +235,53 @@ export default function FeedScreen() {
         <FeedHeader onMenuPress={handleMenuPress} />
       </Animated.View>
 
-      <AnimatedFlatList
-        key="main-feed"
-        data={postsWithRecommendations}
-        keyExtractor={(item) => item.id}
+      <Animated.ScrollView
         onScroll={handleScroll}
         scrollEventThrottle={16}
         contentContainerStyle={[
           styles.listContent,
           { paddingTop: Math.max(insets.top + 8, 16) + 48 } // Header height + safe area
         ]}
-        renderItem={({ item }) => {
-          // Check if this is a recommendation card
-          if ('isRecommendation' in item) {
-            return <RecommendationCard />;
-          }
-
-          // Check if this is a recommendation slider
-          if ('isRecommendationSlider' in item) {
-            return <RecommendationsSlider />;
-          }
-
-          // Check if this is a room live section
-          if ('isRoomLive' in item) {
-            return <RoomLivesList />;
-          }
-
-          // Check if this is a recommended users section
-          if ('isRecommendedUsers' in item) {
-            return <RecommendedUsersSlider />;
-          }
-
-          // Check if the item is a ShoppingPost by checking if productId exists
-          if ('productId' in item) {
-            return <ShoppingPost post={item as ShoppingPostType} />;
-          } else {
-            return <Post post={item as PostType} />;
-          }
-        }}
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={
-          activeStreams.length > 0 ? (
-            <View style={styles.fullWidthLiveSection}>
-              <LiveStreamsList streams={activeStreams} />
-            </View>
-          ) : null
-        }
-      />
+      >
+        {/* Live Streams */}
+        {activeStreams.length > 0 && (
+          <View style={styles.fullWidthLiveSection}>
+            <LiveStreamsList streams={activeStreams} />
+          </View>
+        )}
+
+        {/* Top Stylists Section */}
+        <TopStylists />
+
+        {/* Recommended Grid Section */}
+        <RecommendedGrid />
+
+        {/* Daily Challenge Section */}
+        <DailyChallengeCard />
+
+        {/* Trending Q&A Section */}
+        <TrendingQA />
+
+        {/* Room Lives Section */}
+        <RoomLivesList />
+
+        {/* Recommended Users Section */}
+        <RecommendedUsersSlider />
+
+        {/* Shopping Posts */}
+        {shoppingPosts.slice(0, 3).map((post) => (
+          <ShoppingPost key={post.id} post={post} />
+        ))}
+
+        {/* Recommendations Slider */}
+        <RecommendationsSlider />
+
+        {/* More Posts */}
+        {posts.slice(0, 2).map((post) => (
+          <Post key={post.id} post={post} />
+        ))}
+      </Animated.ScrollView>
 
       <MenuDrawer visible={isMenuOpen} onClose={handleMenuClose} />
     </View>
@@ -336,7 +303,6 @@ const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   },
   listContent: {
     paddingBottom: 20,
-    paddingHorizontal: 12,
   },
   fullWidthLiveSection: {
     width: '100%',
