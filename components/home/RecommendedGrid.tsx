@@ -20,57 +20,57 @@ const ITEMS: RecommendedItem[] = [
   {
     id: '1',
     image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400',
-    title: 'Airy dress',
-    brand: 'Reyn Fresh',
+    title: 'エアリーワンピース',
+    brand: 'サマーブリーズ',
     liked: false,
   },
   {
     id: '2',
     image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400',
-    title: 'Oversized shirt',
-    brand: 'Not just Plaid',
+    title: 'オーバーサイズシャツ',
+    brand: 'アーバンカジュアル',
     liked: false,
   },
   {
     id: '3',
     image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=400',
-    title: 'Graphic Tee',
-    brand: 'Recycle Fresh',
+    title: 'グラフィックTシャツ',
+    brand: 'ストリートベース',
     liked: false,
   },
   {
     id: '4',
     image: 'https://images.unsplash.com/photo-1558769132-cb1aea3c8a7f?w=400',
-    title: 'Yellow Jacket',
-    brand: 'Edit Finnish',
+    title: 'イエロージャケット',
+    brand: 'カラーポップ',
     liked: false,
   },
   {
     id: '5',
     image: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=400',
-    title: 'Casual Look',
-    brand: 'Verde Castillo',
+    title: 'カジュアルコーデ',
+    brand: 'デイリースタイル',
     liked: false,
   },
   {
     id: '6',
     image: 'https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=400',
-    title: 'Cozy Sweater',
-    brand: 'Woolie Kinofté',
+    title: '暖かニットセーター',
+    brand: 'ウィンターウール',
     liked: false,
   },
   {
     id: '7',
     image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400',
-    title: 'Boho Style',
-    brand: 'Sanlú Clothing',
+    title: 'ボヘミアンドレス',
+    brand: 'リゾートウェア',
     liked: false,
   },
   {
     id: '8',
     image: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=400',
-    title: 'Layered Look',
-    brand: 'Edo Hamburgó',
+    title: 'レイヤードスタイル',
+    brand: 'モードミックス',
     liked: false,
   },
 ];
@@ -90,7 +90,7 @@ export default function RecommendedGrid() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Recommended for You</Text>
+        <Text style={styles.title}>おすすめアイテム</Text>
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.iconButton}>
             <Heart size={20} color={colors.secondaryText} />

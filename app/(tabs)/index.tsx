@@ -255,6 +255,9 @@ export default function FeedScreen() {
         {/* Top Stylists Section */}
         <TopStylists />
 
+        {/* Shop the Look Section - 2x4 Grid */}
+        <ShopTheLook />
+
         {/* Recommended Grid Section */}
         <RecommendedGrid />
 
@@ -263,9 +266,6 @@ export default function FeedScreen() {
 
         {/* Trending Q&A Section */}
         <TrendingQA />
-
-        {/* Shop the Look Section - 2x4 Grid */}
-        <ShopTheLook />
 
         {/* Room Lives Section */}
         <RoomLivesList />

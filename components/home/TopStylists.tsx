@@ -47,7 +47,7 @@ export default function TopStylists() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Top Stylists</Text>
+        <Text style={styles.title}>トップスタイリスト</Text>
         <TouchableOpacity>
           <MoreHorizontal size={20} color={colors.secondaryText} />
         </TouchableOpacity>
@@ -72,10 +72,10 @@ export default function TopStylists() {
 
         <View style={styles.actionButtons}>
           <TouchableOpacity style={styles.followButton}>
-            <Text style={styles.followButtonText}>Follow</Text>
+            <Text style={styles.followButtonText}>フォロー</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.contentsButton}>
-            <Text style={styles.contentsButtonText}>Contents</Text>
+            <Text style={styles.contentsButtonText}>投稿を見る</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

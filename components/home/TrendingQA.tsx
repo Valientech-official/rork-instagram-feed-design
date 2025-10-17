@@ -17,11 +17,11 @@ interface QAItem {
 const QA_ITEMS: QAItem[] = [
   {
     id: '1',
-    question: 'Cecmity nanul?\n高辛呵伱とデライッ\nで2軟5撼値は特がる',
+    question: 'このジャケット、どんなボトムスと合わせたらいいですか？\nカジュアルにもフォーマルにも使えますか？',
     productImage: 'https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=400',
-    productName: 'Ynult alko AY',
-    productBrand: 'Betty Bwrs',
-    price: '$1,200',
+    productName: 'レザージャケット',
+    productBrand: 'アーバンスタイル',
+    price: '¥24,800',
   },
 ];
 
@@ -33,13 +33,13 @@ export default function TrendingQA() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Trending Q&A</Text>
+        <Text style={styles.title}>トレンドQ&A</Text>
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.viewAnswersButton}>
-            <Text style={styles.viewAnswersText}>View Answers</Text>
+            <Text style={styles.viewAnswersText}>回答を見る</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.postYoursButton}>
-            <Text style={styles.postYoursText}>Post Yours</Text>
+            <Text style={styles.postYoursText}>質問する</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -65,7 +65,7 @@ export default function TrendingQA() {
               </View>
             </View>
             <TouchableOpacity style={styles.cartButton}>
-              <Text style={styles.cartButtonText}>Cart Yow</Text>
+              <Text style={styles.cartButtonText}>カートに追加</Text>
             </TouchableOpacity>
           </View>
         ))}

@@ -14,17 +14,17 @@ export default function DailyChallengeCard() {
     <View style={styles.container}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.title}>Daily Theme Challenge</Text>
-          <Text style={styles.subtitle}>Based your likes</Text>
-          <Text style={styles.subtitle}>Similar to #Streetwear</Text>
+          <Text style={styles.title}>デイリーチャレンジ</Text>
+          <Text style={styles.subtitle}>あなたの好みに基づく</Text>
+          <Text style={styles.subtitle}>#ストリートファッション に似たスタイル</Text>
         </View>
         <TouchableOpacity style={styles.contentsButton}>
-          <Text style={styles.contentsButtonText}>Contents</Text>
+          <Text style={styles.contentsButtonText}>コンテンツ</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.challengeCard}>
-        <Text style={styles.challengeTitle}>Singio Ccactluss</Text>
+        <Text style={styles.challengeTitle}>サマーカジュアルコーデ</Text>
         <View style={styles.cardContent}>
           <Image
             source={{ uri: 'https://images.unsplash.com/photo-1523398002811-999ca8dec234?w=800' }}
@@ -33,11 +33,11 @@ export default function DailyChallengeCard() {
           />
           <View style={styles.cardOverlay}>
             <View style={styles.badge}>
-              <Text style={styles.badgeText}>Daily Theme Challenge</Text>
-              <Text style={styles.hashtagText}>#SummerVibes</Text>
+              <Text style={styles.badgeText}>デイリーテーマチャレンジ</Text>
+              <Text style={styles.hashtagText}>#夏コーデ</Text>
             </View>
             <TouchableOpacity style={styles.joinButton}>
-              <Text style={styles.joinButtonText}>Join Challenge</Text>
+              <Text style={styles.joinButtonText}>参加する</Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.likeButton}>

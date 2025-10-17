@@ -20,57 +20,57 @@ const ITEMS: LookItem[] = [
   {
     id: '1',
     image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400',
-    title: 'Peryl Free',
-    subtitle: 'Kvennpoh',
+    title: 'エアリーワンピース',
+    subtitle: 'サマーコレクション',
     liked: false,
   },
   {
     id: '2',
     image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400',
-    title: 'Má pas banc',
-    subtitle: 'Apparition',
+    title: 'オーバーサイズシャツ',
+    subtitle: 'カジュアルスタイル',
     liked: false,
   },
   {
     id: '3',
     image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=400',
-    title: 'Reynresstrue',
-    subtitle: 'Apeods',
+    title: 'グラフィックTシャツ',
+    subtitle: 'ストリート系',
     liked: false,
   },
   {
     id: '4',
     image: 'https://images.unsplash.com/photo-1558769132-cb1aea3c8a7f?w=400',
-    title: 'Edoguitnon',
-    subtitle: 'Harlund',
+    title: 'イエロージャケット',
+    subtitle: 'アウター',
     liked: false,
   },
   {
     id: '5',
     image: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=400',
-    title: 'Vaniestomua',
-    subtitle: 'Turhumitd',
+    title: 'カジュアルルック',
+    subtitle: 'デイリーコーデ',
     liked: false,
   },
   {
     id: '6',
     image: 'https://images.unsplash.com/photo-1591369822096-ffd140ec948f?w=400',
-    title: 'Woshife',
-    subtitle: 'Nyonaris',
+    title: 'ニットセーター',
+    subtitle: '秋冬コレクション',
     liked: false,
   },
   {
     id: '7',
     image: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=400',
-    title: 'Banlik Solttoe',
-    subtitle: 'Paranemold',
+    title: 'ボヘミアンスタイル',
+    subtitle: 'リゾートウェア',
     liked: false,
   },
   {
     id: '8',
     image: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=400',
-    title: 'Kiroscmlons',
-    subtitle: 'Tbeods',
+    title: 'レイヤードコーデ',
+    subtitle: 'トレンドスタイル',
     liked: false,
   },
 ];
@@ -90,7 +90,7 @@ export default function ShopTheLook() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Recommended for You</Text>
+        <Text style={styles.title}>あなたにおすすめ</Text>
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.iconButton}>
             <Heart size={20} color={colors.secondaryText} />
