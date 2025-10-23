@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useMemo } from 'react';
 import { FlatList, StyleSheet, View, Text, TouchableOpacity, Dimensions, ScrollView, Animated, NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
@@ -26,9 +26,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import MenuDrawer from '@/components/MenuDrawer';
 import TopStylists from '@/components/home/TopStylists';
 import RecommendedGrid from '@/components/home/RecommendedGrid';
-import DailyChallengeCard from '@/components/home/DailyChallengeCard';
-import TrendingQA from '@/components/home/TrendingQA';
 import ShopTheLook from '@/components/home/ShopTheLook';
+import { mixFollowerAndRecommendedPosts } from '@/utils/feedUtils';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width / 2) - 24;
@@ -52,6 +51,8 @@ export default function FeedScreen() {
 
   const activeStreams = liveStreams.filter(stream => stream.isActive);
 
+  // Mix follower posts with recommended posts (2-3 follower posts, then 1 recommended)
+  const mixedPosts = useMemo(() => mixFollowerAndRecommendedPosts(posts), []);
 
   const handleCloseFavorites = () => {
     setShowFavorites(false);
@@ -261,28 +262,27 @@ export default function FeedScreen() {
         {/* Recommended Grid Section */}
         <RecommendedGrid />
 
-        {/* Daily Challenge Section */}
-        <DailyChallengeCard />
-
-        {/* Trending Q&A Section */}
-        <TrendingQA />
-
-        {/* Room Lives Section */}
-        <RoomLivesList />
-
         {/* Recommended Users Section */}
         <RecommendedUsersSlider />
 
         {/* Shopping Posts */}
-        {shoppingPosts.slice(0, 3).map((post) => (
+        {shoppingPosts.slice(0, 2).map((post) => (
+          <ShoppingPost key={post.id} post={post} />
+        ))}
+
+        {/* Room Lives Section - 投稿の途中に表示 */}
+        <RoomLivesList />
+
+        {/* More Shopping Posts */}
+        {shoppingPosts.slice(2, 3).map((post) => (
           <ShoppingPost key={post.id} post={post} />
         ))}
 
         {/* Recommendations Slider */}
         <RecommendationsSlider />
 
-        {/* More Posts */}
-        {posts.slice(0, 2).map((post) => (
+        {/* Mixed Posts (Followers + Recommended) */}
+        {mixedPosts.map((post) => (
           <Post key={post.id} post={post} />
         ))}
       </Animated.ScrollView>

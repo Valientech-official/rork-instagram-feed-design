@@ -5,6 +5,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useThemeStore } from "@/store/themeStore";
 
 export const unstable_settings = {
   initialRouteName: "(auth)",
@@ -40,9 +41,11 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
+  const { theme } = useThemeStore();
+
   return (
     <SafeAreaProvider>
-      <StatusBar style="auto" />
+      <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
       <Stack
         screenOptions={{
           headerBackTitle: "Back",

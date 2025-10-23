@@ -80,6 +80,7 @@ export default function RecommendedGrid() {
   const colors = Colors[theme];
   const styles = createStyles(colors);
   const [items, setItems] = useState(ITEMS);
+  const [displayCount, setDisplayCount] = useState(8);
 
   const toggleLike = (id: string) => {
     setItems(items.map(item =>
@@ -87,10 +88,14 @@ export default function RecommendedGrid() {
     ));
   };
 
+  const handleLoadMore = () => {
+    setDisplayCount(prev => Math.min(prev + 8, items.length));
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>おすすめアイテム</Text>
+        <Text style={styles.title}>おすすめ&トレンドアイテム</Text>
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.iconButton}>
             <Heart size={20} color={colors.secondaryText} />
@@ -102,7 +107,7 @@ export default function RecommendedGrid() {
       </View>
 
       <View style={styles.grid}>
-        {items.map((item, index) => (
+        {items.slice(0, displayCount).map((item, index) => (
           <TouchableOpacity
             key={item.id}
             style={[
@@ -132,6 +137,15 @@ export default function RecommendedGrid() {
             </View>
           </TouchableOpacity>
         ))}
+        {displayCount < items.length && (
+          <TouchableOpacity
+            style={[styles.gridItem, styles.moreButton]}
+            onPress={handleLoadMore}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.moreButtonText}>more</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -202,5 +216,15 @@ const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   itemBrand: {
     fontSize: 11,
     color: colors.secondaryText,
+  },
+  moreButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.border,
+  },
+  moreButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.text,
   },
 });

@@ -13,6 +13,7 @@ export interface Post {
   timestamp: string;
   location?: string;
   aspectRatio: '1:1' | '16:9' | '9:16';
+  isFollowing?: boolean; // true = follower's post, false/undefined = recommended post
 }
 
 export const posts: Post[] = [
@@ -34,6 +35,7 @@ export const posts: Post[] = [
     timestamp: "2時間前",
     location: "表参道",
     aspectRatio: '1:1',
+    isFollowing: true,
   },
   {
     id: "2",
@@ -51,6 +53,7 @@ export const posts: Post[] = [
     comments: 89,
     timestamp: "5時間前",
     aspectRatio: '9:16',
+    isFollowing: true,
   },
   {
     id: "3",
@@ -71,6 +74,7 @@ export const posts: Post[] = [
     timestamp: "1日前",
     location: "渋谷",
     aspectRatio: '16:9',
+    isFollowing: false,
   },
   {
     id: "4",
@@ -89,5 +93,6 @@ export const posts: Post[] = [
     timestamp: "2日前",
     location: "代官山",
     aspectRatio: '1:1',
+    isFollowing: true,
   },
 ];

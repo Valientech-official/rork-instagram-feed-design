@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import { Image } from 'expo-image';
 import { Heart, MoreHorizontal } from 'lucide-react-native';
 import { useThemeStore } from '@/store/themeStore';
 import Colors from '@/constants/colors';
 
 const { width } = Dimensions.get('window');
-const ITEM_WIDTH = (width - 64) / 4; // 16px padding on sides + 16px gap between items
+const ITEM_WIDTH = (width - 48) / 2; // 2列表示用の幅
 
 interface LookItem {
   id: string;
@@ -90,7 +90,7 @@ export default function ShopTheLook() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>あなたにおすすめ</Text>
+        <Text style={styles.title}>HOT  ITEM</Text>
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.iconButton}>
             <Heart size={20} color={colors.secondaryText} />
@@ -101,37 +101,45 @@ export default function ShopTheLook() {
         </View>
       </View>
 
-      <View style={styles.grid}>
-        {items.map((item) => (
-          <TouchableOpacity
-            key={item.id}
-            style={styles.gridItem}
-            activeOpacity={0.8}
-          >
-            <Image
-              source={{ uri: item.image }}
-              style={styles.itemImage}
-              contentFit="cover"
-            />
-            <View style={styles.overlay}>
-              <View style={styles.textContainer}>
-                <Text style={styles.itemTitle} numberOfLines={1}>{item.title}</Text>
-                <Text style={styles.itemSubtitle} numberOfLines={1}>{item.subtitle}</Text>
-              </View>
-            </View>
-            <TouchableOpacity
-              style={styles.likeButton}
-              onPress={() => toggleLike(item.id)}
-            >
-              <Heart
-                size={16}
-                color={item.liked ? colors.like : '#fff'}
-                fill={item.liked ? colors.like : 'transparent'}
-              />
-            </TouchableOpacity>
-          </TouchableOpacity>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {Array.from({ length: Math.ceil(items.length / 2) }).map((_, groupIndex) => (
+          <View key={groupIndex} style={styles.columnGroup}>
+            {items.slice(groupIndex * 2, groupIndex * 2 + 2).map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                style={styles.gridItem}
+                activeOpacity={0.8}
+              >
+                <Image
+                  source={{ uri: item.image }}
+                  style={styles.itemImage}
+                  contentFit="cover"
+                />
+                <View style={styles.overlay}>
+                  <View style={styles.textContainer}>
+                    <Text style={styles.itemTitle} numberOfLines={1}>{item.title}</Text>
+                    <Text style={styles.itemSubtitle} numberOfLines={1}>{item.subtitle}</Text>
+                  </View>
+                </View>
+                <TouchableOpacity
+                  style={styles.likeButton}
+                  onPress={() => toggleLike(item.id)}
+                >
+                  <Heart
+                    size={16}
+                    color={item.liked ? colors.like : '#fff'}
+                    fill={item.liked ? colors.like : 'transparent'}
+                  />
+                </TouchableOpacity>
+              </TouchableOpacity>
+            ))}
+          </View>
         ))}
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -159,11 +167,14 @@ const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   iconButton: {
     padding: 4,
   },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  scrollContent: {
     paddingHorizontal: 16,
-    gap: 8,
+    gap: 12,
+  },
+  columnGroup: {
+    flexDirection: 'column',
+    gap: 12,
+    width: ITEM_WIDTH,
   },
   gridItem: {
     width: ITEM_WIDTH,
