@@ -5,7 +5,9 @@
       "Read(//mnt/c/Users/manat/OneDrive/画像/スクリーンショット/**)",
       "Bash(cat:*)",
       "Bash(tree:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(npm view:*)",
+      "Bash(npm install:*)"
     ],
     "deny": [],
     "ask": []

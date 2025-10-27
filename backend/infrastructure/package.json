@@ -1,0 +1,26 @@
+{
+  "name": "piece-app-infrastructure",
+  "version": "1.0.0",
+  "description": "AWS CDK infrastructure for piece-app backend",
+  "main": "bin/app.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "cdk",
+    "deploy": "cdk deploy --all",
+    "diff": "cdk diff",
+    "synth": "cdk synth"
+  },
+  "keywords": ["aws", "cdk", "infrastructure"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^24.9.1",
+    "typescript": "^5.9.3",
+    "aws-cdk": "^2.1031.0"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.221.0",
+    "constructs": "^10.4.2"
+  }
+}
