@@ -461,10 +461,11 @@ export class DynamoDBStack extends cdk.Stack {
           sortKey: { name: 'created_at', type: dynamodb.AttributeType.NUMBER },
         },
         {
-          // GSI2: 対象別レポート
+          // GSI2: 対象タイプ別レポート（時系列）
+          // target_idはFilterExpressionで絞り込む
           indexName: 'GSI_target_reports',
           partitionKey: { name: 'target_type', type: dynamodb.AttributeType.STRING },
-          sortKey: { name: 'target_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'created_at', type: dynamodb.AttributeType.NUMBER },
         },
         {
           // GSI3: 通報者履歴
