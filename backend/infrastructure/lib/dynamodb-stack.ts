@@ -483,7 +483,351 @@ export class DynamoDBStack extends cdk.Stack {
     });
 
     // =====================================================
-    // 第2段階: 残り11テーブルはここに追加予定
+    // 17. LIVE_STREAM テーブル (GSI: 3, TTL: 30日)
+    // =====================================================
+    // ライブ配信管理
+    // viewer_count使用（ベストプラクティス）
+    this.tables.liveStream = new dynamodb.TableV2(this, 'LiveStreamTable', {
+      tableName: `LIVE_STREAM${tableSuffix}`,
+
+      // PK: stream_id (ULID)
+      // SK: created_at
+      partitionKey: { name: 'stream_id', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'created_at', type: dynamodb.AttributeType.NUMBER },
+
+      ...commonTableProps,
+      timeToLiveAttribute: 'ttl', // 30日後削除（アーカイブ期間）
+
+      globalSecondaryIndexes: [
+        {
+          // GSI1: ルームの配信一覧
+          indexName: 'GSI_room_lives',
+          partitionKey: { name: 'room_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'started_at', type: dynamodb.AttributeType.NUMBER },
+        },
+        {
+          // GSI2: アカウントの配信履歴
+          indexName: 'GSI_account_lives',
+          partitionKey: { name: 'account_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'started_at', type: dynamodb.AttributeType.NUMBER },
+        },
+        {
+          // GSI3: アクティブ配信一覧
+          indexName: 'GSI_active_lives',
+          partitionKey: { name: 'status', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'started_at', type: dynamodb.AttributeType.NUMBER },
+        },
+      ],
+    });
+
+    // =====================================================
+    // 18. LIVE_VIEWER テーブル (GSI: 2, TTL: 7日)
+    // =====================================================
+    // ライブ視聴者管理（履歴・分析専用）
+    // リアルタイムの視聴者数はLIVE_STREAM.viewer_countを使用
+    this.tables.liveViewer = new dynamodb.TableV2(this, 'LiveViewerTable', {
+      tableName: `LIVE_VIEWER${tableSuffix}`,
+
+      // PK: viewer_key (stream_id#account_id)
+      // SK: joined_at
+      partitionKey: { name: 'viewer_key', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'joined_at', type: dynamodb.AttributeType.NUMBER },
+
+      ...commonTableProps,
+      timeToLiveAttribute: 'ttl', // 配信終了7日後に削除
+
+      globalSecondaryIndexes: [
+        {
+          // GSI1: 配信の視聴者一覧（is_active=trueでフィルタ）
+          indexName: 'GSI_stream_viewers',
+          partitionKey: { name: 'stream_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'last_ping_at', type: dynamodb.AttributeType.NUMBER },
+        },
+        {
+          // GSI2: ユーザーの視聴履歴
+          indexName: 'GSI_user_watch_history',
+          partitionKey: { name: 'account_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'joined_at', type: dynamodb.AttributeType.NUMBER },
+        },
+      ],
+    });
+
+    // =====================================================
+    // 19. LIVE_MODERATOR テーブル (GSI: 1)
+    // =====================================================
+    // ライブ配信モデレーター管理
+    this.tables.liveModerator = new dynamodb.TableV2(this, 'LiveModeratorTable', {
+      tableName: `LIVE_MODERATOR${tableSuffix}`,
+
+      // PK: stream_id
+      // SK: moderator_account_id
+      partitionKey: { name: 'stream_id', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'moderator_account_id', type: dynamodb.AttributeType.STRING },
+
+      ...commonTableProps,
+
+      globalSecondaryIndexes: [
+        {
+          // GSI1: モデレーターの配信一覧
+          indexName: 'GSI_moderator_streams',
+          partitionKey: { name: 'moderator_account_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'assigned_at', type: dynamodb.AttributeType.NUMBER },
+        },
+      ],
+    });
+
+    // =====================================================
+    // 20. MODERATOR_ACTION_LOG テーブル (GSI: 2)
+    // =====================================================
+    // モデレーターアクションログ
+    this.tables.moderatorActionLog = new dynamodb.TableV2(this, 'ModeratorActionLogTable', {
+      tableName: `MODERATOR_ACTION_LOG${tableSuffix}`,
+
+      // PK: log_id (ULID)
+      partitionKey: { name: 'log_id', type: dynamodb.AttributeType.STRING },
+
+      ...commonTableProps,
+
+      globalSecondaryIndexes: [
+        {
+          // GSI1: 配信のアクションログ
+          indexName: 'GSI_stream_actions',
+          partitionKey: { name: 'stream_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'created_at', type: dynamodb.AttributeType.NUMBER },
+        },
+        {
+          // GSI2: モデレーターのアクション履歴
+          indexName: 'GSI_moderator_actions',
+          partitionKey: { name: 'moderator_account_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'created_at', type: dynamodb.AttributeType.NUMBER },
+        },
+      ],
+    });
+
+    // =====================================================
+    // 21. LIVE_CHAT テーブル (GSI: 1, TTL: 7日)
+    // =====================================================
+    // ライブチャット管理（WebSocket対応）
+    this.tables.liveChat = new dynamodb.TableV2(this, 'LiveChatTable', {
+      tableName: `LIVE_CHAT${tableSuffix}`,
+
+      // PK: stream_id
+      // SK: chat_id (ULID)
+      partitionKey: { name: 'stream_id', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'chat_id', type: dynamodb.AttributeType.STRING },
+
+      ...commonTableProps,
+      timeToLiveAttribute: 'ttl', // 配信終了7日後に削除
+
+      globalSecondaryIndexes: [
+        {
+          // GSI1: ユーザーのチャット履歴（スパム検出用）
+          indexName: 'GSI_user_chat_history',
+          partitionKey: { name: 'account_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'created_at', type: dynamodb.AttributeType.NUMBER },
+        },
+      ],
+    });
+
+    // =====================================================
+    // 22. LIVE_GIFT テーブル (GSI: 3, TTL: 30日)
+    // =====================================================
+    // ライブギフト管理（将来の収益化用）
+    this.tables.liveGift = new dynamodb.TableV2(this, 'LiveGiftTable', {
+      tableName: `LIVE_GIFT${tableSuffix}`,
+
+      // PK: gift_id (ULID)
+      // SK: created_at
+      partitionKey: { name: 'gift_id', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'created_at', type: dynamodb.AttributeType.NUMBER },
+
+      ...commonTableProps,
+      timeToLiveAttribute: 'ttl', // 配信終了30日後に削除
+
+      globalSecondaryIndexes: [
+        {
+          // GSI1: 配信のギフト一覧
+          indexName: 'GSI_stream_gifts',
+          partitionKey: { name: 'stream_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'created_at', type: dynamodb.AttributeType.NUMBER },
+        },
+        {
+          // GSI2: 送信者のギフト履歴
+          indexName: 'GSI_sender_gifts',
+          partitionKey: { name: 'from_account_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'created_at', type: dynamodb.AttributeType.NUMBER },
+        },
+        {
+          // GSI3: 受信者のギフト履歴
+          indexName: 'GSI_receiver_gifts',
+          partitionKey: { name: 'to_account_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'created_at', type: dynamodb.AttributeType.NUMBER },
+        },
+      ],
+    });
+
+    // =====================================================
+    // 23. PRODUCT テーブル (GSI: 3, TTL: 90日)
+    // =====================================================
+    // 商品管理
+    // sale_price追加（過去の会話で決定）
+    this.tables.product = new dynamodb.TableV2(this, 'ProductTable', {
+      tableName: `PRODUCT${tableSuffix}`,
+
+      // PK: product_id (ULID)
+      // SK: created_at
+      partitionKey: { name: 'product_id', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'created_at', type: dynamodb.AttributeType.NUMBER },
+
+      ...commonTableProps,
+      timeToLiveAttribute: 'ttl', // 削除後90日で物理削除
+
+      globalSecondaryIndexes: [
+        {
+          // GSI1: 出品者の商品一覧
+          indexName: 'GSI_seller_products',
+          partitionKey: { name: 'seller_account_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'created_at', type: dynamodb.AttributeType.NUMBER },
+        },
+        {
+          // GSI2: カテゴリー別商品一覧
+          indexName: 'GSI_category_products',
+          partitionKey: { name: 'category', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'created_at', type: dynamodb.AttributeType.NUMBER },
+        },
+        {
+          // GSI3: ステータス別商品一覧
+          indexName: 'GSI_status_products',
+          partitionKey: { name: 'status', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'created_at', type: dynamodb.AttributeType.NUMBER },
+        },
+      ],
+    });
+
+    // =====================================================
+    // 24. PRODUCT_TAG テーブル (GSI: 2)
+    // =====================================================
+    // 投稿への商品タグ付け
+    this.tables.productTag = new dynamodb.TableV2(this, 'ProductTagTable', {
+      tableName: `PRODUCT_TAG${tableSuffix}`,
+
+      // PK: post_id
+      // SK: product_id
+      partitionKey: { name: 'post_id', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'product_id', type: dynamodb.AttributeType.STRING },
+
+      ...commonTableProps,
+
+      globalSecondaryIndexes: [
+        {
+          // GSI1: 商品がタグ付けされた投稿一覧
+          indexName: 'GSI_product_posts',
+          partitionKey: { name: 'product_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'tagged_at', type: dynamodb.AttributeType.NUMBER },
+        },
+        {
+          // GSI2: ユーザーのタグ付け履歴
+          indexName: 'GSI_user_tags',
+          partitionKey: { name: 'tagged_by_account_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'tagged_at', type: dynamodb.AttributeType.NUMBER },
+        },
+      ],
+    });
+
+    // =====================================================
+    // 25. CONVERSATION テーブル (GSI: 2)
+    // =====================================================
+    // DM会話管理
+    this.tables.conversation = new dynamodb.TableV2(this, 'ConversationTable', {
+      tableName: `CONVERSATION${tableSuffix}`,
+
+      // PK: conversation_id (ULID)
+      // SK: created_at
+      partitionKey: { name: 'conversation_id', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'created_at', type: dynamodb.AttributeType.NUMBER },
+
+      ...commonTableProps,
+
+      globalSecondaryIndexes: [
+        {
+          // GSI1: 参加者1の会話一覧
+          indexName: 'GSI_participant1_conversations',
+          partitionKey: { name: 'participant_1_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'last_message_at', type: dynamodb.AttributeType.NUMBER },
+        },
+        {
+          // GSI2: 参加者2の会話一覧
+          indexName: 'GSI_participant2_conversations',
+          partitionKey: { name: 'participant_2_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'last_message_at', type: dynamodb.AttributeType.NUMBER },
+        },
+      ],
+    });
+
+    // =====================================================
+    // 26. MESSAGE テーブル (GSI: 1, TTL: 90日)
+    // =====================================================
+    // DMメッセージ管理
+    this.tables.message = new dynamodb.TableV2(this, 'MessageTable', {
+      tableName: `MESSAGE${tableSuffix}`,
+
+      // PK: conversation_id
+      // SK: message_id (ULID)
+      partitionKey: { name: 'conversation_id', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'message_id', type: dynamodb.AttributeType.STRING },
+
+      ...commonTableProps,
+      timeToLiveAttribute: 'ttl', // 会話削除後90日で物理削除
+
+      globalSecondaryIndexes: [
+        {
+          // GSI1: 送信者のメッセージ履歴
+          indexName: 'GSI_sender_messages',
+          partitionKey: { name: 'sender_account_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'created_at', type: dynamodb.AttributeType.NUMBER },
+        },
+      ],
+    });
+
+    // =====================================================
+    // 27. ANALYTICS テーブル (GSI: 3, TTL: 90日)
+    // =====================================================
+    // アクセス解析データ
+    this.tables.analytics = new dynamodb.TableV2(this, 'AnalyticsTable', {
+      tableName: `ANALYTICS${tableSuffix}`,
+
+      // PK: date (YYYY-MM-DD)
+      // SK: event_id (ULID)
+      partitionKey: { name: 'date', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'event_id', type: dynamodb.AttributeType.STRING },
+
+      ...commonTableProps,
+      timeToLiveAttribute: 'ttl', // 90日後に削除
+
+      globalSecondaryIndexes: [
+        {
+          // GSI1: ユーザーのイベント履歴
+          indexName: 'GSI_user_events',
+          partitionKey: { name: 'account_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'timestamp', type: dynamodb.AttributeType.NUMBER },
+        },
+        {
+          // GSI2: イベントタイプ別集計
+          indexName: 'GSI_event_type',
+          partitionKey: { name: 'event_type', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'timestamp', type: dynamodb.AttributeType.NUMBER },
+        },
+        {
+          // GSI3: 対象別イベント（target_idはFilterExpressionで絞り込む）
+          indexName: 'GSI_target_events',
+          partitionKey: { name: 'target_type', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'timestamp', type: dynamodb.AttributeType.NUMBER },
+        },
+      ],
+    });
+
+    // =====================================================
+    // 全27テーブル作成完了
     // =====================================================
 
     // =====================================================
