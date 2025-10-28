@@ -1,0 +1,3240 @@
+{
+ "Description": "16 Lambda functions for API handlers (Development)",
+ "Resources": {
+  "CreateAccountFunctionLogGroup1A713697": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/piece-app-create-account-dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/CreateAccountFunctionLogGroup/Resource"
+   }
+  },
+  "CreateAccountFunctionServiceRole7A83FD08": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/CreateAccountFunction/ServiceRole/Resource"
+   }
+  },
+  "CreateAccountFunctionServiceRoleDefaultPolicy54EA7564": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:dynamodb:ap-northeast-1:",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":table/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "CreateAccountFunctionServiceRoleDefaultPolicy54EA7564",
+    "Roles": [
+     {
+      "Ref": "CreateAccountFunctionServiceRole7A83FD08"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/CreateAccountFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "CreateAccountFunctionB1A7B865": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
+     },
+     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+    },
+    "Description": "Create new account",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "NODE_ENV": "development"
+     }
+    },
+    "FunctionName": "piece-app-create-account-dev",
+    "Handler": "handlers/account/createAccount.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "CreateAccountFunctionLogGroup1A713697"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "CreateAccountFunctionServiceRole7A83FD08",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ],
+    "Timeout": 30,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "CreateAccountFunctionServiceRoleDefaultPolicy54EA7564",
+    "CreateAccountFunctionServiceRole7A83FD08"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/CreateAccountFunction/Resource",
+    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GetProfileFunctionLogGroupC8C0D4EE": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/piece-app-get-profile-dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/GetProfileFunctionLogGroup/Resource"
+   }
+  },
+  "GetProfileFunctionServiceRole6BDF10E2": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/GetProfileFunction/ServiceRole/Resource"
+   }
+  },
+  "GetProfileFunctionServiceRoleDefaultPolicyE093D831": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:dynamodb:ap-northeast-1:",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":table/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GetProfileFunctionServiceRoleDefaultPolicyE093D831",
+    "Roles": [
+     {
+      "Ref": "GetProfileFunctionServiceRole6BDF10E2"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/GetProfileFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "GetProfileFunction8A105C24": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
+     },
+     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+    },
+    "Description": "Get user profile",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "NODE_ENV": "development"
+     }
+    },
+    "FunctionName": "piece-app-get-profile-dev",
+    "Handler": "handlers/account/getProfile.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "GetProfileFunctionLogGroupC8C0D4EE"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "GetProfileFunctionServiceRole6BDF10E2",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ],
+    "Timeout": 30,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "GetProfileFunctionServiceRoleDefaultPolicyE093D831",
+    "GetProfileFunctionServiceRole6BDF10E2"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/GetProfileFunction/Resource",
+    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "UpdateProfileFunctionLogGroup05D59A0D": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/piece-app-update-profile-dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/UpdateProfileFunctionLogGroup/Resource"
+   }
+  },
+  "UpdateProfileFunctionServiceRole8B8F925E": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/UpdateProfileFunction/ServiceRole/Resource"
+   }
+  },
+  "UpdateProfileFunctionServiceRoleDefaultPolicy7EA15D9A": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:dynamodb:ap-northeast-1:",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":table/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "UpdateProfileFunctionServiceRoleDefaultPolicy7EA15D9A",
+    "Roles": [
+     {
+      "Ref": "UpdateProfileFunctionServiceRole8B8F925E"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/UpdateProfileFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "UpdateProfileFunction2A160882": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
+     },
+     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+    },
+    "Description": "Update user profile",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "NODE_ENV": "development"
+     }
+    },
+    "FunctionName": "piece-app-update-profile-dev",
+    "Handler": "handlers/account/updateProfile.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "UpdateProfileFunctionLogGroup05D59A0D"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "UpdateProfileFunctionServiceRole8B8F925E",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ],
+    "Timeout": 30,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "UpdateProfileFunctionServiceRoleDefaultPolicy7EA15D9A",
+    "UpdateProfileFunctionServiceRole8B8F925E"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/UpdateProfileFunction/Resource",
+    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "CreatePostFunctionLogGroup4818EB19": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/piece-app-create-post-dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/CreatePostFunctionLogGroup/Resource"
+   }
+  },
+  "CreatePostFunctionServiceRoleCAC21E42": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/CreatePostFunction/ServiceRole/Resource"
+   }
+  },
+  "CreatePostFunctionServiceRoleDefaultPolicyD597A210": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:dynamodb:ap-northeast-1:",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":table/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "CreatePostFunctionServiceRoleDefaultPolicyD597A210",
+    "Roles": [
+     {
+      "Ref": "CreatePostFunctionServiceRoleCAC21E42"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/CreatePostFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "CreatePostFunction56510812": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
+     },
+     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+    },
+    "Description": "Create new post",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "NODE_ENV": "development"
+     }
+    },
+    "FunctionName": "piece-app-create-post-dev",
+    "Handler": "handlers/post/createPost.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "CreatePostFunctionLogGroup4818EB19"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "CreatePostFunctionServiceRoleCAC21E42",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ],
+    "Timeout": 30,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "CreatePostFunctionServiceRoleDefaultPolicyD597A210",
+    "CreatePostFunctionServiceRoleCAC21E42"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/CreatePostFunction/Resource",
+    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GetPostFunctionLogGroup7518B25C": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/piece-app-get-post-dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/GetPostFunctionLogGroup/Resource"
+   }
+  },
+  "GetPostFunctionServiceRole8B816CAB": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/GetPostFunction/ServiceRole/Resource"
+   }
+  },
+  "GetPostFunctionServiceRoleDefaultPolicyFA724DF7": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:dynamodb:ap-northeast-1:",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":table/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GetPostFunctionServiceRoleDefaultPolicyFA724DF7",
+    "Roles": [
+     {
+      "Ref": "GetPostFunctionServiceRole8B816CAB"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/GetPostFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "GetPostFunction29A17447": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
+     },
+     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+    },
+    "Description": "Get post details",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "NODE_ENV": "development"
+     }
+    },
+    "FunctionName": "piece-app-get-post-dev",
+    "Handler": "handlers/post/getPost.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "GetPostFunctionLogGroup7518B25C"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "GetPostFunctionServiceRole8B816CAB",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ],
+    "Timeout": 30,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "GetPostFunctionServiceRoleDefaultPolicyFA724DF7",
+    "GetPostFunctionServiceRole8B816CAB"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/GetPostFunction/Resource",
+    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "DeletePostFunctionLogGroupF51EA510": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/piece-app-delete-post-dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/DeletePostFunctionLogGroup/Resource"
+   }
+  },
+  "DeletePostFunctionServiceRole270036C0": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/DeletePostFunction/ServiceRole/Resource"
+   }
+  },
+  "DeletePostFunctionServiceRoleDefaultPolicy10BC29FC": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:dynamodb:ap-northeast-1:",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":table/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "DeletePostFunctionServiceRoleDefaultPolicy10BC29FC",
+    "Roles": [
+     {
+      "Ref": "DeletePostFunctionServiceRole270036C0"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/DeletePostFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "DeletePostFunction442EA4DB": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
+     },
+     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+    },
+    "Description": "Delete post",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "NODE_ENV": "development"
+     }
+    },
+    "FunctionName": "piece-app-delete-post-dev",
+    "Handler": "handlers/post/deletePost.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "DeletePostFunctionLogGroupF51EA510"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "DeletePostFunctionServiceRole270036C0",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ],
+    "Timeout": 30,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "DeletePostFunctionServiceRoleDefaultPolicy10BC29FC",
+    "DeletePostFunctionServiceRole270036C0"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/DeletePostFunction/Resource",
+    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GetTimelineFunctionLogGroup027BD8B2": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/piece-app-get-timeline-dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/GetTimelineFunctionLogGroup/Resource"
+   }
+  },
+  "GetTimelineFunctionServiceRole24E2B995": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/GetTimelineFunction/ServiceRole/Resource"
+   }
+  },
+  "GetTimelineFunctionServiceRoleDefaultPolicy49A6E7E5": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:dynamodb:ap-northeast-1:",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":table/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GetTimelineFunctionServiceRoleDefaultPolicy49A6E7E5",
+    "Roles": [
+     {
+      "Ref": "GetTimelineFunctionServiceRole24E2B995"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/GetTimelineFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "GetTimelineFunctionA617EDF2": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
+     },
+     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+    },
+    "Description": "Get user timeline",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "NODE_ENV": "development"
+     }
+    },
+    "FunctionName": "piece-app-get-timeline-dev",
+    "Handler": "handlers/post/getTimeline.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "GetTimelineFunctionLogGroup027BD8B2"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "GetTimelineFunctionServiceRole24E2B995",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ],
+    "Timeout": 30,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "GetTimelineFunctionServiceRoleDefaultPolicy49A6E7E5",
+    "GetTimelineFunctionServiceRole24E2B995"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/GetTimelineFunction/Resource",
+    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "LikePostFunctionLogGroupAAB6AFEE": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/piece-app-like-post-dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/LikePostFunctionLogGroup/Resource"
+   }
+  },
+  "LikePostFunctionServiceRole7F80FB55": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/LikePostFunction/ServiceRole/Resource"
+   }
+  },
+  "LikePostFunctionServiceRoleDefaultPolicyA045F05E": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:dynamodb:ap-northeast-1:",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":table/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LikePostFunctionServiceRoleDefaultPolicyA045F05E",
+    "Roles": [
+     {
+      "Ref": "LikePostFunctionServiceRole7F80FB55"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/LikePostFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LikePostFunctionEAEFAE85": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
+     },
+     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+    },
+    "Description": "Like a post",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "NODE_ENV": "development"
+     }
+    },
+    "FunctionName": "piece-app-like-post-dev",
+    "Handler": "handlers/like/likePost.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "LikePostFunctionLogGroupAAB6AFEE"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "LikePostFunctionServiceRole7F80FB55",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ],
+    "Timeout": 30,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "LikePostFunctionServiceRoleDefaultPolicyA045F05E",
+    "LikePostFunctionServiceRole7F80FB55"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/LikePostFunction/Resource",
+    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "UnlikePostFunctionLogGroup752A066D": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/piece-app-unlike-post-dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/UnlikePostFunctionLogGroup/Resource"
+   }
+  },
+  "UnlikePostFunctionServiceRoleFADA4A7A": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/UnlikePostFunction/ServiceRole/Resource"
+   }
+  },
+  "UnlikePostFunctionServiceRoleDefaultPolicyC93B172F": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:dynamodb:ap-northeast-1:",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":table/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "UnlikePostFunctionServiceRoleDefaultPolicyC93B172F",
+    "Roles": [
+     {
+      "Ref": "UnlikePostFunctionServiceRoleFADA4A7A"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/UnlikePostFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "UnlikePostFunctionF2D5BDFE": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
+     },
+     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+    },
+    "Description": "Unlike a post",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "NODE_ENV": "development"
+     }
+    },
+    "FunctionName": "piece-app-unlike-post-dev",
+    "Handler": "handlers/like/unlikePost.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "UnlikePostFunctionLogGroup752A066D"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "UnlikePostFunctionServiceRoleFADA4A7A",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ],
+    "Timeout": 30,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "UnlikePostFunctionServiceRoleDefaultPolicyC93B172F",
+    "UnlikePostFunctionServiceRoleFADA4A7A"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/UnlikePostFunction/Resource",
+    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "CreateCommentFunctionLogGroup878D3346": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/piece-app-create-comment-dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/CreateCommentFunctionLogGroup/Resource"
+   }
+  },
+  "CreateCommentFunctionServiceRoleFF3E614F": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/CreateCommentFunction/ServiceRole/Resource"
+   }
+  },
+  "CreateCommentFunctionServiceRoleDefaultPolicyABFC176C": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:dynamodb:ap-northeast-1:",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":table/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "CreateCommentFunctionServiceRoleDefaultPolicyABFC176C",
+    "Roles": [
+     {
+      "Ref": "CreateCommentFunctionServiceRoleFF3E614F"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/CreateCommentFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "CreateCommentFunction2CCB21BA": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
+     },
+     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+    },
+    "Description": "Create comment on post",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "NODE_ENV": "development"
+     }
+    },
+    "FunctionName": "piece-app-create-comment-dev",
+    "Handler": "handlers/comment/createComment.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "CreateCommentFunctionLogGroup878D3346"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "CreateCommentFunctionServiceRoleFF3E614F",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ],
+    "Timeout": 30,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "CreateCommentFunctionServiceRoleDefaultPolicyABFC176C",
+    "CreateCommentFunctionServiceRoleFF3E614F"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/CreateCommentFunction/Resource",
+    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "DeleteCommentFunctionLogGroup13353F57": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/piece-app-delete-comment-dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/DeleteCommentFunctionLogGroup/Resource"
+   }
+  },
+  "DeleteCommentFunctionServiceRole00ED93D1": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/DeleteCommentFunction/ServiceRole/Resource"
+   }
+  },
+  "DeleteCommentFunctionServiceRoleDefaultPolicy7CEF2603": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:dynamodb:ap-northeast-1:",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":table/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "DeleteCommentFunctionServiceRoleDefaultPolicy7CEF2603",
+    "Roles": [
+     {
+      "Ref": "DeleteCommentFunctionServiceRole00ED93D1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/DeleteCommentFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "DeleteCommentFunctionFC7A50A9": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
+     },
+     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+    },
+    "Description": "Delete comment",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "NODE_ENV": "development"
+     }
+    },
+    "FunctionName": "piece-app-delete-comment-dev",
+    "Handler": "handlers/comment/deleteComment.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "DeleteCommentFunctionLogGroup13353F57"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "DeleteCommentFunctionServiceRole00ED93D1",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ],
+    "Timeout": 30,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "DeleteCommentFunctionServiceRoleDefaultPolicy7CEF2603",
+    "DeleteCommentFunctionServiceRole00ED93D1"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/DeleteCommentFunction/Resource",
+    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GetCommentsFunctionLogGroup4DE5B8E6": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/piece-app-get-comments-dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/GetCommentsFunctionLogGroup/Resource"
+   }
+  },
+  "GetCommentsFunctionServiceRole3B8AD617": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/GetCommentsFunction/ServiceRole/Resource"
+   }
+  },
+  "GetCommentsFunctionServiceRoleDefaultPolicy86823EBD": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:dynamodb:ap-northeast-1:",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":table/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GetCommentsFunctionServiceRoleDefaultPolicy86823EBD",
+    "Roles": [
+     {
+      "Ref": "GetCommentsFunctionServiceRole3B8AD617"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/GetCommentsFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "GetCommentsFunction51A1C6FC": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
+     },
+     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+    },
+    "Description": "Get comments for post",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "NODE_ENV": "development"
+     }
+    },
+    "FunctionName": "piece-app-get-comments-dev",
+    "Handler": "handlers/comment/getComments.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "GetCommentsFunctionLogGroup4DE5B8E6"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "GetCommentsFunctionServiceRole3B8AD617",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ],
+    "Timeout": 30,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "GetCommentsFunctionServiceRoleDefaultPolicy86823EBD",
+    "GetCommentsFunctionServiceRole3B8AD617"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/GetCommentsFunction/Resource",
+    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "FollowUserFunctionLogGroup612FE9A3": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/piece-app-follow-user-dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/FollowUserFunctionLogGroup/Resource"
+   }
+  },
+  "FollowUserFunctionServiceRole01DFDF62": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/FollowUserFunction/ServiceRole/Resource"
+   }
+  },
+  "FollowUserFunctionServiceRoleDefaultPolicy4860485C": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:dynamodb:ap-northeast-1:",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":table/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "FollowUserFunctionServiceRoleDefaultPolicy4860485C",
+    "Roles": [
+     {
+      "Ref": "FollowUserFunctionServiceRole01DFDF62"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/FollowUserFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "FollowUserFunctionD86228D7": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
+     },
+     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+    },
+    "Description": "Follow a user",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "NODE_ENV": "development"
+     }
+    },
+    "FunctionName": "piece-app-follow-user-dev",
+    "Handler": "handlers/follow/followUser.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "FollowUserFunctionLogGroup612FE9A3"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "FollowUserFunctionServiceRole01DFDF62",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ],
+    "Timeout": 30,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "FollowUserFunctionServiceRoleDefaultPolicy4860485C",
+    "FollowUserFunctionServiceRole01DFDF62"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/FollowUserFunction/Resource",
+    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "UnfollowUserFunctionLogGroup97908F95": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/piece-app-unfollow-user-dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/UnfollowUserFunctionLogGroup/Resource"
+   }
+  },
+  "UnfollowUserFunctionServiceRole11B22463": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/UnfollowUserFunction/ServiceRole/Resource"
+   }
+  },
+  "UnfollowUserFunctionServiceRoleDefaultPolicy15962B9C": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:dynamodb:ap-northeast-1:",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":table/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "UnfollowUserFunctionServiceRoleDefaultPolicy15962B9C",
+    "Roles": [
+     {
+      "Ref": "UnfollowUserFunctionServiceRole11B22463"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/UnfollowUserFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "UnfollowUserFunction2E9DAACA": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
+     },
+     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+    },
+    "Description": "Unfollow a user",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "NODE_ENV": "development"
+     }
+    },
+    "FunctionName": "piece-app-unfollow-user-dev",
+    "Handler": "handlers/follow/unfollowUser.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "UnfollowUserFunctionLogGroup97908F95"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "UnfollowUserFunctionServiceRole11B22463",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ],
+    "Timeout": 30,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "UnfollowUserFunctionServiceRoleDefaultPolicy15962B9C",
+    "UnfollowUserFunctionServiceRole11B22463"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/UnfollowUserFunction/Resource",
+    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "CreateRoomFunctionLogGroupD5B4A4C9": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/piece-app-create-room-dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/CreateRoomFunctionLogGroup/Resource"
+   }
+  },
+  "CreateRoomFunctionServiceRoleB72470D3": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/CreateRoomFunction/ServiceRole/Resource"
+   }
+  },
+  "CreateRoomFunctionServiceRoleDefaultPolicyFD4FFC2F": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:dynamodb:ap-northeast-1:",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":table/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "CreateRoomFunctionServiceRoleDefaultPolicyFD4FFC2F",
+    "Roles": [
+     {
+      "Ref": "CreateRoomFunctionServiceRoleB72470D3"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/CreateRoomFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "CreateRoomFunctionA8220676": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
+     },
+     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+    },
+    "Description": "Create new room",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "NODE_ENV": "development"
+     }
+    },
+    "FunctionName": "piece-app-create-room-dev",
+    "Handler": "handlers/room/createRoom.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "CreateRoomFunctionLogGroupD5B4A4C9"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "CreateRoomFunctionServiceRoleB72470D3",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ],
+    "Timeout": 30,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "CreateRoomFunctionServiceRoleDefaultPolicyFD4FFC2F",
+    "CreateRoomFunctionServiceRoleB72470D3"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/CreateRoomFunction/Resource",
+    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "JoinRoomFunctionLogGroupAC7F8B16": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/piece-app-join-room-dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/JoinRoomFunctionLogGroup/Resource"
+   }
+  },
+  "JoinRoomFunctionServiceRole7C6EF31F": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/JoinRoomFunction/ServiceRole/Resource"
+   }
+  },
+  "JoinRoomFunctionServiceRoleDefaultPolicyF589DD31": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          "arn:aws:dynamodb:ap-northeast-1:",
+          {
+           "Ref": "AWS::AccountId"
+          },
+          ":table/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "JoinRoomFunctionServiceRoleDefaultPolicyF589DD31",
+    "Roles": [
+     {
+      "Ref": "JoinRoomFunctionServiceRole7C6EF31F"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/JoinRoomFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "JoinRoomFunction0DBFFBBF": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
+     },
+     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+    },
+    "Description": "Join a room",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "NODE_ENV": "development"
+     }
+    },
+    "FunctionName": "piece-app-join-room-dev",
+    "Handler": "handlers/room/joinRoom.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "JoinRoomFunctionLogGroupAC7F8B16"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "JoinRoomFunctionServiceRole7C6EF31F",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ],
+    "Timeout": 30,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "JoinRoomFunctionServiceRoleDefaultPolicyF589DD31",
+    "JoinRoomFunctionServiceRole7C6EF31F"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/JoinRoomFunction/Resource",
+    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/zWLUQrCMBBEz+L/dq3RC1hBfwSlHqCsaQyxaVK6iUVC7i5R/HpvZhiBQmywXtHCleyHypo7plsgOQAt3CXrNWM6e32afZzg8HB/z2BpvPeE6RidDMa7sv49g6ERU+utKvWXV2+NfJf4swy87YhZBcZ9AfAWmygHFRpilaFV7OMsFXzXWyBtnC7/SwxTDBmc7xU+ef0SAjc7rFdPNqaaowtmVNj++AHMiSJh4wAAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "CreateAccountFunctionArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "CreateAccountFunctionB1A7B865",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-CreateAccountArn-dev"
+   }
+  },
+  "CreatePostFunctionArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "CreatePostFunction56510812",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-CreatePostArn-dev"
+   }
+  },
+  "ExportsOutputFnGetAttCreateAccountFunctionB1A7B865ArnA1CC1551": {
+   "Value": {
+    "Fn::GetAtt": [
+     "CreateAccountFunctionB1A7B865",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttCreateAccountFunctionB1A7B865ArnA1CC1551"
+   }
+  },
+  "ExportsOutputFnGetAttGetProfileFunction8A105C24ArnF907E196": {
+   "Value": {
+    "Fn::GetAtt": [
+     "GetProfileFunction8A105C24",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttGetProfileFunction8A105C24ArnF907E196"
+   }
+  },
+  "ExportsOutputFnGetAttUpdateProfileFunction2A160882Arn1B8D4808": {
+   "Value": {
+    "Fn::GetAtt": [
+     "UpdateProfileFunction2A160882",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttUpdateProfileFunction2A160882Arn1B8D4808"
+   }
+  },
+  "ExportsOutputFnGetAttCreatePostFunction56510812Arn8877FC58": {
+   "Value": {
+    "Fn::GetAtt": [
+     "CreatePostFunction56510812",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttCreatePostFunction56510812Arn8877FC58"
+   }
+  },
+  "ExportsOutputFnGetAttGetPostFunction29A17447Arn6F384FC2": {
+   "Value": {
+    "Fn::GetAtt": [
+     "GetPostFunction29A17447",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttGetPostFunction29A17447Arn6F384FC2"
+   }
+  },
+  "ExportsOutputFnGetAttDeletePostFunction442EA4DBArn6D6F02C1": {
+   "Value": {
+    "Fn::GetAtt": [
+     "DeletePostFunction442EA4DB",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttDeletePostFunction442EA4DBArn6D6F02C1"
+   }
+  },
+  "ExportsOutputFnGetAttLikePostFunctionEAEFAE85ArnF5EBACCC": {
+   "Value": {
+    "Fn::GetAtt": [
+     "LikePostFunctionEAEFAE85",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttLikePostFunctionEAEFAE85ArnF5EBACCC"
+   }
+  },
+  "ExportsOutputFnGetAttUnlikePostFunctionF2D5BDFEArnA95859B6": {
+   "Value": {
+    "Fn::GetAtt": [
+     "UnlikePostFunctionF2D5BDFE",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttUnlikePostFunctionF2D5BDFEArnA95859B6"
+   }
+  },
+  "ExportsOutputFnGetAttCreateCommentFunction2CCB21BAArnC1A7822B": {
+   "Value": {
+    "Fn::GetAtt": [
+     "CreateCommentFunction2CCB21BA",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttCreateCommentFunction2CCB21BAArnC1A7822B"
+   }
+  },
+  "ExportsOutputFnGetAttGetCommentsFunction51A1C6FCArn7EF9B4B5": {
+   "Value": {
+    "Fn::GetAtt": [
+     "GetCommentsFunction51A1C6FC",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttGetCommentsFunction51A1C6FCArn7EF9B4B5"
+   }
+  },
+  "ExportsOutputFnGetAttDeleteCommentFunctionFC7A50A9Arn55BD8A5E": {
+   "Value": {
+    "Fn::GetAtt": [
+     "DeleteCommentFunctionFC7A50A9",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttDeleteCommentFunctionFC7A50A9Arn55BD8A5E"
+   }
+  },
+  "ExportsOutputFnGetAttGetTimelineFunctionA617EDF2ArnF2206057": {
+   "Value": {
+    "Fn::GetAtt": [
+     "GetTimelineFunctionA617EDF2",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttGetTimelineFunctionA617EDF2ArnF2206057"
+   }
+  },
+  "ExportsOutputFnGetAttFollowUserFunctionD86228D7Arn42B90F2C": {
+   "Value": {
+    "Fn::GetAtt": [
+     "FollowUserFunctionD86228D7",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttFollowUserFunctionD86228D7Arn42B90F2C"
+   }
+  },
+  "ExportsOutputFnGetAttUnfollowUserFunction2E9DAACAArn7D39CCC6": {
+   "Value": {
+    "Fn::GetAtt": [
+     "UnfollowUserFunction2E9DAACA",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttUnfollowUserFunction2E9DAACAArn7D39CCC6"
+   }
+  },
+  "ExportsOutputFnGetAttCreateRoomFunctionA8220676Arn3FEDC66C": {
+   "Value": {
+    "Fn::GetAtt": [
+     "CreateRoomFunctionA8220676",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttCreateRoomFunctionA8220676Arn3FEDC66C"
+   }
+  },
+  "ExportsOutputFnGetAttJoinRoomFunction0DBFFBBFArn870C3BF1": {
+   "Value": {
+    "Fn::GetAtt": [
+     "JoinRoomFunction0DBFFBBF",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttJoinRoomFunction0DBFFBBFArn870C3BF1"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

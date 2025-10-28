@@ -45,9 +45,9 @@ export class LambdaStack extends cdk.Stack {
     const srcDir = path.join(__dirname, '../../src');
 
     // 共通環境変数
+    // ⚠️ AWS_REGIONは Lambdaランタイムで自動設定されるため除外
     const commonEnvironment = {
       ENVIRONMENT: environment,
-      AWS_REGION: cdk.Stack.of(this).region,
       NODE_ENV: environment === 'prod' ? 'production' : 'development',
     };
 
@@ -75,6 +75,15 @@ export class LambdaStack extends cdk.Stack {
       handler: string,
       description: string
     ): lambda.Function => {
+      // ログ グループを作成
+      const logGroup = new logs.LogGroup(this, `${id}LogGroup`, {
+        logGroupName: `/aws/lambda/piece-app-${functionName}-${environment}`,
+        retention: environment === 'prod'
+          ? logs.RetentionDays.ONE_MONTH
+          : logs.RetentionDays.ONE_WEEK,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
+      });
+
       return new lambda.Function(this, id, {
         runtime: lambda.Runtime.NODEJS_20_X,
         handler,
@@ -85,9 +94,7 @@ export class LambdaStack extends cdk.Stack {
         memorySize: environment === 'prod' ? 1024 : 512,
         environment: commonEnvironment,
         tracing: lambda.Tracing.ACTIVE,
-        logRetention: environment === 'prod'
-          ? logs.RetentionDays.ONE_MONTH
-          : logs.RetentionDays.ONE_WEEK,
+        logGroup: logGroup,
         initialPolicy: [dynamoDbPolicy],
       });
     };

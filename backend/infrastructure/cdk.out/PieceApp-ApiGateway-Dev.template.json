@@ -1,0 +1,2855 @@
+{
+ "Description": "REST API Gateway with Cognito authorizer (Development)",
+ "Resources": {
+  "ApiGatewayAccessLogsFB871B4C": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/apigateway/piece-app-dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/ApiGatewayAccessLogs/Resource"
+   }
+  },
+  "PieceAppRestApi962CCD29": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Description": "Piece App REST API (dev)",
+    "EndpointConfiguration": {
+     "Types": [
+      "REGIONAL"
+     ]
+    },
+    "Name": "piece-app-api-dev",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Resource"
+   }
+  },
+  "PieceAppRestApiCloudWatchRoleAAEC5CCC": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "apigateway.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/CloudWatchRole/Resource"
+   }
+  },
+  "PieceAppRestApiAccount7CBAEF0B": {
+   "Type": "AWS::ApiGateway::Account",
+   "Properties": {
+    "CloudWatchRoleArn": {
+     "Fn::GetAtt": [
+      "PieceAppRestApiCloudWatchRoleAAEC5CCC",
+      "Arn"
+     ]
+    }
+   },
+   "DependsOn": [
+    "PieceAppRestApi962CCD29"
+   ],
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Account"
+   }
+  },
+  "PieceAppRestApiDeploymentC3167A89503c5848a2d96951f6707dcde546811c": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "Description": "Piece App REST API (dev)",
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "DependsOn": [
+    "CognitoAuthorizerF3215DBC",
+    "PieceAppRestApiaccountsaccountidGET3E5D45ED",
+    "PieceAppRestApiaccountsaccountidOPTIONSA6C98354",
+    "PieceAppRestApiaccountsaccountidPUT6F5EFEAD",
+    "PieceAppRestApiaccountsaccountidE6782E53",
+    "PieceAppRestApiaccountsOPTIONS6D9AD5FF",
+    "PieceAppRestApiaccountsPOST9448CB0E",
+    "PieceAppRestApiaccountsDED9EEFD",
+    "PieceAppRestApicommentscommentidDELETE27D19713",
+    "PieceAppRestApicommentscommentidOPTIONS2726E72A",
+    "PieceAppRestApicommentscommentidF6331499",
+    "PieceAppRestApicommentsOPTIONSEA2602B0",
+    "PieceAppRestApicommentsC52427E5",
+    "PieceAppRestApifollowDELETE23334FBA",
+    "PieceAppRestApifollowOPTIONSA8A7F632",
+    "PieceAppRestApifollowPOSTD5DCF074",
+    "PieceAppRestApifollow6168CF42",
+    "PieceAppRestApiOPTIONSCF0843A0",
+    "PieceAppRestApipostspostidcommentsGETE4E22E7A",
+    "PieceAppRestApipostspostidcommentsOPTIONSA3EA801E",
+    "PieceAppRestApipostspostidcommentsPOSTBCAFACAC",
+    "PieceAppRestApipostspostidcommentsA075A50D",
+    "PieceAppRestApipostspostidDELETED6182243",
+    "PieceAppRestApipostspostidGETA28A7BE1",
+    "PieceAppRestApipostspostidlikeDELETE69D33DE7",
+    "PieceAppRestApipostspostidlikeOPTIONSFE50EA6A",
+    "PieceAppRestApipostspostidlikePOST1ACFFB50",
+    "PieceAppRestApipostspostidlike04E41FC2",
+    "PieceAppRestApipostspostidOPTIONSE8058101",
+    "PieceAppRestApipostspostid0A8D0192",
+    "PieceAppRestApipostsOPTIONS829FBF23",
+    "PieceAppRestApipostsPOSTD81A9568",
+    "PieceAppRestApipostsE92C4307",
+    "PieceAppRestApiroomsroomidjoinOPTIONSC6EE1D1B",
+    "PieceAppRestApiroomsroomidjoinPOST9A4C4025",
+    "PieceAppRestApiroomsroomidjoin5C96307F",
+    "PieceAppRestApiroomsroomidOPTIONS1DF28260",
+    "PieceAppRestApiroomsroomidF93FF609",
+    "PieceAppRestApiroomsOPTIONS79064CF9",
+    "PieceAppRestApiroomsPOST486CBDC3",
+    "PieceAppRestApirooms64EE51AD",
+    "PieceAppRestApitimelineGET4AC35F39",
+    "PieceAppRestApitimelineOPTIONS376AA74E",
+    "PieceAppRestApitimelineD42F2520",
+    "PieceAppRestApiErrorResponseModel671F1006",
+    "RequestValidatorB6FDBF18"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Deployment/Resource",
+    "aws:cdk:do-not-refactor": true
+   }
+  },
+  "PieceAppRestApiDeploymentStagedev6B113438": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "AccessLogSetting": {
+     "DestinationArn": {
+      "Fn::GetAtt": [
+       "ApiGatewayAccessLogsFB871B4C",
+       "Arn"
+      ]
+     },
+     "Format": "{\"requestId\":\"$context.requestId\",\"ip\":\"$context.identity.sourceIp\",\"user\":\"$context.identity.user\",\"caller\":\"$context.identity.caller\",\"requestTime\":\"$context.requestTime\",\"httpMethod\":\"$context.httpMethod\",\"resourcePath\":\"$context.resourcePath\",\"status\":\"$context.status\",\"protocol\":\"$context.protocol\",\"responseLength\":\"$context.responseLength\"}"
+    },
+    "DeploymentId": {
+     "Ref": "PieceAppRestApiDeploymentC3167A89503c5848a2d96951f6707dcde546811c"
+    },
+    "MethodSettings": [
+     {
+      "DataTraceEnabled": true,
+      "HttpMethod": "*",
+      "LoggingLevel": "INFO",
+      "MetricsEnabled": true,
+      "ResourcePath": "/*",
+      "ThrottlingBurstLimit": 100,
+      "ThrottlingRateLimit": 50
+     }
+    ],
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    },
+    "StageName": "dev",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "DependsOn": [
+    "PieceAppRestApiAccount7CBAEF0B"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/DeploymentStage.dev/Resource"
+   }
+  },
+  "PieceAppRestApiOPTIONSCF0843A0": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Account-Id,X-Account-Type'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "PieceAppRestApi962CCD29",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/OPTIONS/Resource"
+   }
+  },
+  "PieceAppRestApiaccountsDED9EEFD": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "PieceAppRestApi962CCD29",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "accounts",
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/Resource"
+   }
+  },
+  "PieceAppRestApiaccountsOPTIONS6D9AD5FF": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Account-Id,X-Account-Type'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "PieceAppRestApiaccountsDED9EEFD"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/OPTIONS/Resource"
+   }
+  },
+  "PieceAppRestApiaccountsPOSTApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTaccountsFDC64323": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttCreateAccountFunctionB1A7B865ArnA1CC1551"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/",
+       {
+        "Ref": "PieceAppRestApiDeploymentStagedev6B113438"
+       },
+       "/POST/accounts"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/POST/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..accounts"
+   }
+  },
+  "PieceAppRestApiaccountsPOSTApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTaccounts302BE3D9": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttCreateAccountFunctionB1A7B865ArnA1CC1551"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/test-invoke-stage/POST/accounts"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/POST/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..accounts"
+   }
+  },
+  "PieceAppRestApiaccountsPOST9448CB0E": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "NONE",
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttCreateAccountFunctionB1A7B865ArnA1CC1551"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "RequestValidatorB6FDBF18"
+    },
+    "ResourceId": {
+     "Ref": "PieceAppRestApiaccountsDED9EEFD"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/POST/Resource"
+   }
+  },
+  "PieceAppRestApiaccountsaccountidE6782E53": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "PieceAppRestApiaccountsDED9EEFD"
+    },
+    "PathPart": "{account_id}",
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/{account_id}/Resource"
+   }
+  },
+  "PieceAppRestApiaccountsaccountidOPTIONSA6C98354": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Account-Id,X-Account-Type'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "PieceAppRestApiaccountsaccountidE6782E53"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/{account_id}/OPTIONS/Resource"
+   }
+  },
+  "PieceAppRestApiaccountsaccountidGETApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCGETaccountsaccountid4727BFA9": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttGetProfileFunction8A105C24ArnF907E196"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/",
+       {
+        "Ref": "PieceAppRestApiDeploymentStagedev6B113438"
+       },
+       "/GET/accounts/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/{account_id}/GET/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.GET..accounts.{account_id}"
+   }
+  },
+  "PieceAppRestApiaccountsaccountidGETApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCGETaccountsaccountid7BA11967": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttGetProfileFunction8A105C24ArnF907E196"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/test-invoke-stage/GET/accounts/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/{account_id}/GET/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.GET..accounts.{account_id}"
+   }
+  },
+  "PieceAppRestApiaccountsaccountidGET3E5D45ED": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttGetProfileFunction8A105C24ArnF907E196"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "PieceAppRestApiaccountsaccountidE6782E53"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/{account_id}/GET/Resource"
+   }
+  },
+  "PieceAppRestApiaccountsaccountidPUTApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCPUTaccountsaccountid0C3105C5": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttUpdateProfileFunction2A160882Arn1B8D4808"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/",
+       {
+        "Ref": "PieceAppRestApiDeploymentStagedev6B113438"
+       },
+       "/PUT/accounts/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/{account_id}/PUT/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.PUT..accounts.{account_id}"
+   }
+  },
+  "PieceAppRestApiaccountsaccountidPUTApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCPUTaccountsaccountid81B763B8": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttUpdateProfileFunction2A160882Arn1B8D4808"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/test-invoke-stage/PUT/accounts/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/{account_id}/PUT/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.PUT..accounts.{account_id}"
+   }
+  },
+  "PieceAppRestApiaccountsaccountidPUT6F5EFEAD": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "PUT",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttUpdateProfileFunction2A160882Arn1B8D4808"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "RequestValidatorB6FDBF18"
+    },
+    "ResourceId": {
+     "Ref": "PieceAppRestApiaccountsaccountidE6782E53"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/{account_id}/PUT/Resource"
+   }
+  },
+  "PieceAppRestApipostsE92C4307": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "PieceAppRestApi962CCD29",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "posts",
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/Resource"
+   }
+  },
+  "PieceAppRestApipostsOPTIONS829FBF23": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Account-Id,X-Account-Type'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "PieceAppRestApipostsE92C4307"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/OPTIONS/Resource"
+   }
+  },
+  "PieceAppRestApipostsPOSTApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTposts1A8BBAA9": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttCreatePostFunction56510812Arn8877FC58"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/",
+       {
+        "Ref": "PieceAppRestApiDeploymentStagedev6B113438"
+       },
+       "/POST/posts"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/POST/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..posts"
+   }
+  },
+  "PieceAppRestApipostsPOSTApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTposts36EDD8DD": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttCreatePostFunction56510812Arn8877FC58"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/test-invoke-stage/POST/posts"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/POST/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..posts"
+   }
+  },
+  "PieceAppRestApipostsPOSTD81A9568": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttCreatePostFunction56510812Arn8877FC58"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "RequestValidatorB6FDBF18"
+    },
+    "ResourceId": {
+     "Ref": "PieceAppRestApipostsE92C4307"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/POST/Resource"
+   }
+  },
+  "PieceAppRestApipostspostid0A8D0192": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "PieceAppRestApipostsE92C4307"
+    },
+    "PathPart": "{post_id}",
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/Resource"
+   }
+  },
+  "PieceAppRestApipostspostidOPTIONSE8058101": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Account-Id,X-Account-Type'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "PieceAppRestApipostspostid0A8D0192"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/OPTIONS/Resource"
+   }
+  },
+  "PieceAppRestApipostspostidGETApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCGETpostspostidB97A52EE": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttGetPostFunction29A17447Arn6F384FC2"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/",
+       {
+        "Ref": "PieceAppRestApiDeploymentStagedev6B113438"
+       },
+       "/GET/posts/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/GET/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.GET..posts.{post_id}"
+   }
+  },
+  "PieceAppRestApipostspostidGETApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCGETpostspostid2C0DBCDF": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttGetPostFunction29A17447Arn6F384FC2"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/test-invoke-stage/GET/posts/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/GET/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.GET..posts.{post_id}"
+   }
+  },
+  "PieceAppRestApipostspostidGETA28A7BE1": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttGetPostFunction29A17447Arn6F384FC2"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "PieceAppRestApipostspostid0A8D0192"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/GET/Resource"
+   }
+  },
+  "PieceAppRestApipostspostidDELETEApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCDELETEpostspostidA140D640": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttDeletePostFunction442EA4DBArn6D6F02C1"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/",
+       {
+        "Ref": "PieceAppRestApiDeploymentStagedev6B113438"
+       },
+       "/DELETE/posts/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/DELETE/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.DELETE..posts.{post_id}"
+   }
+  },
+  "PieceAppRestApipostspostidDELETEApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCDELETEpostspostid75614A2A": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttDeletePostFunction442EA4DBArn6D6F02C1"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/test-invoke-stage/DELETE/posts/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/DELETE/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.DELETE..posts.{post_id}"
+   }
+  },
+  "PieceAppRestApipostspostidDELETED6182243": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "DELETE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttDeletePostFunction442EA4DBArn6D6F02C1"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "PieceAppRestApipostspostid0A8D0192"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/DELETE/Resource"
+   }
+  },
+  "PieceAppRestApipostspostidlike04E41FC2": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "PieceAppRestApipostspostid0A8D0192"
+    },
+    "PathPart": "like",
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/like/Resource"
+   }
+  },
+  "PieceAppRestApipostspostidlikeOPTIONSFE50EA6A": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Account-Id,X-Account-Type'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "PieceAppRestApipostspostidlike04E41FC2"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/like/OPTIONS/Resource"
+   }
+  },
+  "PieceAppRestApipostspostidlikePOSTApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTpostspostidlike14E2DEAB": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttLikePostFunctionEAEFAE85ArnF5EBACCC"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/",
+       {
+        "Ref": "PieceAppRestApiDeploymentStagedev6B113438"
+       },
+       "/POST/posts/*/like"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/like/POST/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..posts.{post_id}.like"
+   }
+  },
+  "PieceAppRestApipostspostidlikePOSTApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTpostspostidlike626698A6": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttLikePostFunctionEAEFAE85ArnF5EBACCC"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/test-invoke-stage/POST/posts/*/like"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/like/POST/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..posts.{post_id}.like"
+   }
+  },
+  "PieceAppRestApipostspostidlikePOST1ACFFB50": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttLikePostFunctionEAEFAE85ArnF5EBACCC"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "PieceAppRestApipostspostidlike04E41FC2"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/like/POST/Resource"
+   }
+  },
+  "PieceAppRestApipostspostidlikeDELETEApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCDELETEpostspostidlike3A1E352C": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttUnlikePostFunctionF2D5BDFEArnA95859B6"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/",
+       {
+        "Ref": "PieceAppRestApiDeploymentStagedev6B113438"
+       },
+       "/DELETE/posts/*/like"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/like/DELETE/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.DELETE..posts.{post_id}.like"
+   }
+  },
+  "PieceAppRestApipostspostidlikeDELETEApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCDELETEpostspostidlike77F0A6F6": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttUnlikePostFunctionF2D5BDFEArnA95859B6"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/test-invoke-stage/DELETE/posts/*/like"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/like/DELETE/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.DELETE..posts.{post_id}.like"
+   }
+  },
+  "PieceAppRestApipostspostidlikeDELETE69D33DE7": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "DELETE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttUnlikePostFunctionF2D5BDFEArnA95859B6"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "PieceAppRestApipostspostidlike04E41FC2"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/like/DELETE/Resource"
+   }
+  },
+  "PieceAppRestApipostspostidcommentsA075A50D": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "PieceAppRestApipostspostid0A8D0192"
+    },
+    "PathPart": "comments",
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/comments/Resource"
+   }
+  },
+  "PieceAppRestApipostspostidcommentsOPTIONSA3EA801E": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Account-Id,X-Account-Type'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "PieceAppRestApipostspostidcommentsA075A50D"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/comments/OPTIONS/Resource"
+   }
+  },
+  "PieceAppRestApipostspostidcommentsPOSTApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTpostspostidcommentsFA6B1649": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttCreateCommentFunction2CCB21BAArnC1A7822B"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/",
+       {
+        "Ref": "PieceAppRestApiDeploymentStagedev6B113438"
+       },
+       "/POST/posts/*/comments"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/comments/POST/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..posts.{post_id}.comments"
+   }
+  },
+  "PieceAppRestApipostspostidcommentsPOSTApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTpostspostidcomments988B040B": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttCreateCommentFunction2CCB21BAArnC1A7822B"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/test-invoke-stage/POST/posts/*/comments"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/comments/POST/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..posts.{post_id}.comments"
+   }
+  },
+  "PieceAppRestApipostspostidcommentsPOSTBCAFACAC": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttCreateCommentFunction2CCB21BAArnC1A7822B"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "RequestValidatorB6FDBF18"
+    },
+    "ResourceId": {
+     "Ref": "PieceAppRestApipostspostidcommentsA075A50D"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/comments/POST/Resource"
+   }
+  },
+  "PieceAppRestApipostspostidcommentsGETApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCGETpostspostidcomments10DE2EAD": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttGetCommentsFunction51A1C6FCArn7EF9B4B5"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/",
+       {
+        "Ref": "PieceAppRestApiDeploymentStagedev6B113438"
+       },
+       "/GET/posts/*/comments"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/comments/GET/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.GET..posts.{post_id}.comments"
+   }
+  },
+  "PieceAppRestApipostspostidcommentsGETApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCGETpostspostidcomments482AF840": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttGetCommentsFunction51A1C6FCArn7EF9B4B5"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/test-invoke-stage/GET/posts/*/comments"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/comments/GET/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.GET..posts.{post_id}.comments"
+   }
+  },
+  "PieceAppRestApipostspostidcommentsGETE4E22E7A": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttGetCommentsFunction51A1C6FCArn7EF9B4B5"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "PieceAppRestApipostspostidcommentsA075A50D"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/comments/GET/Resource"
+   }
+  },
+  "PieceAppRestApicommentsC52427E5": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "PieceAppRestApi962CCD29",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "comments",
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/comments/Resource"
+   }
+  },
+  "PieceAppRestApicommentsOPTIONSEA2602B0": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Account-Id,X-Account-Type'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "PieceAppRestApicommentsC52427E5"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/comments/OPTIONS/Resource"
+   }
+  },
+  "PieceAppRestApicommentscommentidF6331499": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "PieceAppRestApicommentsC52427E5"
+    },
+    "PathPart": "{comment_id}",
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/comments/{comment_id}/Resource"
+   }
+  },
+  "PieceAppRestApicommentscommentidOPTIONS2726E72A": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Account-Id,X-Account-Type'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "PieceAppRestApicommentscommentidF6331499"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/comments/{comment_id}/OPTIONS/Resource"
+   }
+  },
+  "PieceAppRestApicommentscommentidDELETEApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCDELETEcommentscommentid99490DAB": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttDeleteCommentFunctionFC7A50A9Arn55BD8A5E"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/",
+       {
+        "Ref": "PieceAppRestApiDeploymentStagedev6B113438"
+       },
+       "/DELETE/comments/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/comments/{comment_id}/DELETE/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.DELETE..comments.{comment_id}"
+   }
+  },
+  "PieceAppRestApicommentscommentidDELETEApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCDELETEcommentscommentid78ED61C6": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttDeleteCommentFunctionFC7A50A9Arn55BD8A5E"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/test-invoke-stage/DELETE/comments/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/comments/{comment_id}/DELETE/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.DELETE..comments.{comment_id}"
+   }
+  },
+  "PieceAppRestApicommentscommentidDELETE27D19713": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "DELETE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttDeleteCommentFunctionFC7A50A9Arn55BD8A5E"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "PieceAppRestApicommentscommentidF6331499"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/comments/{comment_id}/DELETE/Resource"
+   }
+  },
+  "PieceAppRestApitimelineD42F2520": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "PieceAppRestApi962CCD29",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "timeline",
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/timeline/Resource"
+   }
+  },
+  "PieceAppRestApitimelineOPTIONS376AA74E": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Account-Id,X-Account-Type'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "PieceAppRestApitimelineD42F2520"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/timeline/OPTIONS/Resource"
+   }
+  },
+  "PieceAppRestApitimelineGETApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCGETtimelineA166274B": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttGetTimelineFunctionA617EDF2ArnF2206057"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/",
+       {
+        "Ref": "PieceAppRestApiDeploymentStagedev6B113438"
+       },
+       "/GET/timeline"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/timeline/GET/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.GET..timeline"
+   }
+  },
+  "PieceAppRestApitimelineGETApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCGETtimeline8EE95448": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttGetTimelineFunctionA617EDF2ArnF2206057"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/test-invoke-stage/GET/timeline"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/timeline/GET/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.GET..timeline"
+   }
+  },
+  "PieceAppRestApitimelineGET4AC35F39": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "GET",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttGetTimelineFunctionA617EDF2ArnF2206057"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "PieceAppRestApitimelineD42F2520"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/timeline/GET/Resource"
+   }
+  },
+  "PieceAppRestApifollow6168CF42": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "PieceAppRestApi962CCD29",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "follow",
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/follow/Resource"
+   }
+  },
+  "PieceAppRestApifollowOPTIONSA8A7F632": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Account-Id,X-Account-Type'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "PieceAppRestApifollow6168CF42"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/follow/OPTIONS/Resource"
+   }
+  },
+  "PieceAppRestApifollowPOSTApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTfollow423F0D30": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttFollowUserFunctionD86228D7Arn42B90F2C"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/",
+       {
+        "Ref": "PieceAppRestApiDeploymentStagedev6B113438"
+       },
+       "/POST/follow"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/follow/POST/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..follow"
+   }
+  },
+  "PieceAppRestApifollowPOSTApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTfollow4C0BA53B": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttFollowUserFunctionD86228D7Arn42B90F2C"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/test-invoke-stage/POST/follow"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/follow/POST/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..follow"
+   }
+  },
+  "PieceAppRestApifollowPOSTD5DCF074": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttFollowUserFunctionD86228D7Arn42B90F2C"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "RequestValidatorB6FDBF18"
+    },
+    "ResourceId": {
+     "Ref": "PieceAppRestApifollow6168CF42"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/follow/POST/Resource"
+   }
+  },
+  "PieceAppRestApifollowDELETEApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCDELETEfollow79B5ADE1": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttUnfollowUserFunction2E9DAACAArn7D39CCC6"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/",
+       {
+        "Ref": "PieceAppRestApiDeploymentStagedev6B113438"
+       },
+       "/DELETE/follow"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/follow/DELETE/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.DELETE..follow"
+   }
+  },
+  "PieceAppRestApifollowDELETEApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCDELETEfollowF3BDB233": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttUnfollowUserFunction2E9DAACAArn7D39CCC6"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/test-invoke-stage/DELETE/follow"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/follow/DELETE/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.DELETE..follow"
+   }
+  },
+  "PieceAppRestApifollowDELETE23334FBA": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "DELETE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttUnfollowUserFunction2E9DAACAArn7D39CCC6"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "RequestValidatorB6FDBF18"
+    },
+    "ResourceId": {
+     "Ref": "PieceAppRestApifollow6168CF42"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/follow/DELETE/Resource"
+   }
+  },
+  "PieceAppRestApirooms64EE51AD": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "PieceAppRestApi962CCD29",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "rooms",
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/Resource"
+   }
+  },
+  "PieceAppRestApiroomsOPTIONS79064CF9": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Account-Id,X-Account-Type'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "PieceAppRestApirooms64EE51AD"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/OPTIONS/Resource"
+   }
+  },
+  "PieceAppRestApiroomsPOSTApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTroomsAE03F003": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttCreateRoomFunctionA8220676Arn3FEDC66C"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/",
+       {
+        "Ref": "PieceAppRestApiDeploymentStagedev6B113438"
+       },
+       "/POST/rooms"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/POST/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..rooms"
+   }
+  },
+  "PieceAppRestApiroomsPOSTApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTroomsDAEE8953": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttCreateRoomFunctionA8220676Arn3FEDC66C"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/test-invoke-stage/POST/rooms"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/POST/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..rooms"
+   }
+  },
+  "PieceAppRestApiroomsPOST486CBDC3": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttCreateRoomFunctionA8220676Arn3FEDC66C"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "RequestValidatorId": {
+     "Ref": "RequestValidatorB6FDBF18"
+    },
+    "ResourceId": {
+     "Ref": "PieceAppRestApirooms64EE51AD"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/POST/Resource"
+   }
+  },
+  "PieceAppRestApiroomsroomidF93FF609": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "PieceAppRestApirooms64EE51AD"
+    },
+    "PathPart": "{room_id}",
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/{room_id}/Resource"
+   }
+  },
+  "PieceAppRestApiroomsroomidOPTIONS1DF28260": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Account-Id,X-Account-Type'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "PieceAppRestApiroomsroomidF93FF609"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/{room_id}/OPTIONS/Resource"
+   }
+  },
+  "PieceAppRestApiroomsroomidjoin5C96307F": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "PieceAppRestApiroomsroomidF93FF609"
+    },
+    "PathPart": "join",
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/{room_id}/join/Resource"
+   }
+  },
+  "PieceAppRestApiroomsroomidjoinOPTIONSC6EE1D1B": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "ApiKeyRequired": false,
+    "AuthorizationType": "NONE",
+    "HttpMethod": "OPTIONS",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent,X-Account-Id,X-Account-Type'",
+        "method.response.header.Access-Control-Allow-Origin": "'*'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'",
+        "method.response.header.Access-Control-Max-Age": "'3600'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true,
+       "method.response.header.Access-Control-Max-Age": true
+      },
+      "StatusCode": "204"
+     }
+    ],
+    "ResourceId": {
+     "Ref": "PieceAppRestApiroomsroomidjoin5C96307F"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/{room_id}/join/OPTIONS/Resource"
+   }
+  },
+  "PieceAppRestApiroomsroomidjoinPOSTApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTroomsroomidjoin4408E38B": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttJoinRoomFunction0DBFFBBFArn870C3BF1"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/",
+       {
+        "Ref": "PieceAppRestApiDeploymentStagedev6B113438"
+       },
+       "/POST/rooms/*/join"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/{room_id}/join/POST/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..rooms.{room_id}.join"
+   }
+  },
+  "PieceAppRestApiroomsroomidjoinPOSTApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTroomsroomidjoinD553206C": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttJoinRoomFunction0DBFFBBFArn870C3BF1"
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:aws:execute-api:ap-northeast-1:",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "PieceAppRestApi962CCD29"
+       },
+       "/test-invoke-stage/POST/rooms/*/join"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/{room_id}/join/POST/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..rooms.{room_id}.join"
+   }
+  },
+  "PieceAppRestApiroomsroomidjoinPOST9A4C4025": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "AuthorizationType": "COGNITO_USER_POOLS",
+    "AuthorizerId": {
+     "Ref": "CognitoAuthorizerF3215DBC"
+    },
+    "HttpMethod": "POST",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:aws:apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/",
+        {
+         "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttJoinRoomFunction0DBFFBBFArn870C3BF1"
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    },
+    "ResourceId": {
+     "Ref": "PieceAppRestApiroomsroomidjoin5C96307F"
+    },
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/{room_id}/join/POST/Resource"
+   }
+  },
+  "PieceAppRestApiErrorResponseModel671F1006": {
+   "Type": "AWS::ApiGateway::Model",
+   "Properties": {
+    "ContentType": "application/json",
+    "Name": "ErrorResponse",
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    },
+    "Schema": {
+     "type": "object",
+     "properties": {
+      "success": {
+       "type": "boolean"
+      },
+      "error": {
+       "type": "object",
+       "properties": {
+        "code": {
+         "type": "string"
+        },
+        "message": {
+         "type": "string"
+        }
+       }
+      }
+     },
+     "$schema": "http://json-schema.org/draft-04/schema#"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/PieceAppRestApi/ErrorResponseModel/Resource"
+   }
+  },
+  "CognitoAuthorizerF3215DBC": {
+   "Type": "AWS::ApiGateway::Authorizer",
+   "Properties": {
+    "AuthorizerResultTtlInSeconds": 300,
+    "IdentitySource": "method.request.header.Authorization",
+    "Name": "piece-app-authorizer-dev",
+    "ProviderARNs": [
+     {
+      "Fn::ImportValue": "PieceApp-Cognito-Dev:ExportsOutputFnGetAttPieceAppUserPoolA10A98B5ArnCEEBE3C5"
+     }
+    ],
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    },
+    "Type": "COGNITO_USER_POOLS"
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/CognitoAuthorizer/Resource"
+   }
+  },
+  "RequestValidatorB6FDBF18": {
+   "Type": "AWS::ApiGateway::RequestValidator",
+   "Properties": {
+    "Name": "request-body-validator",
+    "RestApiId": {
+     "Ref": "PieceAppRestApi962CCD29"
+    },
+    "ValidateRequestBody": true,
+    "ValidateRequestParameters": true
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/RequestValidator/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WOwW7CQAxEv4X7ZgtRfyClUi9FoKD2WpnEBMNmna69jWiUf6/CggonP8+M7Mltni/sfAa9ZFV9yhzt7LBVqE4GevkaHDdih3du3gLHziz3/sajgY4aUOzhbIcSRYuOpsAdFlXF0at5xc7xuUWvk3q3bRUanLQEJQrHUOELCJoV6oHrybzSzb0+SbziGt0llIAbT8ofgmHD7KSIeuBAvxguff63Er8jin6CoxqUQzr6qI2GoLVDyS79ZIejcdDuarDLvd9gaEmE2I8P3dZRu6ij8VyjPcrTT57bxbOdz45ClIXolVq0ZZp/o7p22IEBAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-ApiGateway-Dev/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "PieceAppRestApiEndpoint5E8FC1FF": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "PieceAppRestApi962CCD29"
+      },
+      ".execute-api.ap-northeast-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "PieceAppRestApiDeploymentStagedev6B113438"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "ApiUrl": {
+   "Description": "API Gateway URL",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "PieceAppRestApi962CCD29"
+      },
+      ".execute-api.ap-northeast-1.",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "PieceAppRestApiDeploymentStagedev6B113438"
+      },
+      "/"
+     ]
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-ApiUrl-dev"
+   }
+  },
+  "ApiId": {
+   "Description": "API Gateway ID",
+   "Value": {
+    "Ref": "PieceAppRestApi962CCD29"
+   },
+   "Export": {
+    "Name": "PieceApp-ApiId-dev"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

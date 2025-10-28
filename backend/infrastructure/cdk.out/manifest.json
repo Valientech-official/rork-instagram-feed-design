@@ -1,132 +1,6 @@
 {
   "version": "48.0.0",
   "artifacts": {
-    "PieceApp-S3-Dev.assets": {
-      "type": "cdk:asset-manifest",
-      "properties": {
-        "file": "PieceApp-S3-Dev.assets.json",
-        "requiresBootstrapStackVersion": 6,
-        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
-      }
-    },
-    "PieceApp-S3-Dev": {
-      "type": "aws:cloudformation:stack",
-      "environment": "aws://unknown-account/ap-northeast-1",
-      "properties": {
-        "templateFile": "PieceApp-S3-Dev.template.json",
-        "terminationProtection": false,
-        "tags": {
-          "Environment": "Development",
-          "ManagedBy": "CDK",
-          "Project": "PieceApp"
-        },
-        "validateOnSynth": false,
-        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-ap-northeast-1",
-        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-ap-northeast-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1/58a3271701d2e3d48cbbebe63f69fc76f6c0fc3b864d6eda1c794dee46ca9d49.json",
-        "requiresBootstrapStackVersion": 6,
-        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
-        "additionalDependencies": [
-          "PieceApp-S3-Dev.assets"
-        ],
-        "lookupRole": {
-          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-ap-northeast-1",
-          "requiresBootstrapStackVersion": 8,
-          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
-        }
-      },
-      "dependencies": [
-        "PieceApp-S3-Dev.assets"
-      ],
-      "metadata": {
-        "/PieceApp-S3-Dev": [
-          {
-            "type": "aws:cdk:stack-tags",
-            "data": [
-              {
-                "Key": "Environment",
-                "Value": "Development"
-              },
-              {
-                "Key": "ManagedBy",
-                "Value": "CDK"
-              },
-              {
-                "Key": "Project",
-                "Value": "PieceApp"
-              }
-            ]
-          }
-        ],
-        "/PieceApp-S3-Dev/PieceAppMediaBucket/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "PieceAppMediaBucket57D35C9E"
-          }
-        ],
-        "/PieceApp-S3-Dev/PieceAppMediaBucket/Policy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "PieceAppMediaBucketPolicy20614825"
-          }
-        ],
-        "/PieceApp-S3-Dev/PieceAppMediaBucket/AutoDeleteObjectsCustomResource/Default": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "PieceAppMediaBucketAutoDeleteObjectsCustomResource10064FF8"
-          }
-        ],
-        "/PieceApp-S3-Dev/Custom::S3AutoDeleteObjectsCustomResourceProvider": [
-          {
-            "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
-            "data": true
-          }
-        ],
-        "/PieceApp-S3-Dev/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
-          }
-        ],
-        "/PieceApp-S3-Dev/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
-          }
-        ],
-        "/PieceApp-S3-Dev/MediaBucketName": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "MediaBucketName"
-          }
-        ],
-        "/PieceApp-S3-Dev/MediaBucketArn": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "MediaBucketArn"
-          }
-        ],
-        "/PieceApp-S3-Dev/CDKMetadata/Default": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "CDKMetadata"
-          }
-        ],
-        "/PieceApp-S3-Dev/BootstrapVersion": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "BootstrapVersion"
-          }
-        ],
-        "/PieceApp-S3-Dev/CheckBootstrapVersion": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "CheckBootstrapVersion"
-          }
-        ]
-      },
-      "displayName": "PieceApp-S3-Dev"
-    },
     "PieceApp-DynamoDB-Dev.assets": {
       "type": "cdk:asset-manifest",
       "properties": {
@@ -744,6 +618,1425 @@
         ]
       },
       "displayName": "PieceApp-DynamoDB-Dev"
+    },
+    "PieceApp-S3-Dev.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "PieceApp-S3-Dev.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "PieceApp-S3-Dev": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/ap-northeast-1",
+      "properties": {
+        "templateFile": "PieceApp-S3-Dev.template.json",
+        "terminationProtection": false,
+        "tags": {
+          "Environment": "Development",
+          "ManagedBy": "CDK",
+          "Project": "PieceApp"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-ap-northeast-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-ap-northeast-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1/58a3271701d2e3d48cbbebe63f69fc76f6c0fc3b864d6eda1c794dee46ca9d49.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "PieceApp-S3-Dev.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-ap-northeast-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "PieceApp-S3-Dev.assets"
+      ],
+      "metadata": {
+        "/PieceApp-S3-Dev": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Environment",
+                "Value": "Development"
+              },
+              {
+                "Key": "ManagedBy",
+                "Value": "CDK"
+              },
+              {
+                "Key": "Project",
+                "Value": "PieceApp"
+              }
+            ]
+          }
+        ],
+        "/PieceApp-S3-Dev/PieceAppMediaBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppMediaBucket57D35C9E"
+          }
+        ],
+        "/PieceApp-S3-Dev/PieceAppMediaBucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppMediaBucketPolicy20614825"
+          }
+        ],
+        "/PieceApp-S3-Dev/PieceAppMediaBucket/AutoDeleteObjectsCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppMediaBucketAutoDeleteObjectsCustomResource10064FF8"
+          }
+        ],
+        "/PieceApp-S3-Dev/Custom::S3AutoDeleteObjectsCustomResourceProvider": [
+          {
+            "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+            "data": true
+          }
+        ],
+        "/PieceApp-S3-Dev/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+          }
+        ],
+        "/PieceApp-S3-Dev/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+          }
+        ],
+        "/PieceApp-S3-Dev/MediaBucketName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MediaBucketName"
+          }
+        ],
+        "/PieceApp-S3-Dev/MediaBucketArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MediaBucketArn"
+          }
+        ],
+        "/PieceApp-S3-Dev/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/PieceApp-S3-Dev/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/PieceApp-S3-Dev/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "PieceApp-S3-Dev"
+    },
+    "PieceApp-Lambda-Dev.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "PieceApp-Lambda-Dev.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "PieceApp-Lambda-Dev": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/ap-northeast-1",
+      "properties": {
+        "templateFile": "PieceApp-Lambda-Dev.template.json",
+        "terminationProtection": false,
+        "tags": {
+          "Environment": "Development",
+          "ManagedBy": "CDK",
+          "Project": "PieceApp"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-ap-northeast-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-ap-northeast-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1/7d92804775f78936acbe1065ab5e51a4cd95dd417efbc0808836e65e3beb7bb9.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "PieceApp-Lambda-Dev.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-ap-northeast-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "PieceApp-DynamoDB-Dev",
+        "PieceApp-Lambda-Dev.assets"
+      ],
+      "metadata": {
+        "/PieceApp-Lambda-Dev": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Environment",
+                "Value": "Development"
+              },
+              {
+                "Key": "ManagedBy",
+                "Value": "CDK"
+              },
+              {
+                "Key": "Project",
+                "Value": "PieceApp"
+              }
+            ]
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CreateAccountFunctionLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateAccountFunctionLogGroup1A713697"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CreateAccountFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateAccountFunctionServiceRole7A83FD08"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CreateAccountFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateAccountFunctionServiceRoleDefaultPolicy54EA7564"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CreateAccountFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateAccountFunctionB1A7B865"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/GetProfileFunctionLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetProfileFunctionLogGroupC8C0D4EE"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/GetProfileFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetProfileFunctionServiceRole6BDF10E2"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/GetProfileFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetProfileFunctionServiceRoleDefaultPolicyE093D831"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/GetProfileFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetProfileFunction8A105C24"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/UpdateProfileFunctionLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UpdateProfileFunctionLogGroup05D59A0D"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/UpdateProfileFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UpdateProfileFunctionServiceRole8B8F925E"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/UpdateProfileFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UpdateProfileFunctionServiceRoleDefaultPolicy7EA15D9A"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/UpdateProfileFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UpdateProfileFunction2A160882"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CreatePostFunctionLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreatePostFunctionLogGroup4818EB19"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CreatePostFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreatePostFunctionServiceRoleCAC21E42"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CreatePostFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreatePostFunctionServiceRoleDefaultPolicyD597A210"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CreatePostFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreatePostFunction56510812"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/GetPostFunctionLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetPostFunctionLogGroup7518B25C"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/GetPostFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetPostFunctionServiceRole8B816CAB"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/GetPostFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetPostFunctionServiceRoleDefaultPolicyFA724DF7"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/GetPostFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetPostFunction29A17447"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/DeletePostFunctionLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeletePostFunctionLogGroupF51EA510"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/DeletePostFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeletePostFunctionServiceRole270036C0"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/DeletePostFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeletePostFunctionServiceRoleDefaultPolicy10BC29FC"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/DeletePostFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeletePostFunction442EA4DB"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/GetTimelineFunctionLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetTimelineFunctionLogGroup027BD8B2"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/GetTimelineFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetTimelineFunctionServiceRole24E2B995"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/GetTimelineFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetTimelineFunctionServiceRoleDefaultPolicy49A6E7E5"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/GetTimelineFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetTimelineFunctionA617EDF2"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/LikePostFunctionLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LikePostFunctionLogGroupAAB6AFEE"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/LikePostFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LikePostFunctionServiceRole7F80FB55"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/LikePostFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LikePostFunctionServiceRoleDefaultPolicyA045F05E"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/LikePostFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LikePostFunctionEAEFAE85"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/UnlikePostFunctionLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UnlikePostFunctionLogGroup752A066D"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/UnlikePostFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UnlikePostFunctionServiceRoleFADA4A7A"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/UnlikePostFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UnlikePostFunctionServiceRoleDefaultPolicyC93B172F"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/UnlikePostFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UnlikePostFunctionF2D5BDFE"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CreateCommentFunctionLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateCommentFunctionLogGroup878D3346"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CreateCommentFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateCommentFunctionServiceRoleFF3E614F"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CreateCommentFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateCommentFunctionServiceRoleDefaultPolicyABFC176C"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CreateCommentFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateCommentFunction2CCB21BA"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/DeleteCommentFunctionLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeleteCommentFunctionLogGroup13353F57"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/DeleteCommentFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeleteCommentFunctionServiceRole00ED93D1"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/DeleteCommentFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeleteCommentFunctionServiceRoleDefaultPolicy7CEF2603"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/DeleteCommentFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeleteCommentFunctionFC7A50A9"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/GetCommentsFunctionLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetCommentsFunctionLogGroup4DE5B8E6"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/GetCommentsFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetCommentsFunctionServiceRole3B8AD617"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/GetCommentsFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetCommentsFunctionServiceRoleDefaultPolicy86823EBD"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/GetCommentsFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetCommentsFunction51A1C6FC"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/FollowUserFunctionLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FollowUserFunctionLogGroup612FE9A3"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/FollowUserFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FollowUserFunctionServiceRole01DFDF62"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/FollowUserFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FollowUserFunctionServiceRoleDefaultPolicy4860485C"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/FollowUserFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FollowUserFunctionD86228D7"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/UnfollowUserFunctionLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UnfollowUserFunctionLogGroup97908F95"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/UnfollowUserFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UnfollowUserFunctionServiceRole11B22463"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/UnfollowUserFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UnfollowUserFunctionServiceRoleDefaultPolicy15962B9C"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/UnfollowUserFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UnfollowUserFunction2E9DAACA"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CreateRoomFunctionLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateRoomFunctionLogGroupD5B4A4C9"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CreateRoomFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateRoomFunctionServiceRoleB72470D3"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CreateRoomFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateRoomFunctionServiceRoleDefaultPolicyFD4FFC2F"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CreateRoomFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateRoomFunctionA8220676"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/JoinRoomFunctionLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "JoinRoomFunctionLogGroupAC7F8B16"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/JoinRoomFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "JoinRoomFunctionServiceRole7C6EF31F"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/JoinRoomFunction/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "JoinRoomFunctionServiceRoleDefaultPolicyF589DD31"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/JoinRoomFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "JoinRoomFunction0DBFFBBF"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CreateAccountFunctionArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateAccountFunctionArn"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CreatePostFunctionArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreatePostFunctionArn"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/Exports/Output{\"Fn::GetAtt\":[\"CreateAccountFunctionB1A7B865\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttCreateAccountFunctionB1A7B865ArnA1CC1551"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/Exports/Output{\"Fn::GetAtt\":[\"GetProfileFunction8A105C24\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttGetProfileFunction8A105C24ArnF907E196"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/Exports/Output{\"Fn::GetAtt\":[\"UpdateProfileFunction2A160882\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttUpdateProfileFunction2A160882Arn1B8D4808"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/Exports/Output{\"Fn::GetAtt\":[\"CreatePostFunction56510812\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttCreatePostFunction56510812Arn8877FC58"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/Exports/Output{\"Fn::GetAtt\":[\"GetPostFunction29A17447\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttGetPostFunction29A17447Arn6F384FC2"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/Exports/Output{\"Fn::GetAtt\":[\"DeletePostFunction442EA4DB\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttDeletePostFunction442EA4DBArn6D6F02C1"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/Exports/Output{\"Fn::GetAtt\":[\"LikePostFunctionEAEFAE85\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttLikePostFunctionEAEFAE85ArnF5EBACCC"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/Exports/Output{\"Fn::GetAtt\":[\"UnlikePostFunctionF2D5BDFE\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttUnlikePostFunctionF2D5BDFEArnA95859B6"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/Exports/Output{\"Fn::GetAtt\":[\"CreateCommentFunction2CCB21BA\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttCreateCommentFunction2CCB21BAArnC1A7822B"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/Exports/Output{\"Fn::GetAtt\":[\"GetCommentsFunction51A1C6FC\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttGetCommentsFunction51A1C6FCArn7EF9B4B5"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/Exports/Output{\"Fn::GetAtt\":[\"DeleteCommentFunctionFC7A50A9\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttDeleteCommentFunctionFC7A50A9Arn55BD8A5E"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/Exports/Output{\"Fn::GetAtt\":[\"GetTimelineFunctionA617EDF2\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttGetTimelineFunctionA617EDF2ArnF2206057"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/Exports/Output{\"Fn::GetAtt\":[\"FollowUserFunctionD86228D7\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttFollowUserFunctionD86228D7Arn42B90F2C"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/Exports/Output{\"Fn::GetAtt\":[\"UnfollowUserFunction2E9DAACA\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttUnfollowUserFunction2E9DAACAArn7D39CCC6"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/Exports/Output{\"Fn::GetAtt\":[\"CreateRoomFunctionA8220676\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttCreateRoomFunctionA8220676Arn3FEDC66C"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/Exports/Output{\"Fn::GetAtt\":[\"JoinRoomFunction0DBFFBBF\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttJoinRoomFunction0DBFFBBFArn870C3BF1"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/PieceApp-Lambda-Dev/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "PieceApp-Lambda-Dev"
+    },
+    "PieceApp-Cognito-Dev.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "PieceApp-Cognito-Dev.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "PieceApp-Cognito-Dev": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/ap-northeast-1",
+      "properties": {
+        "templateFile": "PieceApp-Cognito-Dev.template.json",
+        "terminationProtection": false,
+        "tags": {
+          "Environment": "Development",
+          "ManagedBy": "CDK",
+          "Project": "PieceApp"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-ap-northeast-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-ap-northeast-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1/c791057ef8bfea558274c70d9aaec25f062daf7f5806e57eb1a4cf6209e58794.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "PieceApp-Cognito-Dev.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-ap-northeast-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "PieceApp-Cognito-Dev.assets"
+      ],
+      "metadata": {
+        "/PieceApp-Cognito-Dev": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Environment",
+                "Value": "Development"
+              },
+              {
+                "Key": "ManagedBy",
+                "Value": "CDK"
+              },
+              {
+                "Key": "Project",
+                "Value": "PieceApp"
+              }
+            ]
+          }
+        ],
+        "/PieceApp-Cognito-Dev/PieceAppUserPool/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppUserPoolA10A98B5"
+          }
+        ],
+        "/PieceApp-Cognito-Dev/PieceAppClient/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppClient137DCB45"
+          }
+        ],
+        "/PieceApp-Cognito-Dev/UserPoolId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserPoolId"
+          }
+        ],
+        "/PieceApp-Cognito-Dev/UserPoolArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserPoolArn"
+          }
+        ],
+        "/PieceApp-Cognito-Dev/UserPoolClientId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserPoolClientId"
+          }
+        ],
+        "/PieceApp-Cognito-Dev/UserPoolDomain": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UserPoolDomain"
+          }
+        ],
+        "/PieceApp-Cognito-Dev/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/PieceApp-Cognito-Dev/Exports/Output{\"Fn::GetAtt\":[\"PieceAppUserPoolA10A98B5\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttPieceAppUserPoolA10A98B5ArnCEEBE3C5"
+          }
+        ],
+        "/PieceApp-Cognito-Dev/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/PieceApp-Cognito-Dev/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "PieceApp-Cognito-Dev"
+    },
+    "PieceApp-ApiGateway-Dev.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "PieceApp-ApiGateway-Dev.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "PieceApp-ApiGateway-Dev": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/ap-northeast-1",
+      "properties": {
+        "templateFile": "PieceApp-ApiGateway-Dev.template.json",
+        "terminationProtection": false,
+        "tags": {
+          "Environment": "Development",
+          "ManagedBy": "CDK",
+          "Project": "PieceApp"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-ap-northeast-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-ap-northeast-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1/7261421721693d84fd56eb689c93b8c324ebab307e53179cf73a27d06a0f3c4b.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "PieceApp-ApiGateway-Dev.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-ap-northeast-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "PieceApp-Lambda-Dev",
+        "PieceApp-Cognito-Dev",
+        "PieceApp-ApiGateway-Dev.assets"
+      ],
+      "metadata": {
+        "/PieceApp-ApiGateway-Dev": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Environment",
+                "Value": "Development"
+              },
+              {
+                "Key": "ManagedBy",
+                "Value": "CDK"
+              },
+              {
+                "Key": "Project",
+                "Value": "PieceApp"
+              }
+            ]
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/ApiGatewayAccessLogs/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiGatewayAccessLogsFB871B4C"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApi962CCD29"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/CloudWatchRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiCloudWatchRoleAAEC5CCC"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Account": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiAccount7CBAEF0B"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiDeploymentC3167A89503c5848a2d96951f6707dcde546811c"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/DeploymentStage.dev/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiDeploymentStagedev6B113438"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiEndpoint5E8FC1FF"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiOPTIONSCF0843A0"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiaccountsDED9EEFD"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiaccountsOPTIONS6D9AD5FF"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/POST/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..accounts": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiaccountsPOSTApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTaccountsFDC64323"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/POST/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..accounts": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiaccountsPOSTApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTaccounts302BE3D9"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiaccountsPOST9448CB0E"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/{account_id}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiaccountsaccountidE6782E53"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/{account_id}/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiaccountsaccountidOPTIONSA6C98354"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/{account_id}/GET/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.GET..accounts.{account_id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiaccountsaccountidGETApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCGETaccountsaccountid4727BFA9"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/{account_id}/GET/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.GET..accounts.{account_id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiaccountsaccountidGETApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCGETaccountsaccountid7BA11967"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/{account_id}/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiaccountsaccountidGET3E5D45ED"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/{account_id}/PUT/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.PUT..accounts.{account_id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiaccountsaccountidPUTApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCPUTaccountsaccountid0C3105C5"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/{account_id}/PUT/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.PUT..accounts.{account_id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiaccountsaccountidPUTApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCPUTaccountsaccountid81B763B8"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/accounts/{account_id}/PUT/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiaccountsaccountidPUT6F5EFEAD"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostsE92C4307"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostsOPTIONS829FBF23"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/POST/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..posts": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostsPOSTApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTposts1A8BBAA9"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/POST/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..posts": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostsPOSTApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTposts36EDD8DD"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostsPOSTD81A9568"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostid0A8D0192"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidOPTIONSE8058101"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/GET/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.GET..posts.{post_id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidGETApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCGETpostspostidB97A52EE"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/GET/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.GET..posts.{post_id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidGETApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCGETpostspostid2C0DBCDF"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidGETA28A7BE1"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/DELETE/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.DELETE..posts.{post_id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidDELETEApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCDELETEpostspostidA140D640"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/DELETE/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.DELETE..posts.{post_id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidDELETEApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCDELETEpostspostid75614A2A"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/DELETE/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidDELETED6182243"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/like/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidlike04E41FC2"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/like/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidlikeOPTIONSFE50EA6A"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/like/POST/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..posts.{post_id}.like": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidlikePOSTApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTpostspostidlike14E2DEAB"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/like/POST/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..posts.{post_id}.like": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidlikePOSTApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTpostspostidlike626698A6"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/like/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidlikePOST1ACFFB50"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/like/DELETE/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.DELETE..posts.{post_id}.like": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidlikeDELETEApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCDELETEpostspostidlike3A1E352C"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/like/DELETE/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.DELETE..posts.{post_id}.like": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidlikeDELETEApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCDELETEpostspostidlike77F0A6F6"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/like/DELETE/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidlikeDELETE69D33DE7"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/comments/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidcommentsA075A50D"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/comments/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidcommentsOPTIONSA3EA801E"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/comments/POST/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..posts.{post_id}.comments": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidcommentsPOSTApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTpostspostidcommentsFA6B1649"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/comments/POST/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..posts.{post_id}.comments": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidcommentsPOSTApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTpostspostidcomments988B040B"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/comments/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidcommentsPOSTBCAFACAC"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/comments/GET/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.GET..posts.{post_id}.comments": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidcommentsGETApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCGETpostspostidcomments10DE2EAD"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/comments/GET/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.GET..posts.{post_id}.comments": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidcommentsGETApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCGETpostspostidcomments482AF840"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/posts/{post_id}/comments/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApipostspostidcommentsGETE4E22E7A"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/comments/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApicommentsC52427E5"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/comments/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApicommentsOPTIONSEA2602B0"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/comments/{comment_id}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApicommentscommentidF6331499"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/comments/{comment_id}/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApicommentscommentidOPTIONS2726E72A"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/comments/{comment_id}/DELETE/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.DELETE..comments.{comment_id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApicommentscommentidDELETEApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCDELETEcommentscommentid99490DAB"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/comments/{comment_id}/DELETE/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.DELETE..comments.{comment_id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApicommentscommentidDELETEApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCDELETEcommentscommentid78ED61C6"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/comments/{comment_id}/DELETE/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApicommentscommentidDELETE27D19713"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/timeline/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApitimelineD42F2520"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/timeline/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApitimelineOPTIONS376AA74E"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/timeline/GET/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.GET..timeline": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApitimelineGETApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCGETtimelineA166274B"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/timeline/GET/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.GET..timeline": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApitimelineGETApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCGETtimeline8EE95448"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/timeline/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApitimelineGET4AC35F39"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/follow/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApifollow6168CF42"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/follow/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApifollowOPTIONSA8A7F632"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/follow/POST/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..follow": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApifollowPOSTApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTfollow423F0D30"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/follow/POST/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..follow": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApifollowPOSTApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTfollow4C0BA53B"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/follow/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApifollowPOSTD5DCF074"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/follow/DELETE/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.DELETE..follow": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApifollowDELETEApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCDELETEfollow79B5ADE1"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/follow/DELETE/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.DELETE..follow": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApifollowDELETEApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCDELETEfollowF3BDB233"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/follow/DELETE/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApifollowDELETE23334FBA"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApirooms64EE51AD"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiroomsOPTIONS79064CF9"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/POST/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..rooms": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiroomsPOSTApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTroomsAE03F003"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/POST/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..rooms": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiroomsPOSTApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTroomsDAEE8953"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiroomsPOST486CBDC3"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/{room_id}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiroomsroomidF93FF609"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/{room_id}/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiroomsroomidOPTIONS1DF28260"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/{room_id}/join/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiroomsroomidjoin5C96307F"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/{room_id}/join/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiroomsroomidjoinOPTIONSC6EE1D1B"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/{room_id}/join/POST/ApiPermission.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..rooms.{room_id}.join": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiroomsroomidjoinPOSTApiPermissionPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTroomsroomidjoin4408E38B"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/{room_id}/join/POST/ApiPermission.Test.PieceAppApiGatewayDevPieceAppRestApi881D5EDC.POST..rooms.{room_id}.join": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiroomsroomidjoinPOSTApiPermissionTestPieceAppApiGatewayDevPieceAppRestApi881D5EDCPOSTroomsroomidjoinD553206C"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/Default/rooms/{room_id}/join/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiroomsroomidjoinPOST9A4C4025"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/PieceAppRestApi/ErrorResponseModel/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppRestApiErrorResponseModel671F1006"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/CognitoAuthorizer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CognitoAuthorizerF3215DBC"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/RequestValidator/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RequestValidatorB6FDBF18"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/ApiUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiUrl"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/ApiId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ApiId"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/PieceApp-ApiGateway-Dev/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "PieceApp-ApiGateway-Dev"
     },
     "Tree": {
       "type": "cdk:tree",

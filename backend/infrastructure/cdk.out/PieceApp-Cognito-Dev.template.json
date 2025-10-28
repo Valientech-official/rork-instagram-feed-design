@@ -1,0 +1,278 @@
+{
+ "Description": "Cognito User Pool for authentication (Development)",
+ "Resources": {
+  "PieceAppUserPoolA10A98B5": {
+   "Type": "AWS::Cognito::UserPool",
+   "Properties": {
+    "AccountRecoverySetting": {
+     "RecoveryMechanisms": [
+      {
+       "Name": "verified_email",
+       "Priority": 1
+      }
+     ]
+    },
+    "AdminCreateUserConfig": {
+     "AllowAdminCreateUserOnly": true,
+     "InviteMessageTemplate": {
+      "EmailMessage": "\n          <h2>Piece Appへようこそ</h2>\n          <p>アカウントが作成されました。</p>\n          <p>ユーザー名: {username}</p>\n          <p>仮パスワード: {####}</p>\n          <p>初回ログイン時にパスワードの変更が必要です。</p>\n        ",
+      "EmailSubject": "Piece Appへようこそ！"
+     }
+    },
+    "AliasAttributes": [
+     "email"
+    ],
+    "AutoVerifiedAttributes": [
+     "email"
+    ],
+    "DeviceConfiguration": {
+     "ChallengeRequiredOnNewDevice": true,
+     "DeviceOnlyRememberedOnUserPrompt": true
+    },
+    "EmailConfiguration": {
+     "EmailSendingAccount": "COGNITO_DEFAULT"
+    },
+    "EmailVerificationMessage": "\n          <h2>メールアドレスの確認</h2>\n          <p>以下の確認コードを入力してください:</p>\n          <h3>{####}</h3>\n        ",
+    "EmailVerificationSubject": "Piece App - メールアドレス確認",
+    "EnabledMfas": [
+     "SOFTWARE_TOKEN_MFA"
+    ],
+    "MfaConfiguration": "OPTIONAL",
+    "Policies": {
+     "PasswordPolicy": {
+      "MinimumLength": 8,
+      "RequireLowercase": true,
+      "RequireNumbers": true,
+      "RequireSymbols": false,
+      "RequireUppercase": true,
+      "TemporaryPasswordValidityDays": 3
+     }
+    },
+    "Schema": [
+     {
+      "Mutable": true,
+      "Name": "email",
+      "Required": true
+     },
+     {
+      "Mutable": true,
+      "Name": "given_name",
+      "Required": false
+     },
+     {
+      "Mutable": true,
+      "Name": "family_name",
+      "Required": false
+     },
+     {
+      "Mutable": true,
+      "Name": "birthdate",
+      "Required": false
+     },
+     {
+      "AttributeDataType": "String",
+      "Mutable": false,
+      "Name": "accountId",
+      "StringAttributeConstraints": {
+       "MaxLength": "26",
+       "MinLength": "26"
+      }
+     },
+     {
+      "AttributeDataType": "String",
+      "Mutable": true,
+      "Name": "accountType",
+      "StringAttributeConstraints": {
+       "MaxLength": "20",
+       "MinLength": "1"
+      }
+     }
+    ],
+    "SmsVerificationMessage": "The verification code to your new account is {####}",
+    "UserPoolAddOns": {
+     "AdvancedSecurityMode": "OFF"
+    },
+    "UserPoolName": "piece-app-users-dev",
+    "UserPoolTags": {
+     "Environment": "Development",
+     "ManagedBy": "CDK",
+     "Project": "PieceApp"
+    },
+    "VerificationMessageTemplate": {
+     "DefaultEmailOption": "CONFIRM_WITH_CODE",
+     "EmailMessage": "\n          <h2>メールアドレスの確認</h2>\n          <p>以下の確認コードを入力してください:</p>\n          <h3>{####}</h3>\n        ",
+     "EmailSubject": "Piece App - メールアドレス確認",
+     "SmsMessage": "The verification code to your new account is {####}"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Cognito-Dev/PieceAppUserPool/Resource"
+   }
+  },
+  "PieceAppClient137DCB45": {
+   "Type": "AWS::Cognito::UserPoolClient",
+   "Properties": {
+    "AccessTokenValidity": 60,
+    "AllowedOAuthFlows": [
+     "code"
+    ],
+    "AllowedOAuthFlowsUserPoolClient": true,
+    "AllowedOAuthScopes": [
+     "email",
+     "openid",
+     "profile"
+    ],
+    "CallbackURLs": [
+     "http://localhost:19006/callback",
+     "pieceapp://callback"
+    ],
+    "ClientName": "piece-app-client-dev",
+    "EnableTokenRevocation": true,
+    "ExplicitAuthFlows": [
+     "ALLOW_USER_PASSWORD_AUTH",
+     "ALLOW_USER_SRP_AUTH",
+     "ALLOW_REFRESH_TOKEN_AUTH"
+    ],
+    "IdTokenValidity": 60,
+    "LogoutURLs": [
+     "http://localhost:19006/logout",
+     "pieceapp://logout"
+    ],
+    "PreventUserExistenceErrors": "ENABLED",
+    "ReadAttributes": [
+     "birthdate",
+     "custom:accountId",
+     "custom:accountType",
+     "email",
+     "email_verified",
+     "family_name",
+     "given_name"
+    ],
+    "RefreshTokenValidity": 43200,
+    "SupportedIdentityProviders": [
+     "COGNITO"
+    ],
+    "TokenValidityUnits": {
+     "AccessToken": "minutes",
+     "IdToken": "minutes",
+     "RefreshToken": "minutes"
+    },
+    "UserPoolId": {
+     "Ref": "PieceAppUserPoolA10A98B5"
+    },
+    "WriteAttributes": [
+     "birthdate",
+     "custom:accountType",
+     "email",
+     "family_name",
+     "given_name"
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Cognito-Dev/PieceAppClient/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02JQQ6CMBAA38K9XWHjD3iARuOZ1FLNQt017FYOhL8bQzSeZjKDgNhAXYVZfexHn+kKy9lCHF2YtYtyZzKB5aJpOopk1974519pMyW2/7WV9ZMOxZ7FVsfSJxh090KEZg91NSiRnwobPRKcNr4BTesWj48AAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Cognito-Dev/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "UserPoolId": {
+   "Description": "Cognito User Pool ID",
+   "Value": {
+    "Ref": "PieceAppUserPoolA10A98B5"
+   },
+   "Export": {
+    "Name": "PieceApp-UserPoolId-dev"
+   }
+  },
+  "UserPoolArn": {
+   "Description": "Cognito User Pool ARN",
+   "Value": {
+    "Fn::GetAtt": [
+     "PieceAppUserPoolA10A98B5",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-UserPoolArn-dev"
+   }
+  },
+  "UserPoolClientId": {
+   "Description": "Cognito User Pool Client ID",
+   "Value": {
+    "Ref": "PieceAppClient137DCB45"
+   },
+   "Export": {
+    "Name": "PieceApp-UserPoolClientId-dev"
+   }
+  },
+  "UserPoolDomain": {
+   "Description": "Cognito User Pool Domain",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://cognito-idp.ap-northeast-1.amazonaws.com/",
+      {
+       "Ref": "PieceAppUserPoolA10A98B5"
+      }
+     ]
+    ]
+   }
+  },
+  "ExportsOutputFnGetAttPieceAppUserPoolA10A98B5ArnCEEBE3C5": {
+   "Value": {
+    "Fn::GetAtt": [
+     "PieceAppUserPoolA10A98B5",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-Cognito-Dev:ExportsOutputFnGetAttPieceAppUserPoolA10A98B5ArnCEEBE3C5"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
