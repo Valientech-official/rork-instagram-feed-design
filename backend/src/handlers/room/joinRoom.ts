@@ -14,7 +14,7 @@ import {
 } from '../../lib/utils/response';
 import { validateRequired } from '../../lib/validators';
 import { logError } from '../../lib/utils/error';
-import { TableNames, putItem, getItemRequired, query, incrementCounter } from '../../lib/dynamodb';
+import { TableNames, putItem, getItemRequired, getItem, incrementCounter } from '../../lib/dynamodb';
 
 /**
  * ROOM参加Lambda関数
@@ -53,24 +53,19 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       throw new Error('このROOMは現在参加できません');
     }
 
-    // 既に参加しているかチェック（GSI1で検索）
-    const existingMember = await query<RoomMemberItem>({
+    // 既に参加しているかチェック（ベーステーブルから直接取得）
+    const existingMember = await getItem<RoomMemberItem>({
       TableName: TableNames.ROOM_MEMBER,
-      IndexName: 'GSI1',
-      KeyConditionExpression: 'account_id = :accountId AND room_id = :roomId',
-      ExpressionAttributeValues: {
-        ':accountId': accountId,
-        ':roomId': request.room_id,
+      Key: {
+        room_id: request.room_id,
+        account_id: accountId,
       },
-      Limit: 1,
     });
 
     // 既に参加している場合
-    if (existingMember.items.length > 0) {
-      const member = existingMember.items[0];
-
+    if (existingMember) {
       // アクティブな場合は重複エラー
-      if (member.is_active) {
+      if (existingMember.is_active) {
         throw new Error('既にこのROOMに参加しています');
       }
 
@@ -79,7 +74,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       await putItem({
         TableName: TableNames.ROOM_MEMBER,
         Item: {
-          ...member,
+          ...existingMember,
           is_active: true,
           joined_at: now, // 再参加日時を更新
         },

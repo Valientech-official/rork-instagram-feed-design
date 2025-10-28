@@ -14,7 +14,7 @@ import {
 } from '../../lib/utils/response';
 import { validateRequired } from '../../lib/validators';
 import { DuplicateFollowError, logError } from '../../lib/utils/error';
-import { TableNames, putItem, getItemRequired, query, incrementCounter } from '../../lib/dynamodb';
+import { TableNames, putItem, getItemRequired, getItem, incrementCounter } from '../../lib/dynamodb';
 
 /**
  * フォロー追加Lambda関数
@@ -54,35 +54,29 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       'フォロー対象アカウント'
     );
 
-    // 既にフォローしているかチェック（GSI1で検索）
-    const existingFollow = await query({
+    // 既にフォローしているかチェック（ベーステーブルから直接取得）
+    const existingFollow = await getItem({
       TableName: TableNames.FOLLOW,
-      IndexName: 'GSI1',
-      KeyConditionExpression: 'follower_id = :followerId AND following_id = :followingId',
-      ExpressionAttributeValues: {
-        ':followerId': accountId,
-        ':followingId': request.following_id,
+      Key: {
+        follower_id: accountId,
+        following_id: request.following_id,
       },
-      Limit: 1,
     });
 
-    if (existingFollow.items.length > 0) {
+    if (existingFollow) {
       throw new DuplicateFollowError();
     }
 
     // 相互フォローかチェック（相手が自分をフォローしているか）
-    const reverseFollow = await query<FollowItem>({
+    const reverseFollow = await getItem<FollowItem>({
       TableName: TableNames.FOLLOW,
-      IndexName: 'GSI1',
-      KeyConditionExpression: 'follower_id = :followerId AND following_id = :followingId',
-      ExpressionAttributeValues: {
-        ':followerId': request.following_id,
-        ':followingId': accountId,
+      Key: {
+        follower_id: request.following_id,
+        following_id: accountId,
       },
-      Limit: 1,
     });
 
-    const isMutual = reverseFollow.items.length > 0;
+    const isMutual = reverseFollow !== null;
     const now = getCurrentTimestamp();
 
     // フォローアイテムを作成
@@ -101,12 +95,11 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     });
 
     // 相互フォローになった場合、相手側のis_mutualも更新
-    if (isMutual && reverseFollow.items.length > 0) {
-      const reverseFollowItem = reverseFollow.items[0];
+    if (isMutual && reverseFollow) {
       await putItem({
         TableName: TableNames.FOLLOW,
         Item: {
-          ...reverseFollowItem,
+          ...reverseFollow,
           is_mutual: true,
         },
       });

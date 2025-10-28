@@ -14,7 +14,7 @@ import {
 } from '../../lib/utils/response';
 import { validateRequired } from '../../lib/validators';
 import { logError } from '../../lib/utils/error';
-import { TableNames, query, deleteItem, decrementCounter, putItem } from '../../lib/dynamodb';
+import { TableNames, getItem, deleteItem, decrementCounter, putItem } from '../../lib/dynamodb';
 
 /**
  * フォロー解除Lambda関数
@@ -37,53 +37,45 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     // バリデーション
     validateRequired(request.following_id, 'フォロー解除対象アカウントID');
 
-    // フォロー関係を検索（GSI1を使用）
-    const result = await query<FollowItem>({
+    // フォロー関係を検索（ベーステーブルから直接取得）
+    const follow = await getItem<FollowItem>({
       TableName: TableNames.FOLLOW,
-      IndexName: 'GSI1',
-      KeyConditionExpression: 'follower_id = :followerId AND following_id = :followingId',
-      ExpressionAttributeValues: {
-        ':followerId': accountId,
-        ':followingId': request.following_id,
+      Key: {
+        follower_id: accountId,
+        following_id: request.following_id,
       },
-      Limit: 1,
     });
 
-    if (result.items.length === 0) {
+    if (!follow) {
       return notFoundResponse('フォロー関係');
     }
 
-    const follow = result.items[0];
     const wasMutual = follow.is_mutual;
 
     // フォロー関係を削除（複合キー）
     await deleteItem({
       TableName: TableNames.FOLLOW,
       Key: {
-        follower_id: follow.follower_id,
-        following_id: follow.following_id,
+        follower_id: accountId,
+        following_id: request.following_id,
       },
     });
 
     // 相互フォローだった場合、相手側のis_mutualをfalseに更新
     if (wasMutual) {
-      const reverseFollow = await query<FollowItem>({
+      const reverseFollow = await getItem<FollowItem>({
         TableName: TableNames.FOLLOW,
-        IndexName: 'GSI1',
-        KeyConditionExpression: 'follower_id = :followerId AND following_id = :followingId',
-        ExpressionAttributeValues: {
-          ':followerId': request.following_id,
-          ':followingId': accountId,
+        Key: {
+          follower_id: request.following_id,
+          following_id: accountId,
         },
-        Limit: 1,
       });
 
-      if (reverseFollow.items.length > 0) {
-        const reverseFollowItem = reverseFollow.items[0];
+      if (reverseFollow) {
         await putItem({
           TableName: TableNames.FOLLOW,
           Item: {
-            ...reverseFollowItem,
+            ...reverseFollow,
             is_mutual: false,
           },
         });

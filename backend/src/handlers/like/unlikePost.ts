@@ -14,7 +14,7 @@ import {
 } from '../../lib/utils/response';
 import { validateRequired } from '../../lib/validators';
 import { logError } from '../../lib/utils/error';
-import { TableNames, query, deleteItem, decrementCounter } from '../../lib/dynamodb';
+import { TableNames, getItem, deleteItem, decrementCounter } from '../../lib/dynamodb';
 
 /**
  * いいね削除Lambda関数
@@ -37,30 +37,25 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     // バリデーション
     validateRequired(request.post_id, '投稿ID');
 
-    // GSI1を使用して、このアカウントの該当投稿へのいいねを検索
-    const result = await query<LikeItem>({
+    // ベーステーブルから直接取得（プライマリキーが分かっているため）
+    const like = await getItem<LikeItem>({
       TableName: TableNames.LIKE,
-      IndexName: 'GSI1',
-      KeyConditionExpression: 'account_id = :accountId AND post_id = :postId',
-      ExpressionAttributeValues: {
-        ':accountId': accountId,
-        ':postId': request.post_id,
+      Key: {
+        post_id: request.post_id,
+        account_id: accountId,
       },
-      Limit: 1,
     });
 
-    if (result.items.length === 0) {
+    if (!like) {
       return notFoundResponse('いいね');
     }
-
-    const like = result.items[0];
 
     // いいねを削除（複合キー: post_id + account_id）
     await deleteItem({
       TableName: TableNames.LIKE,
       Key: {
-        post_id: like.post_id,
-        account_id: like.account_id,
+        post_id: request.post_id,
+        account_id: accountId,
       },
     });
 
