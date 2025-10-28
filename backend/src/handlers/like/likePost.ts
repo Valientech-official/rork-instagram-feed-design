@@ -3,16 +3,14 @@
  */
 
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { LikePostRequest, LikePostResponse } from '../../types/api';
+import { LikePostResponse } from '../../types/api';
 import { LikeItem, PostItem } from '../../types/dynamodb';
 import {
   successResponse,
-  parseRequestBody,
   getCurrentTimestamp,
   internalErrorResponse,
   unauthorizedResponse,
 } from '../../lib/utils/response';
-import { validateRequired } from '../../lib/validators';
 import { DuplicateLikeError, logError } from '../../lib/utils/error';
 import { TableNames, putItemIfNotExists, getItemRequired, incrementCounter } from '../../lib/dynamodb';
 
@@ -31,18 +29,19 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       return unauthorizedResponse('アカウントIDが取得できません');
     }
 
-    // リクエストボディをパース
-    const request = parseRequestBody<LikePostRequest>(event.body);
+    // パスパラメータから投稿IDを取得
+    const postId = event.pathParameters?.post_id;
 
-    // バリデーション
-    validateRequired(request.post_id, '投稿ID');
+    if (!postId) {
+      return unauthorizedResponse('投稿IDが指定されていません');
+    }
 
     // 投稿が存在するか確認
     const post = await getItemRequired<PostItem>(
       {
         TableName: TableNames.POST,
         Key: {
-          postId: request.post_id,
+          postId: postId,
         },
       },
       '投稿'
@@ -57,7 +56,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     const now = getCurrentTimestamp();
 
     const likeItem: LikeItem = {
-      post_id: request.post_id,
+      post_id: postId,
       account_id: accountId,
       created_at: now,
     };
@@ -73,7 +72,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     // 投稿のいいね数をインクリメント
     const newLikeCount = await incrementCounter(
       TableNames.POST,
-      { postId: request.post_id },
+      { postId: postId },
       'likeCount',
       1
     );

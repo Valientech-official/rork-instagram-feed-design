@@ -3,16 +3,14 @@
  */
 
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { JoinRoomRequest, JoinRoomResponse } from '../../types/api';
+import { JoinRoomResponse } from '../../types/api';
 import { RoomItem, RoomMemberItem } from '../../types/dynamodb';
 import {
   successResponse,
-  parseRequestBody,
   getCurrentTimestamp,
   internalErrorResponse,
   unauthorizedResponse,
 } from '../../lib/utils/response';
-import { validateRequired } from '../../lib/validators';
 import { logError } from '../../lib/utils/error';
 import { TableNames, putItem, getItemRequired, getItem, incrementCounter } from '../../lib/dynamodb';
 
@@ -31,18 +29,19 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       return unauthorizedResponse('アカウントIDが取得できません');
     }
 
-    // リクエストボディをパース
-    const request = parseRequestBody<JoinRoomRequest>(event.body);
+    // パスパラメータからROOM IDを取得
+    const roomId = event.pathParameters?.room_id;
 
-    // バリデーション
-    validateRequired(request.room_id, 'ROOM ID');
+    if (!roomId) {
+      return unauthorizedResponse('ROOM IDが指定されていません');
+    }
 
     // ROOMが存在するか確認
     const room = await getItemRequired<RoomItem>(
       {
         TableName: TableNames.ROOM,
         Key: {
-          room_id: request.room_id,
+          room_id: roomId,
         },
       },
       'ROOM'
@@ -57,7 +56,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     const existingMember = await getItem<RoomMemberItem>({
       TableName: TableNames.ROOM_MEMBER,
       Key: {
-        room_id: request.room_id,
+        room_id: roomId,
         account_id: accountId,
       },
     });
@@ -83,14 +82,14 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       // メンバー数をインクリメント
       await incrementCounter(
         TableNames.ROOM,
-        { room_id: request.room_id },
+        { room_id: roomId },
         'member_count',
         1
       );
 
       return successResponse({
         joined: true,
-        room_id: request.room_id,
+        room_id: roomId,
         rejoined: true,
       });
     }
@@ -99,7 +98,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     const now = getCurrentTimestamp();
 
     const memberItem: RoomMemberItem = {
-      room_id: request.room_id,
+      room_id: roomId,
       account_id: accountId,
       joined_at: now,
       role: 'member', // デフォルトはメンバー
@@ -115,7 +114,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     // ROOMのメンバー数をインクリメント
     await incrementCounter(
       TableNames.ROOM,
-      { room_id: request.room_id },
+      { room_id: roomId },
       'member_count',
       1
     );
@@ -123,7 +122,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     // レスポンス
     const response: JoinRoomResponse = {
       joined: true,
-      room_id: request.room_id,
+      room_id: roomId,
     };
 
     return successResponse(response, 201);

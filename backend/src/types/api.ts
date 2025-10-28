@@ -127,8 +127,9 @@ export interface DeletePostRequest {
 // =====================================================
 
 // いいね追加
+// post_idはパスパラメータから取得するため、リクエストボディは空
 export interface LikePostRequest {
-  post_id: string;
+  // 将来の拡張のために空インターフェースとして保持
 }
 
 export interface LikePostResponse {
@@ -137,8 +138,8 @@ export interface LikePostResponse {
 }
 
 // コメント作成
+// post_idはパスパラメータから取得
 export interface CreateCommentRequest {
-  post_id: string;
   content: string;
   parent_comment_id?: string;
   reply_to_account_id?: string;
@@ -221,8 +222,9 @@ export interface GetRoomsRequest {
 export interface GetRoomsResponse extends PaginatedResponse<RoomItem> {}
 
 // ROOM参加
+// room_idはパスパラメータから取得するため、リクエストボディは空
 export interface JoinRoomRequest {
-  room_id: string;
+  // 将来の拡張のために空インターフェースとして保持
 }
 
 export interface JoinRoomResponse {

@@ -32,11 +32,17 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       return unauthorizedResponse('アカウントIDが取得できません');
     }
 
+    // パスパラメータから投稿IDを取得
+    const postId = event.pathParameters?.post_id;
+
+    if (!postId) {
+      return unauthorizedResponse('投稿IDが指定されていません');
+    }
+
     // リクエストボディをパース
     const request = parseRequestBody<CreateCommentRequest>(event.body);
 
     // バリデーション
-    validateRequired(request.post_id, '投稿ID');
     validateRequired(request.content, 'コメント内容');
     validateCommentContent(request.content);
 
@@ -45,7 +51,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       {
         TableName: TableNames.POST,
         Key: {
-          postId: request.post_id,
+          postId: postId,
         },
       },
       '投稿'
@@ -63,7 +69,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     // コメントアイテムを作成
     const commentItem: CommentItem = {
       comment_id: commentId,
-      post_id: request.post_id,
+      post_id: postId,
       account_id: accountId,
       parent_comment_id: request.parent_comment_id,
       reply_to_account_id: request.reply_to_account_id,
@@ -83,7 +89,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     // 投稿のコメント数をインクリメント
     incrementCounter(
       TableNames.POST,
-      { postId: request.post_id },
+      { postId: postId },
       'commentCount',
       1
     ).catch((err) => {
