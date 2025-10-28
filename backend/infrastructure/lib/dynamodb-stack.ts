@@ -23,7 +23,9 @@ export class DynamoDBStack extends cdk.Stack {
       billing: dynamodb.Billing.onDemand(),
       encryption: dynamodb.TableEncryptionV2.awsManagedKey(),
       removalPolicy: removalPolicy,
-      pointInTimeRecovery: environment === 'prod', // 本番のみPITR有効
+      pointInTimeRecoverySpecification: {
+        pointInTimeRecoveryEnabled: environment === 'prod', // 本番のみPITR有効
+      },
     };
 
     // =====================================================

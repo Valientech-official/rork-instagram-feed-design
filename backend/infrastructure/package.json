@@ -2,7 +2,9 @@
   "name": "piece-app-infrastructure",
   "version": "1.0.0",
   "description": "AWS CDK infrastructure for piece-app backend",
-  "main": "bin/app.js",
+  "bin": {
+    "piece-app-infrastructure": "bin/app.js"
+  },
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
@@ -17,7 +19,9 @@
   "devDependencies": {
     "@types/node": "^24.9.1",
     "typescript": "^5.9.3",
-    "aws-cdk": "^2.1031.0"
+    "aws-cdk": "^2.1031.0",
+    "ts-node": "^10.9.2",
+    "source-map-support": "^0.5.21"
   },
   "dependencies": {
     "aws-cdk-lib": "^2.221.0",

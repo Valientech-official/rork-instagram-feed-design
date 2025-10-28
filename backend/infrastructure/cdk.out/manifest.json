@@ -1,0 +1,1222 @@
+{
+  "version": "48.0.0",
+  "artifacts": {
+    "PieceApp-S3-Dev.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "PieceApp-S3-Dev.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "PieceApp-S3-Dev": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/ap-northeast-1",
+      "properties": {
+        "templateFile": "PieceApp-S3-Dev.template.json",
+        "terminationProtection": false,
+        "tags": {
+          "Environment": "Development",
+          "ManagedBy": "CDK",
+          "Project": "PieceApp"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-ap-northeast-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-ap-northeast-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1/1387fd79c5f2aacd4d095db9abb46db5c265cdc5b9551750803f69541fde1c5f.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "PieceApp-S3-Dev.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-ap-northeast-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "PieceApp-S3-Dev.assets"
+      ],
+      "metadata": {
+        "/PieceApp-S3-Dev": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Environment",
+                "Value": "Development"
+              },
+              {
+                "Key": "ManagedBy",
+                "Value": "CDK"
+              },
+              {
+                "Key": "Project",
+                "Value": "PieceApp"
+              }
+            ]
+          }
+        ],
+        "/PieceApp-S3-Dev/PieceAppMediaBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppMediaBucket57D35C9E"
+          }
+        ],
+        "/PieceApp-S3-Dev/PieceAppMediaBucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppMediaBucketPolicy20614825"
+          }
+        ],
+        "/PieceApp-S3-Dev/PieceAppMediaBucket/AutoDeleteObjectsCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PieceAppMediaBucketAutoDeleteObjectsCustomResource10064FF8"
+          }
+        ],
+        "/PieceApp-S3-Dev/Custom::S3AutoDeleteObjectsCustomResourceProvider": [
+          {
+            "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+            "data": true
+          }
+        ],
+        "/PieceApp-S3-Dev/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+          }
+        ],
+        "/PieceApp-S3-Dev/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+          }
+        ],
+        "/PieceApp-S3-Dev/MediaBucketName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MediaBucketName"
+          }
+        ],
+        "/PieceApp-S3-Dev/MediaBucketArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MediaBucketArn"
+          }
+        ],
+        "/PieceApp-S3-Dev/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/PieceApp-S3-Dev/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/PieceApp-S3-Dev/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "PieceApp-S3-Dev"
+    },
+    "PieceApp-DynamoDB-Dev.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "PieceApp-DynamoDB-Dev.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "PieceApp-DynamoDB-Dev": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/ap-northeast-1",
+      "properties": {
+        "templateFile": "PieceApp-DynamoDB-Dev.template.json",
+        "terminationProtection": false,
+        "tags": {
+          "Environment": "Development",
+          "ManagedBy": "CDK",
+          "Project": "PieceApp"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-ap-northeast-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-ap-northeast-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1/a9e5c4798f0ec219ec5d4c57731e763c1f0dd9705f2857a56b71d0cbcc31143b.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "PieceApp-DynamoDB-Dev.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-ap-northeast-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "PieceApp-DynamoDB-Dev.assets"
+      ],
+      "metadata": {
+        "/PieceApp-DynamoDB-Dev": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Environment",
+                "Value": "Development"
+              },
+              {
+                "Key": "ManagedBy",
+                "Value": "CDK"
+              },
+              {
+                "Key": "Project",
+                "Value": "PieceApp"
+              }
+            ]
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/AccountTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "AccountTable95876246"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/AccountTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AccountTable95876246"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/SessionTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "SessionTableA016F679"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/SessionTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SessionTableA016F679"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/PostTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "PostTable197E3F68"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/PostTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PostTable197E3F68"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/HashtagIndexTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "HashtagIndexTable62FC944C"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/HashtagIndexTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "HashtagIndexTable62FC944C"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/HashtagCountTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "HashtagCountTable4E409E29"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/HashtagCountTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "HashtagCountTable4E409E29"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/FollowTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "FollowTableA8C0D669"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/FollowTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FollowTableA8C0D669"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/LikeTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "LikeTable3585E3B1"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/LikeTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LikeTable3585E3B1"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/CommentTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "CommentTableE9F84112"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/CommentTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CommentTableE9F84112"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/RoomTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "RoomTableA2D324D8"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/RoomTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RoomTableA2D324D8"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/RoomMemberTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "RoomMemberTableE01E0FFB"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/RoomMemberTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RoomMemberTableE01E0FFB"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/NotificationTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "NotificationTable89D5933F"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/NotificationTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NotificationTable89D5933F"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/NotificationSettingsTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "NotificationSettingsTable6A484D87"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/NotificationSettingsTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NotificationSettingsTable6A484D87"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/MutedAccountsTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "MutedAccountsTable9D288BD3"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/MutedAccountsTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MutedAccountsTable9D288BD3"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/RepostTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "RepostTable6DD2F560"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/RepostTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RepostTable6DD2F560"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/BlockTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "BlockTable6584DE72"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/BlockTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BlockTable6584DE72"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/ReportTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "ReportTable270236C0"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/ReportTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ReportTable270236C0"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/LiveStreamTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "LiveStreamTable47005AEE"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/LiveStreamTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LiveStreamTable47005AEE"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/LiveViewerTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "LiveViewerTableDA88B529"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/LiveViewerTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LiveViewerTableDA88B529"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/LiveModeratorTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "LiveModeratorTableCF0747C4"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/LiveModeratorTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LiveModeratorTableCF0747C4"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/ModeratorActionLogTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "ModeratorActionLogTable566E73F2"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/ModeratorActionLogTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ModeratorActionLogTable566E73F2"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/LiveChatTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "LiveChatTableF1958AE2"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/LiveChatTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LiveChatTableF1958AE2"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/LiveGiftTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "LiveGiftTable37A6E48F"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/LiveGiftTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LiveGiftTable37A6E48F"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/ProductTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "ProductTableB8D4E9ED"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/ProductTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductTableB8D4E9ED"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/ProductTagTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "ProductTagTable7FB395F2"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/ProductTagTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductTagTable7FB395F2"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/ConversationTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "ConversationTable75C14D21"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/ConversationTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ConversationTable75C14D21"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/MessageTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "MessageTable477906EA"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/MessageTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MessageTable477906EA"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/AnalyticsTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "AnalyticsTable3F84C304"
+            }
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/AnalyticsTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AnalyticsTable3F84C304"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/accountTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "accountTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/sessionTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "sessionTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/postTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "postTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/hashtagIndexTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "hashtagIndexTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/hashtagCountTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "hashtagCountTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/followTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "followTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/likeTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "likeTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/commentTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "commentTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/roomTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "roomTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/roomMemberTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "roomMemberTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/notificationTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "notificationTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/notificationSettingsTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "notificationSettingsTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/mutedAccountsTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "mutedAccountsTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/repostTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "repostTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/blockTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "blockTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/reportTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "reportTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/liveStreamTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "liveStreamTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/liveViewerTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "liveViewerTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/liveModeratorTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "liveModeratorTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/moderatorActionLogTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "moderatorActionLogTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/liveChatTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "liveChatTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/liveGiftTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "liveGiftTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/productTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "productTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/productTagTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "productTagTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/conversationTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "conversationTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/messageTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "messageTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/analyticsTableName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "analyticsTableName"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/PieceApp-DynamoDB-Dev/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "PieceApp-DynamoDB-Dev"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    },
+    "aws-cdk-lib/feature-flag-report": {
+      "type": "cdk:feature-flag-report",
+      "properties": {
+        "module": "aws-cdk-lib",
+        "flags": {
+          "@aws-cdk/aws-signer:signingProfileNamePassedToCfn": {
+            "recommendedValue": true,
+            "explanation": "Pass signingProfileName to CfnSigningProfile"
+          },
+          "@aws-cdk/core:newStyleStackSynthesis": {
+            "recommendedValue": true,
+            "explanation": "Switch to new stack synthesis method which enables CI/CD",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/core:stackRelativeExports": {
+            "recommendedValue": true,
+            "explanation": "Name exports based on the construct paths relative to the stack, rather than the global construct path",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-ecs-patterns:secGroupsDisablesImplicitOpenListener": {
+            "recommendedValue": true,
+            "explanation": "Disable implicit openListener when custom security groups are provided"
+          },
+          "@aws-cdk/aws-rds:lowercaseDbIdentifier": {
+            "recommendedValue": true,
+            "explanation": "Force lowercasing of RDS Cluster names in CDK",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-apigateway:usagePlanKeyOrderInsensitiveId": {
+            "recommendedValue": true,
+            "explanation": "Allow adding/removing multiple UsagePlanKeys independently",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-lambda:recognizeVersionProps": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to opt in to the updated logical id calculation for Lambda Version created using the  `fn.currentVersion`.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-lambda:recognizeLayerVersion": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to opt in to the updated logical id calculation for Lambda Version created using the `fn.currentVersion`."
+          },
+          "@aws-cdk/aws-cloudfront:defaultSecurityPolicyTLSv1.2_2021": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to have cloudfront distributions use the security policy TLSv1.2_2021 by default.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/core:checkSecretUsage": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enable this flag to make it impossible to accidentally use SecretValues in unsafe locations"
+          },
+          "@aws-cdk/core:target-partitions": {
+            "userValue": [
+              "aws",
+              "aws-cn"
+            ],
+            "recommendedValue": [
+              "aws",
+              "aws-cn"
+            ],
+            "explanation": "What regions to include in lookup tables of environment agnostic stacks"
+          },
+          "@aws-cdk-containers/ecs-service-extensions:enableDefaultLogDriver": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "ECS extensions will automatically add an `awslogs` driver if no logging is specified"
+          },
+          "@aws-cdk/aws-ec2:uniqueImdsv2TemplateName": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to have Launch Templates generated by the `InstanceRequireImdsv2Aspect` use unique names."
+          },
+          "@aws-cdk/aws-ecs:arnFormatIncludesClusterName": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "ARN format used by ECS. In the new ARN format, the cluster name is part of the resource ID."
+          },
+          "@aws-cdk/aws-iam:minimizePolicies": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Minimize IAM policies by combining Statements"
+          },
+          "@aws-cdk/core:validateSnapshotRemovalPolicy": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Error on snapshot removal policies on resources that do not support it."
+          },
+          "@aws-cdk/aws-codepipeline:crossAccountKeyAliasStackSafeResourceName": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Generate key aliases that include the stack name"
+          },
+          "@aws-cdk/aws-s3:createDefaultLoggingPolicy": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to create an S3 bucket policy by default in cases where an AWS service would automatically create the Policy if one does not exist."
+          },
+          "@aws-cdk/aws-sns-subscriptions:restrictSqsDescryption": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Restrict KMS key policy for encrypted Queues a bit more"
+          },
+          "@aws-cdk/aws-apigateway:disableCloudWatchRole": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Make default CloudWatch Role behavior safe for multiple API Gateways in one environment"
+          },
+          "@aws-cdk/core:enablePartitionLiterals": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Make ARNs concrete if AWS partition is known"
+          },
+          "@aws-cdk/aws-events:eventsTargetQueueSameAccount": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Event Rules may only push to encrypted SQS queues in the same account"
+          },
+          "@aws-cdk/aws-ecs:disableExplicitDeploymentControllerForCircuitBreaker": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Avoid setting the \"ECS\" deployment controller when adding a circuit breaker"
+          },
+          "@aws-cdk/aws-iam:importedRoleStackSafeDefaultPolicyName": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enable this feature to by default create default policy names for imported roles that depend on the stack the role is in."
+          },
+          "@aws-cdk/aws-s3:serverAccessLogsUseBucketPolicy": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Use S3 Bucket Policy instead of ACLs for Server Access Logging"
+          },
+          "@aws-cdk/aws-route53-patters:useCertificate": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Use the official `Certificate` resource instead of `DnsValidatedCertificate`"
+          },
+          "@aws-cdk/customresources:installLatestAwsSdkDefault": {
+            "userValue": false,
+            "recommendedValue": false,
+            "explanation": "Whether to install the latest SDK by default in AwsCustomResource"
+          },
+          "@aws-cdk/aws-rds:databaseProxyUniqueResourceName": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Use unique resource name for Database Proxy"
+          },
+          "@aws-cdk/aws-codedeploy:removeAlarmsFromDeploymentGroup": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Remove CloudWatch alarms from deployment group"
+          },
+          "@aws-cdk/aws-apigateway:authorizerChangeDeploymentLogicalId": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Include authorizer configuration in the calculation of the API deployment logical ID."
+          },
+          "@aws-cdk/aws-ec2:launchTemplateDefaultUserData": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Define user data for a launch template by default when a machine image is provided."
+          },
+          "@aws-cdk/aws-secretsmanager:useAttachedSecretResourcePolicyForSecretTargetAttachments": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "SecretTargetAttachments uses the ResourcePolicy of the attached Secret."
+          },
+          "@aws-cdk/aws-redshift:columnId": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Whether to use an ID to track Redshift column changes"
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:enableEmrServicePolicyV2": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enable AmazonEMRServicePolicy_v2 managed policies"
+          },
+          "@aws-cdk/aws-ec2:restrictDefaultSecurityGroup": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Restrict access to the VPC default security group"
+          },
+          "@aws-cdk/aws-apigateway:requestValidatorUniqueId": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Generate a unique id for each RequestValidator added to a method"
+          },
+          "@aws-cdk/aws-kms:aliasNameRef": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "KMS Alias name and keyArn will have implicit reference to KMS Key"
+          },
+          "@aws-cdk/aws-kms:applyImportedAliasPermissionsToPrincipal": {
+            "recommendedValue": true,
+            "explanation": "Enable grant methods on Aliases imported by name to use kms:ResourceAliases condition"
+          },
+          "@aws-cdk/aws-autoscaling:generateLaunchTemplateInsteadOfLaunchConfig": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Generate a launch template when creating an AutoScalingGroup"
+          },
+          "@aws-cdk/core:includePrefixInUniqueNameGeneration": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Include the stack prefix in the stack name generation process"
+          },
+          "@aws-cdk/aws-efs:denyAnonymousAccess": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "EFS denies anonymous clients accesses"
+          },
+          "@aws-cdk/aws-opensearchservice:enableOpensearchMultiAzWithStandby": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enables support for Multi-AZ with Standby deployment for opensearch domains"
+          },
+          "@aws-cdk/aws-lambda-nodejs:useLatestRuntimeVersion": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enables aws-lambda-nodejs.Function to use the latest available NodeJs runtime as the default"
+          },
+          "@aws-cdk/aws-efs:mountTargetOrderInsensitiveLogicalId": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, mount targets will have a stable logicalId that is linked to the associated subnet."
+          },
+          "@aws-cdk/aws-rds:auroraClusterChangeScopeOfInstanceParameterGroupWithEachParameters": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, a scope of InstanceParameterGroup for AuroraClusterInstance with each parameters will change."
+          },
+          "@aws-cdk/aws-appsync:useArnForSourceApiAssociationIdentifier": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, will always use the arn for identifiers for CfnSourceApiAssociation in the GraphqlApi construct rather than id."
+          },
+          "@aws-cdk/aws-rds:preventRenderingDeprecatedCredentials": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, creating an RDS database cluster from a snapshot will only render credentials for snapshot credentials."
+          },
+          "@aws-cdk/aws-codepipeline-actions:useNewDefaultBranchForCodeCommitSource": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, the CodeCommit source action is using the default branch name 'main'."
+          },
+          "@aws-cdk/aws-cloudwatch-actions:changeLambdaPermissionLogicalIdForLambdaAction": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, the logical ID of a Lambda permission for a Lambda action includes an alarm ID."
+          },
+          "@aws-cdk/aws-codepipeline:crossAccountKeysDefaultValueToFalse": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enables Pipeline to set the default value for crossAccountKeys to false."
+          },
+          "@aws-cdk/aws-codepipeline:defaultPipelineTypeToV2": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enables Pipeline to set the default pipeline type to V2."
+          },
+          "@aws-cdk/aws-kms:reduceCrossAccountRegionPolicyScope": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, IAM Policy created from KMS key grant will reduce the resource scope to this key only."
+          },
+          "@aws-cdk/pipelines:reduceAssetRoleTrustScope": {
+            "recommendedValue": true,
+            "explanation": "Remove the root account principal from PipelineAssetsFileRole trust policy",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-eks:nodegroupNameAttribute": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, nodegroupName attribute of the provisioned EKS NodeGroup will not have the cluster name prefix."
+          },
+          "@aws-cdk/aws-ec2:ebsDefaultGp3Volume": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, the default volume type of the EBS volume will be GP3"
+          },
+          "@aws-cdk/aws-ecs:removeDefaultDeploymentAlarm": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "When enabled, remove default deployment alarm settings"
+          },
+          "@aws-cdk/custom-resources:logApiResponseDataPropertyTrueDefault": {
+            "userValue": false,
+            "recommendedValue": false,
+            "explanation": "When enabled, the custom resource used for `AwsCustomResource` will configure the `logApiResponseData` property as true by default"
+          },
+          "@aws-cdk/aws-s3:keepNotificationInImportedBucket": {
+            "userValue": false,
+            "recommendedValue": false,
+            "explanation": "When enabled, Adding notifications to a bucket in the current stack will not remove notification from imported stack."
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:useNewS3UriParametersForBedrockInvokeModelTask": {
+            "recommendedValue": true,
+            "explanation": "When enabled, use new props for S3 URI field in task definition of state machine for bedrock invoke model.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/core:explicitStackTags": {
+            "recommendedValue": true,
+            "explanation": "When enabled, stack tags need to be assigned explicitly on a Stack."
+          },
+          "@aws-cdk/aws-ecs:enableImdsBlockingDeprecatedFeature": {
+            "recommendedValue": false,
+            "explanation": "When set to true along with canContainersAccessInstanceRole=false in ECS cluster, new updated commands will be added to UserData to block container accessing IMDS. **Applicable to Linux only. IMPORTANT: See [details.](#aws-cdkaws-ecsenableImdsBlockingDeprecatedFeature)**"
+          },
+          "@aws-cdk/aws-ecs:disableEcsImdsBlocking": {
+            "recommendedValue": true,
+            "explanation": "When set to true, CDK synth will throw exception if canContainersAccessInstanceRole is false. **IMPORTANT: See [details.](#aws-cdkaws-ecsdisableEcsImdsBlocking)**"
+          },
+          "@aws-cdk/aws-ecs:reduceEc2FargateCloudWatchPermissions": {
+            "recommendedValue": true,
+            "explanation": "When enabled, we will only grant the necessary permissions when users specify cloudwatch log group through logConfiguration"
+          },
+          "@aws-cdk/aws-dynamodb:resourcePolicyPerReplica": {
+            "recommendedValue": true,
+            "explanation": "When enabled will allow you to specify a resource policy per replica, and not copy the source table policy to all replicas"
+          },
+          "@aws-cdk/aws-ec2:ec2SumTImeoutEnabled": {
+            "recommendedValue": true,
+            "explanation": "When enabled, initOptions.timeout and resourceSignalTimeout values will be summed together."
+          },
+          "@aws-cdk/aws-appsync:appSyncGraphQLAPIScopeLambdaPermission": {
+            "recommendedValue": true,
+            "explanation": "When enabled, a Lambda authorizer Permission created when using GraphqlApi will be properly scoped with a SourceArn."
+          },
+          "@aws-cdk/aws-rds:setCorrectValueForDatabaseInstanceReadReplicaInstanceResourceId": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the value of property `instanceResourceId` in construct `DatabaseInstanceReadReplica` will be set to the correct value which is `DbiResourceId` instead of currently `DbInstanceArn`"
+          },
+          "@aws-cdk/core:cfnIncludeRejectComplexResourceUpdateCreatePolicyIntrinsics": {
+            "recommendedValue": true,
+            "explanation": "When enabled, CFN templates added with `cfn-include` will error if the template contains Resource Update or Create policies with CFN Intrinsics that include non-primitive values."
+          },
+          "@aws-cdk/aws-lambda-nodejs:sdkV3ExcludeSmithyPackages": {
+            "recommendedValue": true,
+            "explanation": "When enabled, both `@aws-sdk` and `@smithy` packages will be excluded from the Lambda Node.js 18.x runtime to prevent version mismatches in bundled applications."
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:fixRunEcsTaskPolicy": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the resource of IAM Run Ecs policy generated by SFN EcsRunTask will reference the definition, instead of constructing ARN."
+          },
+          "@aws-cdk/aws-ec2:bastionHostUseAmazonLinux2023ByDefault": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the BastionHost construct will use the latest Amazon Linux 2023 AMI, instead of Amazon Linux 2."
+          },
+          "@aws-cdk/core:aspectStabilization": {
+            "recommendedValue": true,
+            "explanation": "When enabled, a stabilization loop will be run when invoking Aspects during synthesis.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-route53-targets:userPoolDomainNameMethodWithoutCustomResource": {
+            "recommendedValue": true,
+            "explanation": "When enabled, use a new method for DNS Name of user pool domain target without creating a custom resource."
+          },
+          "@aws-cdk/aws-elasticloadbalancingV2:albDualstackWithoutPublicIpv4SecurityGroupRulesDefault": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the default security group ingress rules will allow IPv6 ingress from anywhere"
+          },
+          "@aws-cdk/aws-iam:oidcRejectUnauthorizedConnections": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the default behaviour of OIDC provider will reject unauthorized connections"
+          },
+          "@aws-cdk/core:enableAdditionalMetadataCollection": {
+            "recommendedValue": true,
+            "explanation": "When enabled, CDK will expand the scope of usage data collected to better inform CDK development and improve communication for security concerns and emerging issues."
+          },
+          "@aws-cdk/aws-lambda:createNewPoliciesWithAddToRolePolicy": {
+            "recommendedValue": false,
+            "explanation": "[Deprecated] When enabled, Lambda will create new inline policies with AddToRolePolicy instead of adding to the Default Policy Statement"
+          },
+          "@aws-cdk/aws-s3:setUniqueReplicationRoleName": {
+            "recommendedValue": true,
+            "explanation": "When enabled, CDK will automatically generate a unique role name that is used for s3 object replication."
+          },
+          "@aws-cdk/pipelines:reduceStageRoleTrustScope": {
+            "recommendedValue": true,
+            "explanation": "Remove the root account principal from Stage addActions trust policy",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-events:requireEventBusPolicySid": {
+            "recommendedValue": true,
+            "explanation": "When enabled, grantPutEventsTo() will use resource policies with Statement IDs for service principals."
+          },
+          "@aws-cdk/core:aspectPrioritiesMutating": {
+            "recommendedValue": true,
+            "explanation": "When set to true, Aspects added by the construct library on your behalf will be given a priority of MUTATING."
+          },
+          "@aws-cdk/aws-dynamodb:retainTableReplica": {
+            "recommendedValue": true,
+            "explanation": "When enabled, table replica will be default to the removal policy of source table unless specified otherwise."
+          },
+          "@aws-cdk/cognito:logUserPoolClientSecretValue": {
+            "recommendedValue": false,
+            "explanation": "When disabled, the value of the user pool client secret will not be logged in the custom resource lambda function logs."
+          },
+          "@aws-cdk/pipelines:reduceCrossAccountActionRoleTrustScope": {
+            "recommendedValue": true,
+            "explanation": "When enabled, scopes down the trust policy for the cross-account action role",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-stepfunctions:useDistributedMapResultWriterV2": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the resultWriterV2 property of DistributedMap will be used insted of resultWriter"
+          },
+          "@aws-cdk/s3-notifications:addS3TrustKeyPolicyForSnsSubscriptions": {
+            "recommendedValue": true,
+            "explanation": "Add an S3 trust policy to a KMS key resource policy for SNS subscriptions."
+          },
+          "@aws-cdk/aws-ec2:requirePrivateSubnetsForEgressOnlyInternetGateway": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the EgressOnlyGateway resource is only created if private subnets are defined in the dual-stack VPC."
+          },
+          "@aws-cdk/aws-ec2-alpha:useResourceIdForVpcV2Migration": {
+            "recommendedValue": false,
+            "explanation": "When enabled, use resource IDs for VPC V2 migration"
+          },
+          "@aws-cdk/aws-s3:publicAccessBlockedByDefault": {
+            "recommendedValue": true,
+            "explanation": "When enabled, setting any combination of options for BlockPublicAccess will automatically set true for any options not defined."
+          },
+          "@aws-cdk/aws-lambda:useCdkManagedLogGroup": {
+            "recommendedValue": true,
+            "explanation": "When enabled, CDK creates and manages loggroup for the lambda function"
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:httpInvokeDynamicJsonPathEndpoint": {
+            "recommendedValue": true,
+            "explanation": "When enabled, allows using a dynamic apiEndpoint with JSONPath format in HttpInvoke tasks.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-ecs-patterns:uniqueTargetGroupId": {
+            "recommendedValue": true,
+            "explanation": "When enabled, ECS patterns will generate unique target group IDs to prevent conflicts during load balancer replacement"
+          }
+        }
+      }
+    }
+  },
+  "minimumCliVersion": "2.1031.0"
+}

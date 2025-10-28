@@ -1,0 +1,21 @@
+{
+  "version": "48.0.0",
+  "files": {
+    "a9e5c4798f0ec219ec5d4c57731e763c1f0dd9705f2857a56b71d0cbcc31143b": {
+      "displayName": "PieceApp-DynamoDB-Dev Template",
+      "source": {
+        "path": "PieceApp-DynamoDB-Dev.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "current_account-ap-northeast-1-b03f154f": {
+          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1",
+          "objectKey": "a9e5c4798f0ec219ec5d4c57731e763c1f0dd9705f2857a56b71d0cbcc31143b.json",
+          "region": "ap-northeast-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-ap-northeast-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

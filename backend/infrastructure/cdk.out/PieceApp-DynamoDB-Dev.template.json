@@ -1,0 +1,3157 @@
+{
+ "Description": "27 DynamoDB tables with 50 GSIs (Development)",
+ "Resources": {
+  "AccountTable95876246": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "SK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI1PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI1SK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI2PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI2SK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI3PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI3SK",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1_EmailLogin",
+      "KeySchema": [
+       {
+        "AttributeName": "GSI1PK",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "GSI1SK",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI2_HandleSearch",
+      "KeySchema": [
+       {
+        "AttributeName": "GSI2PK",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "GSI2SK",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI3_PhoneManagement",
+      "KeySchema": [
+       {
+        "AttributeName": "GSI3PK",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "GSI3SK",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "PK",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "SK",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI1_EmailLogin"
+       },
+       {
+        "IndexName": "GSI2_HandleSearch"
+       },
+       {
+        "IndexName": "GSI3_PhoneManagement"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "ACCOUNT-dev"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/AccountTable/Resource"
+   }
+  },
+  "SessionTableA016F679": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "SK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI1PK",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "GSI1SK",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1_AccountSessions",
+      "KeySchema": [
+       {
+        "AttributeName": "GSI1PK",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "GSI1SK",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "PK",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "SK",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI1_AccountSessions"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "SESSION-dev",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/SessionTable/Resource"
+   }
+  },
+  "PostTable197E3F68": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "postId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "accountId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "createdAt",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "visibility",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "room_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "post_type",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1",
+      "KeySchema": [
+       {
+        "AttributeName": "accountId",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "createdAt",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI2",
+      "KeySchema": [
+       {
+        "AttributeName": "visibility",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "createdAt",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI3",
+      "KeySchema": [
+       {
+        "AttributeName": "room_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "createdAt",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI_PostType_CreatedAt",
+      "KeySchema": [
+       {
+        "AttributeName": "post_type",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "createdAt",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "postId",
+      "KeyType": "HASH"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI1"
+       },
+       {
+        "IndexName": "GSI2"
+       },
+       {
+        "IndexName": "GSI3"
+       },
+       {
+        "IndexName": "GSI_PostType_CreatedAt"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "POST-dev",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/PostTable/Resource"
+   }
+  },
+  "HashtagIndexTable62FC944C": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "hashtag",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "postId",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "hashtag",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "postId",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "HASHTAG_INDEX-dev"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/HashtagIndexTable/Resource"
+   }
+  },
+  "HashtagCountTable4E409E29": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "hashtag",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "period",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "count",
+      "AttributeType": "N"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1",
+      "KeySchema": [
+       {
+        "AttributeName": "period",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "count",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "hashtag",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "period",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI1"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "HASHTAG_COUNT-dev",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/HashtagCountTable/Resource"
+   }
+  },
+  "FollowTableA8C0D669": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "follower_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "following_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "created_at",
+      "AttributeType": "N"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1",
+      "KeySchema": [
+       {
+        "AttributeName": "follower_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI2",
+      "KeySchema": [
+       {
+        "AttributeName": "following_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "follower_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "following_id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI1"
+       },
+       {
+        "IndexName": "GSI2"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "FOLLOW-dev"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/FollowTable/Resource"
+   }
+  },
+  "LikeTable3585E3B1": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "post_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "account_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "created_at",
+      "AttributeType": "N"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1",
+      "KeySchema": [
+       {
+        "AttributeName": "account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "post_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "account_id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI1"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "LIKE-dev"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/LikeTable/Resource"
+   }
+  },
+  "CommentTableE9F84112": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "comment_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "post_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "created_at",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "account_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1",
+      "KeySchema": [
+       {
+        "AttributeName": "post_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI2",
+      "KeySchema": [
+       {
+        "AttributeName": "account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "comment_id",
+      "KeyType": "HASH"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI1"
+       },
+       {
+        "IndexName": "GSI2"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "COMMENT-dev",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/CommentTable/Resource"
+   }
+  },
+  "RoomTableA2D324D8": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "room_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "category",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "member_count",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "room_handle",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1",
+      "KeySchema": [
+       {
+        "AttributeName": "category",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "member_count",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI2",
+      "KeySchema": [
+       {
+        "AttributeName": "room_handle",
+        "KeyType": "HASH"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "room_id",
+      "KeyType": "HASH"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI1"
+       },
+       {
+        "IndexName": "GSI2"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "ROOM-dev"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/RoomTable/Resource"
+   }
+  },
+  "RoomMemberTableE01E0FFB": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "room_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "account_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "joined_at",
+      "AttributeType": "N"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1",
+      "KeySchema": [
+       {
+        "AttributeName": "account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "joined_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "room_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "account_id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI1"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "ROOM_MEMBER-dev"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/RoomMemberTable/Resource"
+   }
+  },
+  "NotificationTable89D5933F": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "notification_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "recipient_account_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "created_at",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "is_read",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1",
+      "KeySchema": [
+       {
+        "AttributeName": "recipient_account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI2",
+      "KeySchema": [
+       {
+        "AttributeName": "recipient_account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "is_read",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "notification_id",
+      "KeyType": "HASH"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI1"
+       },
+       {
+        "IndexName": "GSI2"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "NOTIFICATION-dev",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/NotificationTable/Resource"
+   }
+  },
+  "NotificationSettingsTable6A484D87": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "account_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "account_id",
+      "KeyType": "HASH"
+     }
+    ],
+    "Replicas": [
+     {
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "NOTIFICATION_SETTINGS-dev"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/NotificationSettingsTable/Resource"
+   }
+  },
+  "MutedAccountsTable9D288BD3": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "account_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "muted_account_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1",
+      "KeySchema": [
+       {
+        "AttributeName": "muted_account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "account_id",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "account_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "muted_account_id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI1"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "MUTED_ACCOUNTS-dev"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/MutedAccountsTable/Resource"
+   }
+  },
+  "RepostTable6DD2F560": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "repost_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "account_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "created_at",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "original_post_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1",
+      "KeySchema": [
+       {
+        "AttributeName": "account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI2",
+      "KeySchema": [
+       {
+        "AttributeName": "original_post_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "repost_id",
+      "KeyType": "HASH"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI1"
+       },
+       {
+        "IndexName": "GSI2"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "REPOST-dev"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/RepostTable/Resource"
+   }
+  },
+  "BlockTable6584DE72": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "blocker_account_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "blocked_account_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "blocked_at",
+      "AttributeType": "N"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI_blocked_by",
+      "KeySchema": [
+       {
+        "AttributeName": "blocked_account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "blocked_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "blocker_account_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "blocked_account_id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI_blocked_by"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "BLOCK-dev"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/BlockTable/Resource"
+   }
+  },
+  "ReportTable270236C0": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "report_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "created_at",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "status",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "target_type",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "reporter_account_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "target_account_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI_status_reports",
+      "KeySchema": [
+       {
+        "AttributeName": "status",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI_target_reports",
+      "KeySchema": [
+       {
+        "AttributeName": "target_type",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI_reporter_history",
+      "KeySchema": [
+       {
+        "AttributeName": "reporter_account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI_reported_user",
+      "KeySchema": [
+       {
+        "AttributeName": "target_account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "report_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "created_at",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI_status_reports"
+       },
+       {
+        "IndexName": "GSI_target_reports"
+       },
+       {
+        "IndexName": "GSI_reporter_history"
+       },
+       {
+        "IndexName": "GSI_reported_user"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "REPORT-dev",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/ReportTable/Resource"
+   }
+  },
+  "LiveStreamTable47005AEE": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "stream_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "created_at",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "room_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "started_at",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "account_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "status",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI_room_lives",
+      "KeySchema": [
+       {
+        "AttributeName": "room_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "started_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI_account_lives",
+      "KeySchema": [
+       {
+        "AttributeName": "account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "started_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI_active_lives",
+      "KeySchema": [
+       {
+        "AttributeName": "status",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "started_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "stream_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "created_at",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI_room_lives"
+       },
+       {
+        "IndexName": "GSI_account_lives"
+       },
+       {
+        "IndexName": "GSI_active_lives"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "LIVE_STREAM-dev",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/LiveStreamTable/Resource"
+   }
+  },
+  "LiveViewerTableDA88B529": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "viewer_key",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "joined_at",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "stream_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "last_ping_at",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "account_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI_stream_viewers",
+      "KeySchema": [
+       {
+        "AttributeName": "stream_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "last_ping_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI_user_watch_history",
+      "KeySchema": [
+       {
+        "AttributeName": "account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "joined_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "viewer_key",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "joined_at",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI_stream_viewers"
+       },
+       {
+        "IndexName": "GSI_user_watch_history"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "LIVE_VIEWER-dev",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/LiveViewerTable/Resource"
+   }
+  },
+  "LiveModeratorTableCF0747C4": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "stream_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "moderator_account_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "assigned_at",
+      "AttributeType": "N"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI_moderator_streams",
+      "KeySchema": [
+       {
+        "AttributeName": "moderator_account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "assigned_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "stream_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "moderator_account_id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI_moderator_streams"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "LIVE_MODERATOR-dev"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/LiveModeratorTable/Resource"
+   }
+  },
+  "ModeratorActionLogTable566E73F2": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "log_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "stream_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "created_at",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "moderator_account_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI_stream_actions",
+      "KeySchema": [
+       {
+        "AttributeName": "stream_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI_moderator_actions",
+      "KeySchema": [
+       {
+        "AttributeName": "moderator_account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "log_id",
+      "KeyType": "HASH"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI_stream_actions"
+       },
+       {
+        "IndexName": "GSI_moderator_actions"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "MODERATOR_ACTION_LOG-dev"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/ModeratorActionLogTable/Resource"
+   }
+  },
+  "LiveChatTableF1958AE2": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "stream_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "chat_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "account_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "created_at",
+      "AttributeType": "N"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI_user_chat_history",
+      "KeySchema": [
+       {
+        "AttributeName": "account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "stream_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "chat_id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI_user_chat_history"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "LIVE_CHAT-dev",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/LiveChatTable/Resource"
+   }
+  },
+  "LiveGiftTable37A6E48F": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "gift_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "created_at",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "stream_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "from_account_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "to_account_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI_stream_gifts",
+      "KeySchema": [
+       {
+        "AttributeName": "stream_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI_sender_gifts",
+      "KeySchema": [
+       {
+        "AttributeName": "from_account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI_receiver_gifts",
+      "KeySchema": [
+       {
+        "AttributeName": "to_account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "gift_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "created_at",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI_stream_gifts"
+       },
+       {
+        "IndexName": "GSI_sender_gifts"
+       },
+       {
+        "IndexName": "GSI_receiver_gifts"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "LIVE_GIFT-dev",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/LiveGiftTable/Resource"
+   }
+  },
+  "ProductTableB8D4E9ED": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "product_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "created_at",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "seller_account_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "category",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "status",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI_seller_products",
+      "KeySchema": [
+       {
+        "AttributeName": "seller_account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI_category_products",
+      "KeySchema": [
+       {
+        "AttributeName": "category",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI_status_products",
+      "KeySchema": [
+       {
+        "AttributeName": "status",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "product_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "created_at",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI_seller_products"
+       },
+       {
+        "IndexName": "GSI_category_products"
+       },
+       {
+        "IndexName": "GSI_status_products"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "PRODUCT-dev",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/ProductTable/Resource"
+   }
+  },
+  "ProductTagTable7FB395F2": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "post_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "product_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "tagged_at",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "tagged_by_account_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI_product_posts",
+      "KeySchema": [
+       {
+        "AttributeName": "product_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "tagged_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI_user_tags",
+      "KeySchema": [
+       {
+        "AttributeName": "tagged_by_account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "tagged_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "post_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "product_id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI_product_posts"
+       },
+       {
+        "IndexName": "GSI_user_tags"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "PRODUCT_TAG-dev"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/ProductTagTable/Resource"
+   }
+  },
+  "ConversationTable75C14D21": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "conversation_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "created_at",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "participant_1_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "last_message_at",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "participant_2_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI_participant1_conversations",
+      "KeySchema": [
+       {
+        "AttributeName": "participant_1_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "last_message_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI_participant2_conversations",
+      "KeySchema": [
+       {
+        "AttributeName": "participant_2_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "last_message_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "conversation_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "created_at",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI_participant1_conversations"
+       },
+       {
+        "IndexName": "GSI_participant2_conversations"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "CONVERSATION-dev"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/ConversationTable/Resource"
+   }
+  },
+  "MessageTable477906EA": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "conversation_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "message_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "sender_account_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "created_at",
+      "AttributeType": "N"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI_sender_messages",
+      "KeySchema": [
+       {
+        "AttributeName": "sender_account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "conversation_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "message_id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI_sender_messages"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "MESSAGE-dev",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/MessageTable/Resource"
+   }
+  },
+  "AnalyticsTable3F84C304": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "date",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "event_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "account_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "timestamp",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "event_type",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "target_type",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI_user_events",
+      "KeySchema": [
+       {
+        "AttributeName": "account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "timestamp",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI_event_type",
+      "KeySchema": [
+       {
+        "AttributeName": "event_type",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "timestamp",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI_target_events",
+      "KeySchema": [
+       {
+        "AttributeName": "target_type",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "timestamp",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "date",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "event_id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI_user_events"
+       },
+       {
+        "IndexName": "GSI_event_type"
+       },
+       {
+        "IndexName": "GSI_target_events"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "ANALYTICS-dev",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/AnalyticsTable/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/zPSMzIy1DNQTCwv1k1OydbNyUzSqw4uSUzO1kksL45PqcxLzM1PSdKrDklMykkNM9JxTstzz8lPSswBC9SC+P6lJQWlJbU6efkpqXpZxfplRkZ6hiZ6BopZxZmZukWleSWZual6QRAaAL6ZMztxAAAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/CDKMetadata/Default"
+   }
+  }
+ },
+ "Outputs": {
+  "accountTableName": {
+   "Description": "account table name",
+   "Value": {
+    "Ref": "AccountTable95876246"
+   },
+   "Export": {
+    "Name": "PieceApp-account-TableName-dev"
+   }
+  },
+  "sessionTableName": {
+   "Description": "session table name",
+   "Value": {
+    "Ref": "SessionTableA016F679"
+   },
+   "Export": {
+    "Name": "PieceApp-session-TableName-dev"
+   }
+  },
+  "postTableName": {
+   "Description": "post table name",
+   "Value": {
+    "Ref": "PostTable197E3F68"
+   },
+   "Export": {
+    "Name": "PieceApp-post-TableName-dev"
+   }
+  },
+  "hashtagIndexTableName": {
+   "Description": "hashtagIndex table name",
+   "Value": {
+    "Ref": "HashtagIndexTable62FC944C"
+   },
+   "Export": {
+    "Name": "PieceApp-hashtagIndex-TableName-dev"
+   }
+  },
+  "hashtagCountTableName": {
+   "Description": "hashtagCount table name",
+   "Value": {
+    "Ref": "HashtagCountTable4E409E29"
+   },
+   "Export": {
+    "Name": "PieceApp-hashtagCount-TableName-dev"
+   }
+  },
+  "followTableName": {
+   "Description": "follow table name",
+   "Value": {
+    "Ref": "FollowTableA8C0D669"
+   },
+   "Export": {
+    "Name": "PieceApp-follow-TableName-dev"
+   }
+  },
+  "likeTableName": {
+   "Description": "like table name",
+   "Value": {
+    "Ref": "LikeTable3585E3B1"
+   },
+   "Export": {
+    "Name": "PieceApp-like-TableName-dev"
+   }
+  },
+  "commentTableName": {
+   "Description": "comment table name",
+   "Value": {
+    "Ref": "CommentTableE9F84112"
+   },
+   "Export": {
+    "Name": "PieceApp-comment-TableName-dev"
+   }
+  },
+  "roomTableName": {
+   "Description": "room table name",
+   "Value": {
+    "Ref": "RoomTableA2D324D8"
+   },
+   "Export": {
+    "Name": "PieceApp-room-TableName-dev"
+   }
+  },
+  "roomMemberTableName": {
+   "Description": "roomMember table name",
+   "Value": {
+    "Ref": "RoomMemberTableE01E0FFB"
+   },
+   "Export": {
+    "Name": "PieceApp-roomMember-TableName-dev"
+   }
+  },
+  "notificationTableName": {
+   "Description": "notification table name",
+   "Value": {
+    "Ref": "NotificationTable89D5933F"
+   },
+   "Export": {
+    "Name": "PieceApp-notification-TableName-dev"
+   }
+  },
+  "notificationSettingsTableName": {
+   "Description": "notificationSettings table name",
+   "Value": {
+    "Ref": "NotificationSettingsTable6A484D87"
+   },
+   "Export": {
+    "Name": "PieceApp-notificationSettings-TableName-dev"
+   }
+  },
+  "mutedAccountsTableName": {
+   "Description": "mutedAccounts table name",
+   "Value": {
+    "Ref": "MutedAccountsTable9D288BD3"
+   },
+   "Export": {
+    "Name": "PieceApp-mutedAccounts-TableName-dev"
+   }
+  },
+  "repostTableName": {
+   "Description": "repost table name",
+   "Value": {
+    "Ref": "RepostTable6DD2F560"
+   },
+   "Export": {
+    "Name": "PieceApp-repost-TableName-dev"
+   }
+  },
+  "blockTableName": {
+   "Description": "block table name",
+   "Value": {
+    "Ref": "BlockTable6584DE72"
+   },
+   "Export": {
+    "Name": "PieceApp-block-TableName-dev"
+   }
+  },
+  "reportTableName": {
+   "Description": "report table name",
+   "Value": {
+    "Ref": "ReportTable270236C0"
+   },
+   "Export": {
+    "Name": "PieceApp-report-TableName-dev"
+   }
+  },
+  "liveStreamTableName": {
+   "Description": "liveStream table name",
+   "Value": {
+    "Ref": "LiveStreamTable47005AEE"
+   },
+   "Export": {
+    "Name": "PieceApp-liveStream-TableName-dev"
+   }
+  },
+  "liveViewerTableName": {
+   "Description": "liveViewer table name",
+   "Value": {
+    "Ref": "LiveViewerTableDA88B529"
+   },
+   "Export": {
+    "Name": "PieceApp-liveViewer-TableName-dev"
+   }
+  },
+  "liveModeratorTableName": {
+   "Description": "liveModerator table name",
+   "Value": {
+    "Ref": "LiveModeratorTableCF0747C4"
+   },
+   "Export": {
+    "Name": "PieceApp-liveModerator-TableName-dev"
+   }
+  },
+  "moderatorActionLogTableName": {
+   "Description": "moderatorActionLog table name",
+   "Value": {
+    "Ref": "ModeratorActionLogTable566E73F2"
+   },
+   "Export": {
+    "Name": "PieceApp-moderatorActionLog-TableName-dev"
+   }
+  },
+  "liveChatTableName": {
+   "Description": "liveChat table name",
+   "Value": {
+    "Ref": "LiveChatTableF1958AE2"
+   },
+   "Export": {
+    "Name": "PieceApp-liveChat-TableName-dev"
+   }
+  },
+  "liveGiftTableName": {
+   "Description": "liveGift table name",
+   "Value": {
+    "Ref": "LiveGiftTable37A6E48F"
+   },
+   "Export": {
+    "Name": "PieceApp-liveGift-TableName-dev"
+   }
+  },
+  "productTableName": {
+   "Description": "product table name",
+   "Value": {
+    "Ref": "ProductTableB8D4E9ED"
+   },
+   "Export": {
+    "Name": "PieceApp-product-TableName-dev"
+   }
+  },
+  "productTagTableName": {
+   "Description": "productTag table name",
+   "Value": {
+    "Ref": "ProductTagTable7FB395F2"
+   },
+   "Export": {
+    "Name": "PieceApp-productTag-TableName-dev"
+   }
+  },
+  "conversationTableName": {
+   "Description": "conversation table name",
+   "Value": {
+    "Ref": "ConversationTable75C14D21"
+   },
+   "Export": {
+    "Name": "PieceApp-conversation-TableName-dev"
+   }
+  },
+  "messageTableName": {
+   "Description": "message table name",
+   "Value": {
+    "Ref": "MessageTable477906EA"
+   },
+   "Export": {
+    "Name": "PieceApp-message-TableName-dev"
+   }
+  },
+  "analyticsTableName": {
+   "Description": "analytics table name",
+   "Value": {
+    "Ref": "AnalyticsTable3F84C304"
+   },
+   "Export": {
+    "Name": "PieceApp-analytics-TableName-dev"
+   }
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}
