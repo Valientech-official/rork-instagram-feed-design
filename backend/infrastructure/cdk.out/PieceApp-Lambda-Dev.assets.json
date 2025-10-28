@@ -8,26 +8,26 @@
         "packaging": "zip"
       },
       "destinations": {
-        "current_account-ap-northeast-1-657c6fec": {
-          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1",
+        "620666897697-ap-northeast-1-6c156c65": {
+          "bucketName": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
           "objectKey": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip",
           "region": "ap-northeast-1",
-          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-ap-northeast-1"
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::620666897697:role/cdk-hnb659fds-file-publishing-role-620666897697-ap-northeast-1"
         }
       }
     },
-    "7d92804775f78936acbe1065ab5e51a4cd95dd417efbc0808836e65e3beb7bb9": {
+    "e78b13e1f745ea788fbdc3d4ddfdaee7a966b1e1fe651059a3d3479accbb6b46": {
       "displayName": "PieceApp-Lambda-Dev Template",
       "source": {
         "path": "PieceApp-Lambda-Dev.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "current_account-ap-northeast-1-75ad63b1": {
-          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1",
-          "objectKey": "7d92804775f78936acbe1065ab5e51a4cd95dd417efbc0808836e65e3beb7bb9.json",
+        "620666897697-ap-northeast-1-75f723f6": {
+          "bucketName": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
+          "objectKey": "e78b13e1f745ea788fbdc3d4ddfdaee7a966b1e1fe651059a3d3479accbb6b46.json",
           "region": "ap-northeast-1",
-          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-ap-northeast-1"
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::620666897697:role/cdk-hnb659fds-file-publishing-role-620666897697-ap-northeast-1"
         }
       }
     }

@@ -365,11 +365,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -398,11 +394,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -524,11 +516,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -557,11 +545,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -621,11 +605,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -654,11 +634,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -786,11 +762,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -819,11 +791,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -948,11 +916,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -981,11 +945,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -1045,11 +1005,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -1078,11 +1034,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -1204,11 +1156,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -1237,11 +1185,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -1301,11 +1245,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -1334,11 +1274,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -1460,11 +1396,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -1493,11 +1425,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -1560,11 +1488,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -1593,11 +1517,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -1784,11 +1704,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -1817,11 +1733,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -1946,11 +1858,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -1979,11 +1887,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -2108,11 +2012,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -2141,11 +2041,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -2208,11 +2104,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -2241,11 +2133,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -2373,11 +2261,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -2406,11 +2290,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -2597,11 +2477,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },
@@ -2630,11 +2506,7 @@
      "Fn::Join": [
       "",
       [
-       "arn:aws:execute-api:ap-northeast-1:",
-       {
-        "Ref": "AWS::AccountId"
-       },
-       ":",
+       "arn:aws:execute-api:ap-northeast-1:620666897697:",
        {
         "Ref": "PieceAppRestApi962CCD29"
        },

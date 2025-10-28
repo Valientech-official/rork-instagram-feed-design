@@ -1,18 +1,18 @@
 {
   "version": "48.0.0",
   "files": {
-    "7261421721693d84fd56eb689c93b8c324ebab307e53179cf73a27d06a0f3c4b": {
+    "31c5068702e22ed9cbb041767cbc9bc63841716e1238e70ed2dcf96b9bb32c21": {
       "displayName": "PieceApp-ApiGateway-Dev Template",
       "source": {
         "path": "PieceApp-ApiGateway-Dev.template.json",
         "packaging": "file"
       },
       "destinations": {
-        "current_account-ap-northeast-1-7aa5d2ae": {
-          "bucketName": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1",
-          "objectKey": "7261421721693d84fd56eb689c93b8c324ebab307e53179cf73a27d06a0f3c4b.json",
+        "620666897697-ap-northeast-1-2c122ba3": {
+          "bucketName": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
+          "objectKey": "31c5068702e22ed9cbb041767cbc9bc63841716e1238e70ed2dcf96b9bb32c21.json",
           "region": "ap-northeast-1",
-          "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-file-publishing-role-${AWS::AccountId}-ap-northeast-1"
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::620666897697:role/cdk-hnb659fds-file-publishing-role-620666897697-ap-northeast-1"
         }
       }
     }

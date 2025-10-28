@@ -92,18 +92,7 @@
         "dynamodb:UpdateItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:ap-northeast-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:ap-northeast-1:620666897697:table/*"
       },
       {
        "Action": [
@@ -131,9 +120,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
      "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
     },
     "Description": "Create new account",
@@ -279,18 +266,7 @@
         "dynamodb:UpdateItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:ap-northeast-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:ap-northeast-1:620666897697:table/*"
       },
       {
        "Action": [
@@ -318,9 +294,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
      "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
     },
     "Description": "Get user profile",
@@ -466,18 +440,7 @@
         "dynamodb:UpdateItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:ap-northeast-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:ap-northeast-1:620666897697:table/*"
       },
       {
        "Action": [
@@ -505,9 +468,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
      "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
     },
     "Description": "Update user profile",
@@ -653,18 +614,7 @@
         "dynamodb:UpdateItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:ap-northeast-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:ap-northeast-1:620666897697:table/*"
       },
       {
        "Action": [
@@ -692,9 +642,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
      "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
     },
     "Description": "Create new post",
@@ -840,18 +788,7 @@
         "dynamodb:UpdateItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:ap-northeast-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:ap-northeast-1:620666897697:table/*"
       },
       {
        "Action": [
@@ -879,9 +816,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
      "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
     },
     "Description": "Get post details",
@@ -1027,18 +962,7 @@
         "dynamodb:UpdateItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:ap-northeast-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:ap-northeast-1:620666897697:table/*"
       },
       {
        "Action": [
@@ -1066,9 +990,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
      "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
     },
     "Description": "Delete post",
@@ -1214,18 +1136,7 @@
         "dynamodb:UpdateItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:ap-northeast-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:ap-northeast-1:620666897697:table/*"
       },
       {
        "Action": [
@@ -1253,9 +1164,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
      "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
     },
     "Description": "Get user timeline",
@@ -1401,18 +1310,7 @@
         "dynamodb:UpdateItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:ap-northeast-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:ap-northeast-1:620666897697:table/*"
       },
       {
        "Action": [
@@ -1440,9 +1338,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
      "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
     },
     "Description": "Like a post",
@@ -1588,18 +1484,7 @@
         "dynamodb:UpdateItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:ap-northeast-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:ap-northeast-1:620666897697:table/*"
       },
       {
        "Action": [
@@ -1627,9 +1512,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
      "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
     },
     "Description": "Unlike a post",
@@ -1775,18 +1658,7 @@
         "dynamodb:UpdateItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:ap-northeast-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:ap-northeast-1:620666897697:table/*"
       },
       {
        "Action": [
@@ -1814,9 +1686,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
      "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
     },
     "Description": "Create comment on post",
@@ -1962,18 +1832,7 @@
         "dynamodb:UpdateItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:ap-northeast-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:ap-northeast-1:620666897697:table/*"
       },
       {
        "Action": [
@@ -2001,9 +1860,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
      "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
     },
     "Description": "Delete comment",
@@ -2149,18 +2006,7 @@
         "dynamodb:UpdateItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:ap-northeast-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:ap-northeast-1:620666897697:table/*"
       },
       {
        "Action": [
@@ -2188,9 +2034,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
      "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
     },
     "Description": "Get comments for post",
@@ -2336,18 +2180,7 @@
         "dynamodb:UpdateItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:ap-northeast-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:ap-northeast-1:620666897697:table/*"
       },
       {
        "Action": [
@@ -2375,9 +2208,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
      "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
     },
     "Description": "Follow a user",
@@ -2523,18 +2354,7 @@
         "dynamodb:UpdateItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:ap-northeast-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:ap-northeast-1:620666897697:table/*"
       },
       {
        "Action": [
@@ -2562,9 +2382,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
      "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
     },
     "Description": "Unfollow a user",
@@ -2710,18 +2528,7 @@
         "dynamodb:UpdateItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:ap-northeast-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:ap-northeast-1:620666897697:table/*"
       },
       {
        "Action": [
@@ -2749,9 +2556,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
      "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
     },
     "Description": "Create new room",
@@ -2897,18 +2702,7 @@
         "dynamodb:UpdateItem"
        ],
        "Effect": "Allow",
-       "Resource": {
-        "Fn::Join": [
-         "",
-         [
-          "arn:aws:dynamodb:ap-northeast-1:",
-          {
-           "Ref": "AWS::AccountId"
-          },
-          ":table/*"
-         ]
-        ]
-       }
+       "Resource": "arn:aws:dynamodb:ap-northeast-1:620666897697:table/*"
       },
       {
        "Action": [
@@ -2936,9 +2730,7 @@
    "Type": "AWS::Lambda::Function",
    "Properties": {
     "Code": {
-     "S3Bucket": {
-      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-ap-northeast-1"
-     },
+     "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
      "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
     },
     "Description": "Join a room",
