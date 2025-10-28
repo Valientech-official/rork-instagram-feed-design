@@ -1,6 +1,17 @@
 /**
  * Cognito User Pool Stack
  * ユーザー認証・認可の管理
+ *
+ * ⚠️ 課金に関する注意事項:
+ * 1. 最初の 10,000 MAU（月間アクティブユーザー）まで無料
+ * 2. Advanced Security Mode (AUDIT/ENFORCED): $0.05/MAU 課金
+ *    → 開発環境では OFF に設定
+ * 3. OAuth Client Credentials フロー: $6.00/月 per クライアント
+ *    → M2M認証用、このアプリでは使用しない
+ * 4. SMS MFA: SMS送信ごとに課金
+ *    → TOTP（認証アプリ）のみ使用
+ * 5. メール送信: 最初の50通/月まで無料、以降課金
+ *    → 本番環境ではSES使用を推奨
  */
 
 import * as cdk from 'aws-cdk-lib';
@@ -107,9 +118,11 @@ export class CognitoStack extends cdk.Stack {
       },
 
       // 高度なセキュリティ
+      // ⚠️ 課金注意: AUDITとENFORCEDは $0.05/MAU 課金されます
+      // 開発環境では課金を避けるためOFFに設定
       advancedSecurityMode: environment === 'prod'
-        ? cognito.AdvancedSecurityMode.ENFORCED
-        : cognito.AdvancedSecurityMode.AUDIT,
+        ? cognito.AdvancedSecurityMode.ENFORCED  // 本番: セキュリティ重視
+        : cognito.AdvancedSecurityMode.OFF,       // 開発: 課金回避のためOFF
 
       // ユーザー招待メッセージ
       userInvitation: {
@@ -163,10 +176,12 @@ export class CognitoStack extends cdk.Stack {
       },
 
       // OAuth設定（将来のソーシャルログイン用）
+      // ⚠️ 課金注意: clientCredentials フローは $6.00/月 課金されます（設定していません）
       oAuth: {
         flows: {
-          authorizationCodeGrant: true,
-          implicitCodeGrant: false,
+          authorizationCodeGrant: true,   // 無料
+          implicitCodeGrant: false,        // 無料
+          // clientCredentials: false,     // ❌ M2M認証は $6.00/月 課金！使用禁止
         },
         scopes: [
           cognito.OAuthScope.EMAIL,
