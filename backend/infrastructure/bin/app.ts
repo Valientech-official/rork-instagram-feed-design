@@ -20,6 +20,8 @@ const devEnv = {
 // S3スタック（開発環境）
 const devS3Stack = new S3Stack(app, 'PieceApp-S3-Dev', {
   env: devEnv,
+  environment: 'dev',
+  removalPolicy: cdk.RemovalPolicy.DESTROY, // 開発環境: スタック削除時にバケットも削除
   description: 'S3 bucket for media files (Development)',
 });
 
@@ -43,6 +45,8 @@ const prodEnv = {
 // S3スタック（本番環境）
 const prodS3Stack = new S3Stack(app, 'PieceApp-S3-Prod', {
   env: prodEnv,
+  environment: 'prod',
+  removalPolicy: cdk.RemovalPolicy.RETAIN, // 本番環境: スタック削除してもバケットは保持
   description: 'S3 bucket for media files (Production)',
 });
 

@@ -242,7 +242,7 @@
     "Ref": "PieceAppMediaBucket57D35C9E"
    },
    "Export": {
-    "Name": "PieceAppMediaBucketName"
+    "Name": "PieceApp-MediaBucket-Name-dev"
    }
   },
   "MediaBucketArn": {
@@ -254,7 +254,7 @@
     ]
    },
    "Export": {
-    "Name": "PieceAppMediaBucketArn"
+    "Name": "PieceApp-MediaBucket-Arn-dev"
    }
   }
  },

@@ -2,15 +2,22 @@ import * as cdk from 'aws-cdk-lib';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 
+interface S3StackProps extends cdk.StackProps {
+  environment: 'dev' | 'prod';
+  removalPolicy: cdk.RemovalPolicy;
+}
+
 export class S3Stack extends cdk.Stack {
   public readonly mediaBucket: s3.Bucket;
 
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props: S3StackProps) {
     super(scope, id, props);
+
+    const { environment, removalPolicy } = props;
 
     // メディアファイル用S3バケット
     this.mediaBucket = new s3.Bucket(this, 'PieceAppMediaBucket', {
-      bucketName: 'piece-app-1983-dev',
+      bucketName: `piece-app-1983-${environment}`,
 
       // CORS設定
       cors: [
@@ -47,28 +54,28 @@ export class S3Stack extends cdk.Stack {
         },
       ],
 
-      // バージョニング（開発環境ではオフ）
-      versioned: false,
+      // バージョニング（本番環境のみ有効）
+      versioned: environment === 'prod',
 
       // 暗号化
       encryption: s3.BucketEncryption.S3_MANAGED,
 
-      // スタック削除時のバケット削除設定（開発環境用）
-      removalPolicy: cdk.RemovalPolicy.DESTROY,
-      autoDeleteObjects: true,
+      // スタック削除時のバケット削除設定
+      removalPolicy: removalPolicy,
+      autoDeleteObjects: removalPolicy === cdk.RemovalPolicy.DESTROY,
     });
 
     // CloudFormation出力
     new cdk.CfnOutput(this, 'MediaBucketName', {
       value: this.mediaBucket.bucketName,
       description: 'S3 Bucket name for media files',
-      exportName: 'PieceAppMediaBucketName',
+      exportName: `PieceApp-MediaBucket-Name-${environment}`,
     });
 
     new cdk.CfnOutput(this, 'MediaBucketArn', {
       value: this.mediaBucket.bucketArn,
       description: 'S3 Bucket ARN for media files',
-      exportName: 'PieceAppMediaBucketArn',
+      exportName: `PieceApp-MediaBucket-Arn-${environment}`,
     });
   }
 }
