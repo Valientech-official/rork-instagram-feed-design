@@ -6,6 +6,10 @@ import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+// AWS Amplify Configuration
+import 'react-native-get-random-values'; // Polyfill for crypto.getRandomValues()
+import { configureAmplify } from "../config/aws-config";
+
 export const unstable_settings = {
   initialRouteName: "(auth)",
 };
@@ -17,6 +21,15 @@ export default function RootLayout() {
   const [loaded, error] = useFonts({
     ...FontAwesome.font,
   });
+
+  // Initialize AWS Amplify (run once)
+  useEffect(() => {
+    try {
+      configureAmplify();
+    } catch (error) {
+      console.error('Failed to initialize Amplify:', error);
+    }
+  }, []);
 
   // Handle font loading error
   useEffect(() => {

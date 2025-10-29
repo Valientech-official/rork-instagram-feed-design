@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Instagram Feed Design",
-    "slug": "instagram-feed-design-007dq1h",
+    "name": "Piece App",
+    "slug": "piece-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "pieceapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -15,12 +15,17 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "app.rork.instagramfeeddesign",
+      "bundleIdentifier": "app.piece.mobile",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Allow $(PRODUCT_NAME) to access your photos",
         "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera",
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone",
-        "NSPhotoLibraryAddUsageDescription": "Allow $(PRODUCT_NAME) to save photos."
+        "NSPhotoLibraryAddUsageDescription": "Allow $(PRODUCT_NAME) to save photos.",
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": ["pieceapp"]
+          }
+        ]
       }
     },
     "android": {
@@ -28,7 +33,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "app.rork.instagramfeeddesign",
+      "package": "app.piece.mobile",
       "permissions": [
         "android.permission.VIBRATE",
         "android.permission.CAMERA",
@@ -40,6 +45,15 @@
         "android.permission.READ_MEDIA_VISUAL_USER_SELECTED",
         "android.permission.ACCESS_MEDIA_LOCATION",
         "android.permission.RECORD_AUDIO"
+      ],
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "category": ["DEFAULT", "BROWSABLE"],
+          "data": {
+            "scheme": "pieceapp"
+          }
+        }
       ]
     },
     "web": {

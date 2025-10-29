@@ -124,25 +124,46 @@
 ---
 
 ### 2.6 Live Stream機能（優先度: 低）
-**概要**: リアルタイムライブ配信
+**概要**: リアルタイムライブ配信（**Mux統合**）
+
+**⚠️ 詳細は `MUX_INTEGRATION_TASKS.md` を参照**
 
 **必要なリソース**:
-- Lambda関数: 8個
-  - [ ] `startLive` - 配信開始
-  - [ ] `endLive` - 配信終了
-  - [ ] `joinLive` - 視聴参加
-  - [ ] `leaveLive` - 視聴退出
-  - [ ] `sendChat` - チャット送信
+- **Phase 0（準備）**:
+  - [ ] Muxアカウント作成
+  - [ ] API認証情報取得・Secrets Manager設定
+- **Infrastructure**:
+  - [ ] Secrets Manager Stack（Mux認証情報）
+  - [ ] WebSocket API Stack（リアルタイムチャット）
+- **Lambda関数: 14個**
+  - [ ] `muxWebhook` - Mux Webhook処理
+  - [ ] `createLiveStream` - 配信作成（Mux API統合）
+  - [ ] `startLiveStream` - 配信開始通知
+  - [ ] `endLiveStream` - 配信終了
+  - [ ] `deleteLiveStream` - 配信削除
+  - [ ] `joinLiveStream` - 視聴参加
+  - [ ] `leaveLiveStream` - 視聴退出
+  - [ ] `getLiveStream` - 配信情報取得
+  - [ ] `getLiveStreams` - 配信一覧
+  - [ ] `sendLiveChat` - チャット送信（WebSocket）
   - [ ] `sendGift` - ギフト送信
+  - [ ] `getLiveChats` - チャット履歴
   - [ ] `addModerator` - モデレーター追加
-  - [ ] `banUser` - ユーザーBAN
-- API Gateway エンドポイント: REST + WebSocket
+  - [ ] `banUserFromLive` - ユーザーBAN
+- **API Gateway エンドポイント**:
+  - REST API: 10個
+  - WebSocket API: 3個
+  - Webhook: 1個
 - **追加サービス**:
-  - [ ] Amazon IVS（Interactive Video Service）設定
-  - [ ] WebSocket API for Live Chat
-- DynamoDB: LIVE_STREAM、LIVE_VIEWER、LIVE_CHAT、LIVE_GIFTテーブル（既存）
+  - [ ] **Mux Video & Live Streaming**（外部サービス）
+  - [ ] WebSocket API Gateway
+  - [ ] Secrets Manager
+- **DynamoDB**: LIVE_STREAM、LIVE_VIEWER、LIVE_CHAT、LIVE_GIFTテーブル（既存）
+- **React Native**:
+  - [ ] Mux Player統合（視聴）
+  - [ ] RTMP配信機能（OBS連携 or ライブラリ）
 
-**所要時間**: 10-14日
+**所要時間**: 20-28日（約4週間）
 
 ---
 

@@ -8,10 +8,13 @@
     "start-web-dev": "DEBUG=expo* bunx rork start -p 9wafn0gn8nbgexw7n84p4 --web --tunnel"
   },
   "dependencies": {
+    "@aws-amplify/react-native": "^1.2.0",
     "@expo/vector-icons": "^15.0.2",
     "@google/generative-ai": "^0.24.1",
     "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-native-community/netinfo": "^11.4.1",
     "@react-navigation/native": "^7.1.6",
+    "aws-amplify": "^6.15.7",
     "expo": "^54.0.10",
     "expo-blur": "~15.0.7",
     "expo-constants": "~18.0.9",
@@ -38,6 +41,7 @@
     "react-dom": "19.1.0",
     "react-native": "0.81.4",
     "react-native-gesture-handler": "~2.28.0",
+    "react-native-get-random-values": "^2.0.0",
     "react-native-reanimated": "~4.1.1",
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",

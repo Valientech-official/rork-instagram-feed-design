@@ -12,7 +12,10 @@
       "Bash(npm run synth:*)",
       "Bash(npx tsc:*)",
       "Bash(aws:*)",
-      "Bash(aws.exe:*)"
+      "Bash(aws.exe:*)",
+      "Bash(npm uninstall:*)",
+      "Bash(npx expo start:*)",
+      "Bash(npm cache clean:*)"
     ],
     "deny": [],
     "ask": []
