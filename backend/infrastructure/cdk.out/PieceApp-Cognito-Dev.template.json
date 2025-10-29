@@ -1,6 +1,25 @@
 {
- "Description": "Cognito User Pool for authentication (Development)",
+ "Description": "Cognito User Pool with Post Confirmation Trigger (Development)",
  "Resources": {
+  "PieceAppUserPoolPostConfirmationCognito233314B3": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttPostConfirmationFunction3DFFAE63Arn0778469E"
+    },
+    "Principal": "cognito-idp.amazonaws.com",
+    "SourceArn": {
+     "Fn::GetAtt": [
+      "PieceAppUserPoolA10A98B5",
+      "Arn"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Cognito-Dev/PieceAppUserPool/PostConfirmationCognito"
+   }
+  },
   "PieceAppUserPoolA10A98B5": {
    "Type": "AWS::Cognito::UserPool",
    "Properties": {
@@ -37,6 +56,11 @@
     "EnabledMfas": [
      "SOFTWARE_TOKEN_MFA"
     ],
+    "LambdaConfig": {
+     "PostConfirmation": {
+      "Fn::ImportValue": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttPostConfirmationFunction3DFFAE63Arn0778469E"
+     }
+    },
     "MfaConfiguration": "OPTIONAL",
     "Policies": {
      "PasswordPolicy": {
@@ -53,6 +77,11 @@
       "Mutable": true,
       "Name": "email",
       "Required": true
+     },
+     {
+      "Mutable": true,
+      "Name": "phone_number",
+      "Required": false
      },
      {
       "Mutable": true,
@@ -76,6 +105,15 @@
       "StringAttributeConstraints": {
        "MaxLength": "26",
        "MinLength": "26"
+      }
+     },
+     {
+      "AttributeDataType": "String",
+      "Mutable": true,
+      "Name": "handle",
+      "StringAttributeConstraints": {
+       "MaxLength": "30",
+       "MinLength": "3"
       }
      },
      {
@@ -145,10 +183,13 @@
      "birthdate",
      "custom:accountId",
      "custom:accountType",
+     "custom:handle",
      "email",
      "email_verified",
      "family_name",
-     "given_name"
+     "given_name",
+     "phone_number",
+     "phone_number_verified"
     ],
     "RefreshTokenValidity": 43200,
     "SupportedIdentityProviders": [
@@ -165,9 +206,11 @@
     "WriteAttributes": [
      "birthdate",
      "custom:accountType",
+     "custom:handle",
      "email",
      "family_name",
-     "given_name"
+     "given_name",
+     "phone_number"
     ]
    },
    "Metadata": {
@@ -177,7 +220,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02JQQ6CMBAA38K9XWHjD3iARuOZ1FLNQt017FYOhL8bQzSeZjKDgNhAXYVZfexHn+kKy9lCHF2YtYtyZzKB5aJpOopk1974519pMyW2/7WV9ZMOxZ7FVsfSJxh090KEZg91NSiRnwobPRKcNr4BTesWj48AAAA="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02KQQ6CMBBFz8K+HaHxBhxAonFNChQzUKamM5VF07sbQzSu3sv734AxDdSV3VmP06o9DpBvYsdV2Z37PIYHoQTId3axC8Grdqaff6X16Ej+p6MU5e02TBbamToXN2TGQOVzvCR5JimKwuRg4dPLGGjOUFcLI+qYSHBzcD34Bq50pYumAAAA"
    },
    "Metadata": {
     "aws:cdk:path": "PieceApp-Cognito-Dev/CDKMetadata/Default"

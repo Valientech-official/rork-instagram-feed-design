@@ -33,6 +33,9 @@ export class LambdaStack extends cdk.Stack {
   public readonly createRoom: lambda.Function;
   public readonly joinRoom: lambda.Function;
 
+  // Cognito Triggers
+  public readonly postConfirmation: lambda.Function;
+
   constructor(scope: Construct, id: string, props: LambdaStackProps) {
     super(scope, id, props);
 
@@ -219,6 +222,32 @@ export class LambdaStack extends cdk.Stack {
       'join-room',
       'handlers/room/joinRoom.handler',
       'Join a room'
+    );
+
+    // =====================================================
+    // Cognito Triggers
+    // =====================================================
+
+    // Post Confirmation Trigger
+    // メール確認後、DynamoDBにアカウントを作成
+    this.postConfirmation = createLambdaFunction(
+      'PostConfirmationFunction',
+      'post-confirmation',
+      'handlers/cognito/postConfirmation.handler',
+      'Cognito Post Confirmation Trigger - Create account in DynamoDB'
+    );
+
+    // Cognito Admin権限を追加（AdminDeleteUserのため）
+    this.postConfirmation.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: [
+          'cognito-idp:AdminDeleteUser',
+          'cognito-idp:AdminGetUser',
+        ],
+        resources: [
+          `arn:aws:cognito-idp:${cdk.Stack.of(this).region}:${cdk.Stack.of(this).account}:userpool/*`,
+        ],
+      })
     );
 
     // =====================================================

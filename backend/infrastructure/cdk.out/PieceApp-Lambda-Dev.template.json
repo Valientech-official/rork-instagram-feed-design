@@ -1,5 +1,5 @@
 {
- "Description": "16 Lambda functions for API handlers (Development)",
+ "Description": "17 Lambda functions (16 API handlers + 1 Cognito Trigger) (Development)",
  "Resources": {
   "CreateAccountFunctionLogGroup1A713697": {
    "Type": "AWS::Logs::LogGroup",
@@ -121,7 +121,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
     },
     "Description": "Create new account",
     "Environment": {
@@ -170,7 +170,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/CreateAccountFunction/Resource",
-    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -295,7 +295,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
     },
     "Description": "Get user profile",
     "Environment": {
@@ -344,7 +344,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/GetProfileFunction/Resource",
-    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -469,7 +469,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
     },
     "Description": "Update user profile",
     "Environment": {
@@ -518,7 +518,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/UpdateProfileFunction/Resource",
-    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -643,7 +643,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
     },
     "Description": "Create new post",
     "Environment": {
@@ -692,7 +692,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/CreatePostFunction/Resource",
-    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -817,7 +817,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
     },
     "Description": "Get post details",
     "Environment": {
@@ -866,7 +866,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/GetPostFunction/Resource",
-    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -991,7 +991,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
     },
     "Description": "Delete post",
     "Environment": {
@@ -1040,7 +1040,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/DeletePostFunction/Resource",
-    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1165,7 +1165,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
     },
     "Description": "Get user timeline",
     "Environment": {
@@ -1214,7 +1214,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/GetTimelineFunction/Resource",
-    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1339,7 +1339,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
     },
     "Description": "Like a post",
     "Environment": {
@@ -1388,7 +1388,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/LikePostFunction/Resource",
-    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1513,7 +1513,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
     },
     "Description": "Unlike a post",
     "Environment": {
@@ -1562,7 +1562,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/UnlikePostFunction/Resource",
-    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1687,7 +1687,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
     },
     "Description": "Create comment on post",
     "Environment": {
@@ -1736,7 +1736,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/CreateCommentFunction/Resource",
-    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1861,7 +1861,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
     },
     "Description": "Delete comment",
     "Environment": {
@@ -1910,7 +1910,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/DeleteCommentFunction/Resource",
-    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2035,7 +2035,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
     },
     "Description": "Get comments for post",
     "Environment": {
@@ -2084,7 +2084,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/GetCommentsFunction/Resource",
-    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2209,7 +2209,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
     },
     "Description": "Follow a user",
     "Environment": {
@@ -2258,7 +2258,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/FollowUserFunction/Resource",
-    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2383,7 +2383,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
     },
     "Description": "Unfollow a user",
     "Environment": {
@@ -2432,7 +2432,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/UnfollowUserFunction/Resource",
-    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2557,7 +2557,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
     },
     "Description": "Create new room",
     "Environment": {
@@ -2606,7 +2606,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/CreateRoomFunction/Resource",
-    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2731,7 +2731,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9.zip"
+     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
     },
     "Description": "Join a room",
     "Environment": {
@@ -2780,7 +2780,189 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/JoinRoomFunction/Resource",
-    "aws:asset:path": "asset.1762a12e3ba26a42a68633e7d52a2d312fbafd071435324019f0bdcfab7f25f9",
+    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "PostConfirmationFunctionLogGroupB0C80CCD": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/piece-app-post-confirmation-dev",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/PostConfirmationFunctionLogGroup/Resource"
+   }
+  },
+  "PostConfirmationFunctionServiceRoleE856FC83": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/PostConfirmationFunction/ServiceRole/Resource"
+   }
+  },
+  "PostConfirmationFunctionServiceRoleDefaultPolicy49917DA4": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:dynamodb:ap-northeast-1:620666897697:table/*"
+      },
+      {
+       "Action": [
+        "xray:PutTelemetryRecords",
+        "xray:PutTraceSegments"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "cognito-idp:AdminDeleteUser",
+        "cognito-idp:AdminGetUser"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:cognito-idp:ap-northeast-1:620666897697:userpool/*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "PostConfirmationFunctionServiceRoleDefaultPolicy49917DA4",
+    "Roles": [
+     {
+      "Ref": "PostConfirmationFunctionServiceRoleE856FC83"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/PostConfirmationFunction/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "PostConfirmationFunction3DFFAE63": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
+     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
+    },
+    "Description": "Cognito Post Confirmation Trigger - Create account in DynamoDB",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "NODE_ENV": "development"
+     }
+    },
+    "FunctionName": "piece-app-post-confirmation-dev",
+    "Handler": "handlers/cognito/postConfirmation.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "PostConfirmationFunctionLogGroupB0C80CCD"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "PostConfirmationFunctionServiceRoleE856FC83",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs20.x",
+    "Tags": [
+     {
+      "Key": "Environment",
+      "Value": "Development"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "PieceApp"
+     }
+    ],
+    "Timeout": 30,
+    "TracingConfig": {
+     "Mode": "Active"
+    }
+   },
+   "DependsOn": [
+    "PostConfirmationFunctionServiceRoleDefaultPolicy49917DA4",
+    "PostConfirmationFunctionServiceRoleE856FC83"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-Lambda-Dev/PostConfirmationFunction/Resource",
+    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2816,6 +2998,17 @@
    },
    "Export": {
     "Name": "PieceApp-CreatePostArn-dev"
+   }
+  },
+  "ExportsOutputFnGetAttPostConfirmationFunction3DFFAE63Arn0778469E": {
+   "Value": {
+    "Fn::GetAtt": [
+     "PostConfirmationFunction3DFFAE63",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-Lambda-Dev:ExportsOutputFnGetAttPostConfirmationFunction3DFFAE63Arn0778469E"
    }
   },
   "ExportsOutputFnGetAttCreateAccountFunctionB1A7B865ArnA1CC1551": {

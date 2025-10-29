@@ -16,10 +16,12 @@
 
 import * as cdk from 'aws-cdk-lib';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
 
 interface CognitoStackProps extends cdk.StackProps {
   environment: 'dev' | 'prod';
+  postConfirmationLambda: lambda.Function;
 }
 
 export class CognitoStack extends cdk.Stack {
@@ -29,7 +31,7 @@ export class CognitoStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: CognitoStackProps) {
     super(scope, id, props);
 
-    const { environment } = props;
+    const { environment, postConfirmationLambda } = props;
 
     // =====================================================
     // User Pool作成
@@ -54,6 +56,10 @@ export class CognitoStack extends cdk.Stack {
           required: true,
           mutable: true,
         },
+        phoneNumber: {
+          required: false, // SMS認証を使わないため必須ではない
+          mutable: true,
+        },
         givenName: {
           required: false,
           mutable: true,
@@ -74,6 +80,11 @@ export class CognitoStack extends cdk.Stack {
           minLen: 26,
           maxLen: 26,
           mutable: false, // ULIDは変更不可
+        }),
+        handle: new cognito.StringAttribute({
+          minLen: 3,
+          maxLen: 30,
+          mutable: true, // ハンドルは後で変更可能（制限あり）
         }),
         accountType: new cognito.StringAttribute({
           minLen: 1,
@@ -152,12 +163,13 @@ export class CognitoStack extends cdk.Stack {
         ? cdk.RemovalPolicy.RETAIN
         : cdk.RemovalPolicy.DESTROY,
 
-      // Lambda トリガー（将来の拡張用）
-      // lambdaTriggers: {
-      //   preSignUp: preSignUpLambda,
-      //   postConfirmation: postConfirmationLambda,
-      //   preAuthentication: preAuthLambda,
-      // },
+      // Lambda トリガー
+      lambdaTriggers: {
+        postConfirmation: postConfirmationLambda, // メール確認後、DynamoDBにアカウント作成
+        // 将来の拡張用:
+        // preSignUp: preSignUpLambda,
+        // preAuthentication: preAuthLambda,
+      },
     });
 
     // =====================================================
@@ -210,20 +222,23 @@ export class CognitoStack extends cdk.Stack {
         .withStandardAttributes({
           email: true,
           emailVerified: true,
+          phoneNumber: true,
+          phoneNumberVerified: true,
           givenName: true,
           familyName: true,
           birthdate: true,
         })
-        .withCustomAttributes('accountId', 'accountType'),
+        .withCustomAttributes('accountId', 'handle', 'accountType'),
 
       writeAttributes: new cognito.ClientAttributes()
         .withStandardAttributes({
           email: true,
+          phoneNumber: true,
           givenName: true,
           familyName: true,
           birthdate: true,
         })
-        .withCustomAttributes('accountType'),
+        .withCustomAttributes('handle', 'accountType'),
     });
 
     // =====================================================

@@ -40,16 +40,18 @@ const devS3Stack = new S3Stack(app, 'PieceApp-S3-Dev', {
 const devLambdaStack = new LambdaStack(app, 'PieceApp-Lambda-Dev', {
   env: devEnv,
   environment: 'dev',
-  description: '16 Lambda functions for API handlers (Development)',
+  description: '17 Lambda functions (16 API handlers + 1 Cognito Trigger) (Development)',
 });
 devLambdaStack.addDependency(devDynamoDBStack);
 
-// 4. Cognito Stack（独立）
+// 4. Cognito Stack（Lambdaに依存）
 const devCognitoStack = new CognitoStack(app, 'PieceApp-Cognito-Dev', {
   env: devEnv,
   environment: 'dev',
-  description: 'Cognito User Pool for authentication (Development)',
+  postConfirmationLambda: devLambdaStack.postConfirmation,
+  description: 'Cognito User Pool with Post Confirmation Trigger (Development)',
 });
+devCognitoStack.addDependency(devLambdaStack);
 
 // 5. API Gateway Stack（Lambda + Cognitoに依存）
 const devApiGatewayStack = new ApiGatewayStack(app, 'PieceApp-ApiGateway-Dev', {
