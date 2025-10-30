@@ -167,6 +167,16 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
       const { username, email, password, phoneNumber, handle, name, birthday } = params;
 
+      console.log('📝 SignUp params:', {
+        username,
+        email,
+        phoneNumber,
+        handle,
+        name,
+        birthday,
+        passwordLength: password.length,
+      });
+
       const signUpInput: SignUpInput = {
         username,
         password,
@@ -188,8 +198,15 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       set({ isLoading: false });
       return { success: true, username };
     } catch (error: any) {
+      // 詳細なエラーログ
+      console.error('❌ SignUp failed - Full error:', {
+        name: error?.name,
+        message: error?.message,
+        code: error?.code,
+        fullError: error,
+      });
+
       const errorMessage = getErrorMessage(error);
-      console.error('❌ SignUp failed:', error);
       set({ error: errorMessage, isLoading: false });
       throw new Error(errorMessage);
     }
@@ -352,7 +369,9 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
       console.log('✅ User refreshed:', user);
     } catch (error: any) {
-      console.error('❌ Refresh user failed:', error);
+      // 未ログイン状態でのエラーは正常な動作なので、ログを出さない
+      // checkAuthStatus()からの呼び出しで未認証ユーザーの場合に発生
+      throw error; // checkAuthStatus()のtry-catchで処理
     }
   },
 

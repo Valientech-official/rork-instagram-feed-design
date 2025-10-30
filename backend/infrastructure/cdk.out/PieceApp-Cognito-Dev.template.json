@@ -32,7 +32,7 @@
      ]
     },
     "AdminCreateUserConfig": {
-     "AllowAdminCreateUserOnly": true,
+     "AllowAdminCreateUserOnly": false,
      "InviteMessageTemplate": {
       "EmailMessage": "\n          <h2>Piece Appへようこそ</h2>\n          <p>アカウントが作成されました。</p>\n          <p>ユーザー名: {username}</p>\n          <p>仮パスワード: {####}</p>\n          <p>初回ログイン時にパスワードの変更が必要です。</p>\n        ",
       "EmailSubject": "Piece Appへようこそ！"

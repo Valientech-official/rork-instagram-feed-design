@@ -39,6 +39,9 @@ export class CognitoStack extends cdk.Stack {
     this.userPool = new cognito.UserPool(this, 'PieceAppUserPool', {
       userPoolName: `piece-app-users-${environment}`,
 
+      // セルフサービスサインアップを有効化
+      selfSignUpEnabled: true,
+
       // サインイン設定
       signInAliases: {
         email: true,
