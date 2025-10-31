@@ -287,7 +287,13 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     try {
       set({ isLoading: true, error: null });
 
-      const { isSignedIn, nextStep } = await signIn({ username, password });
+      const { isSignedIn, nextStep } = await signIn({
+        username,
+        password,
+        options: {
+          authFlowType: "USER_PASSWORD_AUTH"
+        }
+      });
 
       console.log('✅ SignIn successful:', { isSignedIn, nextStep });
 

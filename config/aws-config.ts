@@ -30,16 +30,6 @@ export const configureAmplify = () => {
         Cognito: {
           userPoolId: COGNITO_USER_POOL_ID,
           userPoolClientId: COGNITO_CLIENT_ID,
-          // OAuth設定を明示的に含める（Web環境での互換性のため）
-          loginWith: {
-            oauth: {
-              domain: '',
-              scopes: [],
-              redirectSignIn: [],
-              redirectSignOut: [],
-              responseType: 'code' as const,
-            },
-          },
         },
       },
     }, {
