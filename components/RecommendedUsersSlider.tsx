@@ -43,11 +43,7 @@ export default function RecommendedUsersSlider() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>あなたにオススメのユーザー</Text>
-        <TouchableOpacity style={styles.seeAllButton} onPress={handleSeeAllPress}>
-          <Text style={styles.seeAllText}>すべて見る</Text>
-          <ChevronRight size={16} color={Colors.light.primary} />
-        </TouchableOpacity>
+        <Text style={styles.title}>あなたにおすすめアイテム&ユーザー</Text>
       </View>
       
       <FlatList

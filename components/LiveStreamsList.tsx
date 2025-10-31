@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { ChevronRight } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { LiveStream } from '@/mocks/liveStreams';
@@ -13,38 +13,56 @@ interface LiveStreamsListProps {
   showSeeAll?: boolean;
 }
 
-export default function LiveStreamsList({ 
-  streams, 
-  title = "Live and ウェーブ", 
-  showSeeAll = true 
+export default function LiveStreamsList({
+  streams,
+  title = "ウェーブス",
+  showSeeAll = false
 }: LiveStreamsListProps) {
   const router = useRouter();
+  const [displayCount, setDisplayCount] = useState(10);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const handleSeeAllPress = () => {
     router.push('/live');
+  };
+
+  const handleLoadMore = useCallback(() => {
+    if (isLoadingMore || displayCount >= streams.length) return;
+
+    setIsLoadingMore(true);
+    // Simulate loading delay
+    setTimeout(() => {
+      setDisplayCount(prev => Math.min(prev + 10, streams.length));
+      setIsLoadingMore(false);
+    }, 500);
+  }, [isLoadingMore, displayCount, streams.length]);
+
+  const renderFooter = () => {
+    if (!isLoadingMore) return null;
+    return (
+      <View style={styles.footerLoader}>
+        <ActivityIndicator size="small" color={Colors.light.primary} />
+      </View>
+    );
   };
 
   if (streams.length === 0) {
     return null;
   }
 
+  const displayedStreams = streams.slice(0, displayCount);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>{title}</Text>
-        {showSeeAll && (
-          <TouchableOpacity style={styles.seeAllButton} onPress={handleSeeAllPress}>
-            <Text style={styles.seeAllText}>See All</Text>
-            <ChevronRight size={16} color={Colors.light.primary} />
-          </TouchableOpacity>
-        )}
       </View>
       
       <View style={styles.contentRow}>
         {/* Entrance room image */}
         <View style={styles.doorImageContainer}>
           <Image
-            source={{ uri: "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?q=80&w=1000" }}
+            source={{ uri: "https://images.unsplash.com/photo-1505686994434-e3cc5abf1330?w=400" }}
             style={styles.doorImage}
             contentFit="cover"
           />
@@ -55,7 +73,7 @@ export default function LiveStreamsList({
         
         {/* Live Streams */}
         <FlatList
-          data={streams}
+          data={displayedStreams}
           keyExtractor={(item) => item.id}
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -63,6 +81,9 @@ export default function LiveStreamsList({
           renderItem={({ item }) => (
             <LiveStreamItem stream={item} size="small" />
           )}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={renderFooter}
         />
       </View>
     </View>
@@ -126,5 +147,10 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingRight: 8,
+  },
+  footerLoader: {
+    paddingHorizontal: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

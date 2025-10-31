@@ -44,7 +44,7 @@ export default function WelcomeScreen() {
       </View>
       <View style={styles.content}>
         <View style={styles.header}>
-          <Text style={styles.title}>ぴーすへようこそ</Text>
+          <Text style={styles.title}>Pièce</Text>
           <Text style={styles.subtitle}>あなたのファッションの旅が始まります</Text>
         </View>
 
