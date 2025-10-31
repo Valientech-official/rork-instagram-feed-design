@@ -2,6 +2,7 @@
   "expo": {
     "name": "Piece App",
     "slug": "piece-app",
+    "owner": "manato.ogawa",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -90,14 +91,9 @@
         "origin": "https://rork.com/"
       },
       "eas": {
-        "projectId": "a4478c7a-97c6-412b-9483-d16f79ef8a37"
+        "projectId": "f8d58e9a-5f5b-4b6b-a089-282df3eef5bd"
       }
     },
-    "updates": {
-      "url": "https://u.expo.dev/a4478c7a-97c6-412b-9483-d16f79ef8a37"
-    },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    }
+    "runtimeVersion": "1.0.0"
   }
 }

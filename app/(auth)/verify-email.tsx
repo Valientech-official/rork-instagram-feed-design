@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useAuthStore } from '../../store/authStore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function VerifyEmailScreen() {
   const router = useRouter();
@@ -18,8 +19,6 @@ export default function VerifyEmailScreen() {
   const {
     confirmSignUp,
     resendConfirmationCode,
-    signIn,
-    onboardingData,
     error,
     clearError,
     isLoading,
@@ -89,36 +88,18 @@ export default function VerifyEmailScreen() {
       // Cognito confirmSignUp
       await confirmSignUp(username, finalCode);
 
-      Alert.alert('成功', 'メールアドレスが確認されました', [
-        {
+      // 未確認状態を削除（確認完了）
+      await AsyncStorage.removeItem('@pending_verification');
+
+      // 確認完了後、ログイン画面へ誘導
+      Alert.alert(
+        '成功',
+        'メールアドレスが確認されました。ログインしてください。',
+        [{
           text: 'OK',
-          onPress: async () => {
-            // 自動サインイン
-            const password = onboardingData.profile?.password;
-            if (password) {
-              try {
-                await signIn(username, password);
-                // サインイン成功後、オンボーディング続行
-                router.replace('/(onboarding)/avatar');
-              } catch (signInError) {
-                // サインインエラー時は手動ログインへ
-                Alert.alert(
-                  'ログインしてください',
-                  'アカウントが作成されました。ログイン画面に移動します。',
-                  [{ text: 'OK', onPress: () => router.replace('/(auth)/login') }]
-                );
-              }
-            } else {
-              // パスワードがない場合は手動ログインへ
-              Alert.alert(
-                'ログインしてください',
-                'アカウントが作成されました。ログイン画面に移動します。',
-                [{ text: 'OK', onPress: () => router.replace('/(auth)/login') }]
-              );
-            }
-          },
-        },
-      ]);
+          onPress: () => router.replace('/(auth)/login')
+        }]
+      );
     } catch (err) {
       // エラーは authStore.error に設定される
       console.error('Verify failed:', err);

@@ -31,8 +31,12 @@ export default function LoginScreen() {
     try {
       await signIn(email, password);
       // サインイン成功したら splash が自動的にルーティング
-    } catch (error) {
-      // エラーは authStore.error に設定される
+    } catch (error: any) {
+      // 未確認ユーザーの場合は確認画面へ遷移
+      if (error?.message === 'USER_NOT_CONFIRMED') {
+        router.replace(`/(auth)/verify-email?username=${email}`);
+      }
+      // その他のエラーは authStore.error に設定される
     }
   };
 

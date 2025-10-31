@@ -121,7 +121,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
+     "S3Key": "ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5.zip"
     },
     "Description": "Create new account",
     "Environment": {
@@ -131,7 +131,7 @@
      }
     },
     "FunctionName": "piece-app-create-account-dev",
-    "Handler": "handlers/account/createAccount.handler",
+    "Handler": "dist/handlers/account/createAccount.handler",
     "LoggingConfig": {
      "LogGroup": {
       "Ref": "CreateAccountFunctionLogGroup1A713697"
@@ -170,7 +170,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/CreateAccountFunction/Resource",
-    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
+    "aws:asset:path": "asset.ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -295,7 +295,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
+     "S3Key": "ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5.zip"
     },
     "Description": "Get user profile",
     "Environment": {
@@ -305,7 +305,7 @@
      }
     },
     "FunctionName": "piece-app-get-profile-dev",
-    "Handler": "handlers/account/getProfile.handler",
+    "Handler": "dist/handlers/account/getProfile.handler",
     "LoggingConfig": {
      "LogGroup": {
       "Ref": "GetProfileFunctionLogGroupC8C0D4EE"
@@ -344,7 +344,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/GetProfileFunction/Resource",
-    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
+    "aws:asset:path": "asset.ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -469,7 +469,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
+     "S3Key": "ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5.zip"
     },
     "Description": "Update user profile",
     "Environment": {
@@ -479,7 +479,7 @@
      }
     },
     "FunctionName": "piece-app-update-profile-dev",
-    "Handler": "handlers/account/updateProfile.handler",
+    "Handler": "dist/handlers/account/updateProfile.handler",
     "LoggingConfig": {
      "LogGroup": {
       "Ref": "UpdateProfileFunctionLogGroup05D59A0D"
@@ -518,7 +518,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/UpdateProfileFunction/Resource",
-    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
+    "aws:asset:path": "asset.ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -643,7 +643,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
+     "S3Key": "ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5.zip"
     },
     "Description": "Create new post",
     "Environment": {
@@ -653,7 +653,7 @@
      }
     },
     "FunctionName": "piece-app-create-post-dev",
-    "Handler": "handlers/post/createPost.handler",
+    "Handler": "dist/handlers/post/createPost.handler",
     "LoggingConfig": {
      "LogGroup": {
       "Ref": "CreatePostFunctionLogGroup4818EB19"
@@ -692,7 +692,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/CreatePostFunction/Resource",
-    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
+    "aws:asset:path": "asset.ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -817,7 +817,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
+     "S3Key": "ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5.zip"
     },
     "Description": "Get post details",
     "Environment": {
@@ -827,7 +827,7 @@
      }
     },
     "FunctionName": "piece-app-get-post-dev",
-    "Handler": "handlers/post/getPost.handler",
+    "Handler": "dist/handlers/post/getPost.handler",
     "LoggingConfig": {
      "LogGroup": {
       "Ref": "GetPostFunctionLogGroup7518B25C"
@@ -866,7 +866,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/GetPostFunction/Resource",
-    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
+    "aws:asset:path": "asset.ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -991,7 +991,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
+     "S3Key": "ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5.zip"
     },
     "Description": "Delete post",
     "Environment": {
@@ -1001,7 +1001,7 @@
      }
     },
     "FunctionName": "piece-app-delete-post-dev",
-    "Handler": "handlers/post/deletePost.handler",
+    "Handler": "dist/handlers/post/deletePost.handler",
     "LoggingConfig": {
      "LogGroup": {
       "Ref": "DeletePostFunctionLogGroupF51EA510"
@@ -1040,7 +1040,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/DeletePostFunction/Resource",
-    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
+    "aws:asset:path": "asset.ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1165,7 +1165,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
+     "S3Key": "ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5.zip"
     },
     "Description": "Get user timeline",
     "Environment": {
@@ -1175,7 +1175,7 @@
      }
     },
     "FunctionName": "piece-app-get-timeline-dev",
-    "Handler": "handlers/post/getTimeline.handler",
+    "Handler": "dist/handlers/post/getTimeline.handler",
     "LoggingConfig": {
      "LogGroup": {
       "Ref": "GetTimelineFunctionLogGroup027BD8B2"
@@ -1214,7 +1214,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/GetTimelineFunction/Resource",
-    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
+    "aws:asset:path": "asset.ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1339,7 +1339,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
+     "S3Key": "ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5.zip"
     },
     "Description": "Like a post",
     "Environment": {
@@ -1349,7 +1349,7 @@
      }
     },
     "FunctionName": "piece-app-like-post-dev",
-    "Handler": "handlers/like/likePost.handler",
+    "Handler": "dist/handlers/like/likePost.handler",
     "LoggingConfig": {
      "LogGroup": {
       "Ref": "LikePostFunctionLogGroupAAB6AFEE"
@@ -1388,7 +1388,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/LikePostFunction/Resource",
-    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
+    "aws:asset:path": "asset.ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1513,7 +1513,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
+     "S3Key": "ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5.zip"
     },
     "Description": "Unlike a post",
     "Environment": {
@@ -1523,7 +1523,7 @@
      }
     },
     "FunctionName": "piece-app-unlike-post-dev",
-    "Handler": "handlers/like/unlikePost.handler",
+    "Handler": "dist/handlers/like/unlikePost.handler",
     "LoggingConfig": {
      "LogGroup": {
       "Ref": "UnlikePostFunctionLogGroup752A066D"
@@ -1562,7 +1562,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/UnlikePostFunction/Resource",
-    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
+    "aws:asset:path": "asset.ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1687,7 +1687,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
+     "S3Key": "ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5.zip"
     },
     "Description": "Create comment on post",
     "Environment": {
@@ -1697,7 +1697,7 @@
      }
     },
     "FunctionName": "piece-app-create-comment-dev",
-    "Handler": "handlers/comment/createComment.handler",
+    "Handler": "dist/handlers/comment/createComment.handler",
     "LoggingConfig": {
      "LogGroup": {
       "Ref": "CreateCommentFunctionLogGroup878D3346"
@@ -1736,7 +1736,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/CreateCommentFunction/Resource",
-    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
+    "aws:asset:path": "asset.ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -1861,7 +1861,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
+     "S3Key": "ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5.zip"
     },
     "Description": "Delete comment",
     "Environment": {
@@ -1871,7 +1871,7 @@
      }
     },
     "FunctionName": "piece-app-delete-comment-dev",
-    "Handler": "handlers/comment/deleteComment.handler",
+    "Handler": "dist/handlers/comment/deleteComment.handler",
     "LoggingConfig": {
      "LogGroup": {
       "Ref": "DeleteCommentFunctionLogGroup13353F57"
@@ -1910,7 +1910,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/DeleteCommentFunction/Resource",
-    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
+    "aws:asset:path": "asset.ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2035,7 +2035,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
+     "S3Key": "ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5.zip"
     },
     "Description": "Get comments for post",
     "Environment": {
@@ -2045,7 +2045,7 @@
      }
     },
     "FunctionName": "piece-app-get-comments-dev",
-    "Handler": "handlers/comment/getComments.handler",
+    "Handler": "dist/handlers/comment/getComments.handler",
     "LoggingConfig": {
      "LogGroup": {
       "Ref": "GetCommentsFunctionLogGroup4DE5B8E6"
@@ -2084,7 +2084,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/GetCommentsFunction/Resource",
-    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
+    "aws:asset:path": "asset.ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2209,7 +2209,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
+     "S3Key": "ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5.zip"
     },
     "Description": "Follow a user",
     "Environment": {
@@ -2219,7 +2219,7 @@
      }
     },
     "FunctionName": "piece-app-follow-user-dev",
-    "Handler": "handlers/follow/followUser.handler",
+    "Handler": "dist/handlers/follow/followUser.handler",
     "LoggingConfig": {
      "LogGroup": {
       "Ref": "FollowUserFunctionLogGroup612FE9A3"
@@ -2258,7 +2258,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/FollowUserFunction/Resource",
-    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
+    "aws:asset:path": "asset.ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2383,7 +2383,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
+     "S3Key": "ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5.zip"
     },
     "Description": "Unfollow a user",
     "Environment": {
@@ -2393,7 +2393,7 @@
      }
     },
     "FunctionName": "piece-app-unfollow-user-dev",
-    "Handler": "handlers/follow/unfollowUser.handler",
+    "Handler": "dist/handlers/follow/unfollowUser.handler",
     "LoggingConfig": {
      "LogGroup": {
       "Ref": "UnfollowUserFunctionLogGroup97908F95"
@@ -2432,7 +2432,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/UnfollowUserFunction/Resource",
-    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
+    "aws:asset:path": "asset.ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2557,7 +2557,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
+     "S3Key": "ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5.zip"
     },
     "Description": "Create new room",
     "Environment": {
@@ -2567,7 +2567,7 @@
      }
     },
     "FunctionName": "piece-app-create-room-dev",
-    "Handler": "handlers/room/createRoom.handler",
+    "Handler": "dist/handlers/room/createRoom.handler",
     "LoggingConfig": {
      "LogGroup": {
       "Ref": "CreateRoomFunctionLogGroupD5B4A4C9"
@@ -2606,7 +2606,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/CreateRoomFunction/Resource",
-    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
+    "aws:asset:path": "asset.ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2731,7 +2731,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
+     "S3Key": "ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5.zip"
     },
     "Description": "Join a room",
     "Environment": {
@@ -2741,7 +2741,7 @@
      }
     },
     "FunctionName": "piece-app-join-room-dev",
-    "Handler": "handlers/room/joinRoom.handler",
+    "Handler": "dist/handlers/room/joinRoom.handler",
     "LoggingConfig": {
      "LogGroup": {
       "Ref": "JoinRoomFunctionLogGroupAC7F8B16"
@@ -2780,7 +2780,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/JoinRoomFunction/Resource",
-    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
+    "aws:asset:path": "asset.ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }
@@ -2913,7 +2913,7 @@
    "Properties": {
     "Code": {
      "S3Bucket": "cdk-hnb659fds-assets-620666897697-ap-northeast-1",
-     "S3Key": "f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90.zip"
+     "S3Key": "ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5.zip"
     },
     "Description": "Cognito Post Confirmation Trigger - Create account in DynamoDB",
     "Environment": {
@@ -2923,7 +2923,7 @@
      }
     },
     "FunctionName": "piece-app-post-confirmation-dev",
-    "Handler": "handlers/cognito/postConfirmation.handler",
+    "Handler": "dist/handlers/cognito/postConfirmation.handler",
     "LoggingConfig": {
      "LogGroup": {
       "Ref": "PostConfirmationFunctionLogGroupB0C80CCD"
@@ -2962,7 +2962,7 @@
    ],
    "Metadata": {
     "aws:cdk:path": "PieceApp-Lambda-Dev/PostConfirmationFunction/Resource",
-    "aws:asset:path": "asset.f1ecf07f665258724da867d20c6d61d5a6764dc1958ce49293434a152cfedd90",
+    "aws:asset:path": "asset.ee262e583575b2d1bb067b3d748d9f8b1a902f49d74f47aa6976b15f3269c2d5",
     "aws:asset:is-bundled": false,
     "aws:asset:property": "Code"
    }

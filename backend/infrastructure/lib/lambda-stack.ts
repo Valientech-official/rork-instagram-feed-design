@@ -110,21 +110,21 @@ export class LambdaStack extends cdk.Stack {
     this.createAccount = createLambdaFunction(
       'CreateAccountFunction',
       'create-account',
-      'handlers/account/createAccount.handler',
+      'dist/handlers/account/createAccount.handler',
       'Create new account'
     );
 
     this.getProfile = createLambdaFunction(
       'GetProfileFunction',
       'get-profile',
-      'handlers/account/getProfile.handler',
+      'dist/handlers/account/getProfile.handler',
       'Get user profile'
     );
 
     this.updateProfile = createLambdaFunction(
       'UpdateProfileFunction',
       'update-profile',
-      'handlers/account/updateProfile.handler',
+      'dist/handlers/account/updateProfile.handler',
       'Update user profile'
     );
 
@@ -132,28 +132,28 @@ export class LambdaStack extends cdk.Stack {
     this.createPost = createLambdaFunction(
       'CreatePostFunction',
       'create-post',
-      'handlers/post/createPost.handler',
+      'dist/handlers/post/createPost.handler',
       'Create new post'
     );
 
     this.getPost = createLambdaFunction(
       'GetPostFunction',
       'get-post',
-      'handlers/post/getPost.handler',
+      'dist/handlers/post/getPost.handler',
       'Get post details'
     );
 
     this.deletePost = createLambdaFunction(
       'DeletePostFunction',
       'delete-post',
-      'handlers/post/deletePost.handler',
+      'dist/handlers/post/deletePost.handler',
       'Delete post'
     );
 
     this.getTimeline = createLambdaFunction(
       'GetTimelineFunction',
       'get-timeline',
-      'handlers/post/getTimeline.handler',
+      'dist/handlers/post/getTimeline.handler',
       'Get user timeline'
     );
 
@@ -161,14 +161,14 @@ export class LambdaStack extends cdk.Stack {
     this.likePost = createLambdaFunction(
       'LikePostFunction',
       'like-post',
-      'handlers/like/likePost.handler',
+      'dist/handlers/like/likePost.handler',
       'Like a post'
     );
 
     this.unlikePost = createLambdaFunction(
       'UnlikePostFunction',
       'unlike-post',
-      'handlers/like/unlikePost.handler',
+      'dist/handlers/like/unlikePost.handler',
       'Unlike a post'
     );
 
@@ -176,21 +176,21 @@ export class LambdaStack extends cdk.Stack {
     this.createComment = createLambdaFunction(
       'CreateCommentFunction',
       'create-comment',
-      'handlers/comment/createComment.handler',
+      'dist/handlers/comment/createComment.handler',
       'Create comment on post'
     );
 
     this.deleteComment = createLambdaFunction(
       'DeleteCommentFunction',
       'delete-comment',
-      'handlers/comment/deleteComment.handler',
+      'dist/handlers/comment/deleteComment.handler',
       'Delete comment'
     );
 
     this.getComments = createLambdaFunction(
       'GetCommentsFunction',
       'get-comments',
-      'handlers/comment/getComments.handler',
+      'dist/handlers/comment/getComments.handler',
       'Get comments for post'
     );
 
@@ -198,14 +198,14 @@ export class LambdaStack extends cdk.Stack {
     this.followUser = createLambdaFunction(
       'FollowUserFunction',
       'follow-user',
-      'handlers/follow/followUser.handler',
+      'dist/handlers/follow/followUser.handler',
       'Follow a user'
     );
 
     this.unfollowUser = createLambdaFunction(
       'UnfollowUserFunction',
       'unfollow-user',
-      'handlers/follow/unfollowUser.handler',
+      'dist/handlers/follow/unfollowUser.handler',
       'Unfollow a user'
     );
 
@@ -213,14 +213,14 @@ export class LambdaStack extends cdk.Stack {
     this.createRoom = createLambdaFunction(
       'CreateRoomFunction',
       'create-room',
-      'handlers/room/createRoom.handler',
+      'dist/handlers/room/createRoom.handler',
       'Create new room'
     );
 
     this.joinRoom = createLambdaFunction(
       'JoinRoomFunction',
       'join-room',
-      'handlers/room/joinRoom.handler',
+      'dist/handlers/room/joinRoom.handler',
       'Join a room'
     );
 
@@ -233,7 +233,7 @@ export class LambdaStack extends cdk.Stack {
     this.postConfirmation = createLambdaFunction(
       'PostConfirmationFunction',
       'post-confirmation',
-      'handlers/cognito/postConfirmation.handler',
+      'dist/handlers/cognito/postConfirmation.handler',
       'Cognito Post Confirmation Trigger - Create account in DynamoDB'
     );
 

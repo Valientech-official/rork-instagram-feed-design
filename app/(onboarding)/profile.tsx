@@ -9,10 +9,12 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuthStore } from '../../store/authStore';
 import OnboardingHeader from '../../components/onboarding/OnboardingHeader';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 // ========================================
 // Validation Functions
@@ -76,6 +78,16 @@ const formatPhoneToE164 = (phone: string): string => {
   return cleaned;
 };
 
+// 日付をYYYY-MM-DD形式に変換（Cognito用）
+const formatDateToISO = (date: Date): string => {
+  return date.toISOString().split('T')[0];
+};
+
+// 日付を日本語形式に変換（表示用）
+const formatDateToJapanese = (date: Date): string => {
+  return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+};
+
 export default function ProfileScreen() {
   const router = useRouter();
   const { updateOnboardingStep, saveOnboardingData, signUp, error, clearError, isLoading } = useAuthStore();
@@ -92,10 +104,24 @@ export default function ProfileScreen() {
   const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
   const [showPasswordRequirements, setShowPasswordRequirements] = useState(false);
 
+  // DateTimePicker用の状態管理
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+
   useEffect(() => {
     updateOnboardingStep(2);
     return () => clearError();
   }, []);
+
+  // 日付選択ハンドラ
+  const onDateChange = (event: any, date?: Date) => {
+    // Modalの場合、日付選択時は開いたまま（「完了」ボタンで閉じる）
+    if (date) {
+      setSelectedDate(date);
+      const isoDate = formatDateToISO(date);
+      setFormData({ ...formData, birthday: isoDate });
+    }
+  };
 
   const validateForm = (): boolean => {
     const errors: { [key: string]: string } = {};
@@ -271,14 +297,50 @@ export default function ProfileScreen() {
 
           {/* Birthday */}
           <Text style={styles.label}>生年月日</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="例: 2000-01-01"
-            value={formData.birthday}
-            onChangeText={(text) => setFormData({ ...formData, birthday: text })}
-            editable={!isLoading}
-          />
-          <Text style={styles.hint}>YYYY-MM-DD形式（省略可）</Text>
+          <TouchableOpacity
+            style={styles.datePickerButton}
+            onPress={() => setShowDatePicker(true)}
+            disabled={isLoading}
+          >
+            <Text style={selectedDate ? styles.dateText : styles.datePlaceholder}>
+              {selectedDate ? formatDateToJapanese(selectedDate) : '選択してください'}
+            </Text>
+          </TouchableOpacity>
+          <Text style={styles.hint}>タップして生年月日を選択（省略可）</Text>
+
+          {/* DateTimePicker Modal */}
+          <Modal
+            visible={showDatePicker}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={() => setShowDatePicker(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <View style={styles.modalHeader}>
+                  <Text style={styles.modalTitle}>生年月日を選択</Text>
+                  {Platform.OS === 'ios' && (
+                    <TouchableOpacity
+                      onPress={() => setShowDatePicker(false)}
+                      style={styles.doneButton}
+                    >
+                      <Text style={styles.doneButtonText}>完了</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+                <DateTimePicker
+                  value={selectedDate || new Date(2000, 0, 1)}
+                  mode="date"
+                  display="spinner"
+                  onChange={onDateChange}
+                  maximumDate={new Date()}
+                  minimumDate={new Date(1900, 0, 1)}
+                  textColor="#000"
+                  locale="ja-JP"
+                />
+              </View>
+            </View>
+          </Modal>
 
           {/* Phone */}
           <Text style={styles.label}>電話番号</Text>
@@ -370,6 +432,23 @@ const styles = StyleSheet.create({
     color: '#F00',
     marginTop: 4,
   },
+  datePickerButton: {
+    height: 48,
+    borderWidth: 1,
+    borderColor: '#E5E5E5',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    backgroundColor: '#F9F9F9',
+    justifyContent: 'center',
+  },
+  dateText: {
+    fontSize: 16,
+    color: '#000',
+  },
+  datePlaceholder: {
+    fontSize: 16,
+    color: '#999',
+  },
   requirementsBox: {
     backgroundColor: '#F0F8FF',
     padding: 12,
@@ -425,5 +504,39 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingBottom: 32,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E5E5',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#000',
+  },
+  doneButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  doneButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#007AFF',
   },
 });
