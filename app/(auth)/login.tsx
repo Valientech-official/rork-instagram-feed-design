@@ -17,7 +17,7 @@ import { useAuthStore } from '../../store/authStore';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { signIn, error, clearError, isLoading } = useAuthStore();
+  const { signIn, error, clearError, isLoading, hasCompletedOnboarding, onboardingStep } = useAuthStore();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -30,10 +30,23 @@ export default function LoginScreen() {
   const handleSignIn = async () => {
     try {
       await signIn(email, password);
-      // サインイン成功したら splash が自動的にルーティング
+
+      // ログイン成功後、オンボーディング完了状態を確認して遷移
+      if (hasCompletedOnboarding) {
+        router.replace('/(tabs)');
+      } else {
+        // オンボーディングステップに基づいて遷移
+        if (onboardingStep >= 3) {
+          // SignUp完了済み（プロフィール入力済み）、ステップ3（avatar）から再開
+          router.replace('/(onboarding)/avatar');
+        } else {
+          // 最初から
+          router.replace('/(onboarding)/welcome');
+        }
+      }
     } catch (error: any) {
       // 未確認ユーザーの場合は確認画面へ遷移
-      if (error?.message === 'USER_NOT_CONFIRMED') {
+      if (error?.name === 'UserNotConfirmedException') {
         router.replace(`/(auth)/verify-email?username=${email}`);
       }
       // その他のエラーは authStore.error に設定される

@@ -300,11 +300,28 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       // ユーザー情報を取得
       await get().refreshUser();
 
-      set({ isAuthenticated: true, isLoading: false });
+      // オンボーディング状態を取得
+      const onboardingCompleted = await AsyncStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED);
+      const onboardingStep = await AsyncStorage.getItem(STORAGE_KEYS.ONBOARDING_STEP);
+
+      set({
+        isAuthenticated: true,
+        hasCompletedOnboarding: onboardingCompleted === 'true',
+        onboardingStep: onboardingStep ? parseInt(onboardingStep, 10) : 0,
+        isLoading: false
+      });
     } catch (error: any) {
       const errorMessage = getErrorMessage(error);
       console.error('❌ SignIn failed:', error);
       set({ error: errorMessage, isLoading: false });
+
+      // UserNotConfirmedExceptionの場合、特別なエラーとしてthrow
+      if (error?.name === 'UserNotConfirmedException') {
+        const err = new Error(errorMessage);
+        (err as any).name = 'UserNotConfirmedException';
+        throw err;
+      }
+
       throw new Error(errorMessage);
     }
   },

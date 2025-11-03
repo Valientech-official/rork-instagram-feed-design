@@ -91,6 +91,9 @@ export default function VerifyEmailScreen() {
       // 未確認状態を削除（確認完了）
       await AsyncStorage.removeItem('@pending_verification');
 
+      // SignUpでプロフィール情報は入力済み、ステップ3（avatar）から開始
+      await AsyncStorage.setItem('@onboarding_step', '3');
+
       // 確認完了後、ログイン画面へ誘導
       Alert.alert(
         '成功',
