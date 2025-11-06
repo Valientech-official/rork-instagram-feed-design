@@ -430,3 +430,22 @@ export interface BlockedAccount {
 }
 
 export interface GetBlockListResponse extends PaginatedResponse<BlockedAccount> {}
+
+// =====================================================
+// Repost（リポスト）API
+// =====================================================
+
+// リポスト作成
+export interface CreateRepostRequest {
+  post_id: string;
+  comment?: string; // 引用リポスト用のコメント（オプション）
+}
+
+export interface CreateRepostResponse {
+  repost_id: string;
+  account_id: string;
+  original_post_id: string;
+  original_author_id: string;
+  comment?: string;
+  created_at: number;
+}

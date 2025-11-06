@@ -44,6 +44,10 @@ export class LambdaStack extends cdk.Stack {
   public readonly unblockUser: lambda.Function;
   public readonly getBlockList: lambda.Function;
 
+  // Repost
+  public readonly createRepost: lambda.Function;
+  public readonly deleteRepost: lambda.Function;
+
   // Cognito Triggers
   public readonly postConfirmation: lambda.Function;
 
@@ -284,6 +288,21 @@ export class LambdaStack extends cdk.Stack {
       'get-block-list',
       'dist/handlers/block/getBlockList.handler',
       'Get blocked users list'
+    );
+
+    // Repost
+    this.createRepost = createLambdaFunction(
+      'CreateRepostFunction',
+      'create-repost',
+      'dist/handlers/repost/createRepost.handler',
+      'Create a repost (share post)'
+    );
+
+    this.deleteRepost = createLambdaFunction(
+      'DeleteRepostFunction',
+      'delete-repost',
+      'dist/handlers/repost/deleteRepost.handler',
+      'Delete a repost'
     );
 
     // =====================================================

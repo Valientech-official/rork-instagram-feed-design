@@ -51,6 +51,10 @@ interface ApiGatewayStackProps extends cdk.StackProps {
     blockUser: lambda.Function;
     unblockUser: lambda.Function;
     getBlockList: lambda.Function;
+
+    // Repost
+    createRepost: lambda.Function;
+    deleteRepost: lambda.Function;
   };
   userPool: cognito.UserPool;
 }
@@ -521,6 +525,41 @@ export class ApiGatewayStack extends cdk.Stack {
     blockAccountResource.addMethod(
       'DELETE',
       new apigateway.LambdaIntegration(lambdaFunctions.unblockUser, {
+        proxy: true,
+      }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+      }
+    );
+
+    // =====================================================
+    // /posts/{post_id}/repost リソース（リポスト機能）
+    // =====================================================
+    // POST /posts/{post_id}/repost - リポスト作成
+    const postRepostResource = postsIdResource.addResource('repost');
+    postRepostResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(lambdaFunctions.createRepost, {
+        proxy: true,
+      }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // =====================================================
+    // /reposts リソース（リポスト機能）
+    // =====================================================
+    const repostsResource = this.api.root.addResource('reposts');
+
+    // DELETE /reposts/{repost_id} - リポスト削除
+    const repostIdResource = repostsResource.addResource('{repost_id}');
+    repostIdResource.addMethod(
+      'DELETE',
+      new apigateway.LambdaIntegration(lambdaFunctions.deleteRepost, {
         proxy: true,
       }),
       {
