@@ -73,6 +73,22 @@ export class LambdaStack extends cdk.Stack {
   public readonly unmuteUser: lambda.Function;
   public readonly getMutedUsers: lambda.Function;
 
+  // Stage 2A: Existing Feature Extensions
+  public readonly updatePost: lambda.Function;
+  public readonly getUserPosts: lambda.Function;
+  public readonly getDiscoveryFeed: lambda.Function;
+  public readonly getRoomPosts: lambda.Function;
+  public readonly getFollowing: lambda.Function;
+  public readonly getFollowers: lambda.Function;
+  public readonly getPostLikes: lambda.Function;
+  public readonly getUserLikes: lambda.Function;
+  public readonly getUserReposts: lambda.Function;
+  public readonly getPostReposts: lambda.Function;
+  public readonly getRoom: lambda.Function;
+  public readonly updateRoom: lambda.Function;
+  public readonly getRoomMembers: lambda.Function;
+  public readonly leaveRoom: lambda.Function;
+
   // Cognito Triggers
   public readonly postConfirmation: lambda.Function;
 
@@ -438,6 +454,113 @@ export class LambdaStack extends cdk.Stack {
       'get-muted-users',
       'dist/handlers/mute/getMutedUsers.handler',
       'Get muted users list'
+    );
+
+    // =====================================================
+    // Stage 2A: Existing Feature Extensions (14 functions)
+    // =====================================================
+
+    // Post拡張
+    this.updatePost = createLambdaFunction(
+      'UpdatePostFunction',
+      'update-post',
+      'dist/handlers/post/updatePost.handler',
+      'Update an existing post'
+    );
+
+    this.getUserPosts = createLambdaFunction(
+      'GetUserPostsFunction',
+      'get-user-posts',
+      'dist/handlers/post/getUserPosts.handler',
+      'Get posts by a specific user'
+    );
+
+    this.getDiscoveryFeed = createLambdaFunction(
+      'GetDiscoveryFeedFunction',
+      'get-discovery-feed',
+      'dist/handlers/post/getDiscoveryFeed.handler',
+      'Get discovery feed with public posts'
+    );
+
+    this.getRoomPosts = createLambdaFunction(
+      'GetRoomPostsFunction',
+      'get-room-posts',
+      'dist/handlers/post/getRoomPosts.handler',
+      'Get posts in a specific room'
+    );
+
+    // Follow拡張
+    this.getFollowing = createLambdaFunction(
+      'GetFollowingFunction',
+      'get-following',
+      'dist/handlers/follow/getFollowing.handler',
+      'Get list of accounts a user is following'
+    );
+
+    this.getFollowers = createLambdaFunction(
+      'GetFollowersFunction',
+      'get-followers',
+      'dist/handlers/follow/getFollowers.handler',
+      'Get list of accounts following a user'
+    );
+
+    // Like拡張
+    this.getPostLikes = createLambdaFunction(
+      'GetPostLikesFunction',
+      'get-post-likes',
+      'dist/handlers/like/getPostLikes.handler',
+      'Get list of accounts that liked a post'
+    );
+
+    this.getUserLikes = createLambdaFunction(
+      'GetUserLikesFunction',
+      'get-user-likes',
+      'dist/handlers/like/getUserLikes.handler',
+      'Get list of posts a user has liked'
+    );
+
+    // Repost拡張
+    this.getUserReposts = createLambdaFunction(
+      'GetUserRepostsFunction',
+      'get-user-reposts',
+      'dist/handlers/repost/getUserReposts.handler',
+      'Get list of posts a user has reposted'
+    );
+
+    this.getPostReposts = createLambdaFunction(
+      'GetPostRepostsFunction',
+      'get-post-reposts',
+      'dist/handlers/repost/getPostReposts.handler',
+      'Get list of accounts that reposted a post'
+    );
+
+    // Room拡張
+    this.getRoom = createLambdaFunction(
+      'GetRoomFunction',
+      'get-room',
+      'dist/handlers/room/getRoom.handler',
+      'Get room details'
+    );
+
+    this.updateRoom = createLambdaFunction(
+      'UpdateRoomFunction',
+      'update-room',
+      'dist/handlers/room/updateRoom.handler',
+      'Update room details'
+    );
+
+    this.getRoomMembers = createLambdaFunction(
+      'GetRoomMembersFunction',
+      'get-room-members',
+      'dist/handlers/room/getRoomMembers.handler',
+      'Get list of room members'
+    );
+
+    this.leaveRoom = createLambdaFunction(
+      'LeaveRoomFunction',
+      'leave-room',
+      'dist/handlers/room/leaveRoom.handler',
+      'Leave a room'
     );
 
     // =====================================================
