@@ -354,3 +354,12 @@ export interface MessageItem {
   updated_at: Timestamp;
   ttl?: number; // 90日後削除
 }
+
+// =====================================================
+// BLOCK テーブル
+// =====================================================
+export interface BlockItem {
+  blocker_account_id: string; // ブロックした人
+  blocked_account_id: string; // ブロックされた人
+  blocked_at: Timestamp;
+}

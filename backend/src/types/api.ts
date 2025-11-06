@@ -333,3 +333,100 @@ export interface TrendingHashtag {
 export interface GetTrendingHashtagsResponse {
   hashtags: TrendingHashtag[];
 }
+
+// =====================================================
+// DM（会話・メッセージ）API
+// =====================================================
+
+// 会話作成
+export interface CreateConversationRequest {
+  participant_id: string; // 相手のアカウントID
+}
+
+export interface CreateConversationResponse {
+  conversation_id: string;
+  participant_1_id: string;
+  participant_2_id: string;
+  created_at: number;
+  last_message_at: number;
+  is_new: boolean; // 新規作成か既存会話か
+}
+
+// 会話一覧取得
+export interface GetConversationsRequest {
+  limit?: number;
+  nextToken?: string;
+}
+
+export interface ConversationSummary {
+  conversation_id: string;
+  partner: AccountSummary; // 相手のアカウント情報
+  last_message: {
+    message_id: string;
+    content: string;
+    sender_account_id: string;
+    created_at: number;
+  } | null;
+  last_message_at: number;
+  created_at: number;
+}
+
+export interface GetConversationsResponse extends PaginatedResponse<ConversationSummary> {}
+
+// メッセージ送信
+export interface SendMessageRequest {
+  content: string;
+}
+
+export interface SendMessageResponse {
+  message_id: string;
+  conversation_id: string;
+  sender_account_id: string;
+  content: string;
+  created_at: number;
+  is_read: boolean;
+}
+
+// メッセージ履歴取得
+export interface GetMessagesRequest {
+  conversation_id: string;
+  limit?: number;
+  nextToken?: string;
+}
+
+export interface MessageDetail {
+  message_id: string;
+  conversation_id: string;
+  content: string;
+  sender: AccountSummary;
+  created_at: number;
+  is_read: boolean;
+}
+
+export interface GetMessagesResponse extends PaginatedResponse<MessageDetail> {}
+
+// =====================================================
+// Block（ブロック）API
+// =====================================================
+
+// ユーザーブロック
+export interface BlockUserRequest {
+  blocked_account_id: string;
+}
+
+export interface BlockUserResponse {
+  blocker_account_id: string;
+  blocked_account_id: string;
+  blocked_at: number;
+}
+
+// ブロックリスト取得
+export interface BlockedAccount {
+  account_id: string;
+  username: string;
+  handle: string;
+  profile_image?: string;
+  blocked_at: number;
+}
+
+export interface GetBlockListResponse extends PaginatedResponse<BlockedAccount> {}

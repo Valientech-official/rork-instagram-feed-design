@@ -33,6 +33,17 @@ export class LambdaStack extends cdk.Stack {
   public readonly createRoom: lambda.Function;
   public readonly joinRoom: lambda.Function;
 
+  // DM (Conversation & Message)
+  public readonly createConversation: lambda.Function;
+  public readonly getConversations: lambda.Function;
+  public readonly sendMessage: lambda.Function;
+  public readonly getMessages: lambda.Function;
+
+  // Block
+  public readonly blockUser: lambda.Function;
+  public readonly unblockUser: lambda.Function;
+  public readonly getBlockList: lambda.Function;
+
   // Cognito Triggers
   public readonly postConfirmation: lambda.Function;
 
@@ -222,6 +233,57 @@ export class LambdaStack extends cdk.Stack {
       'join-room',
       'dist/handlers/room/joinRoom.handler',
       'Join a room'
+    );
+
+    // DM (Conversation & Message)
+    this.createConversation = createLambdaFunction(
+      'CreateConversationFunction',
+      'create-conversation',
+      'dist/handlers/conversation/createConversation.handler',
+      'Create or get existing conversation'
+    );
+
+    this.getConversations = createLambdaFunction(
+      'GetConversationsFunction',
+      'get-conversations',
+      'dist/handlers/conversation/getConversations.handler',
+      'Get user conversations list'
+    );
+
+    this.sendMessage = createLambdaFunction(
+      'SendMessageFunction',
+      'send-message',
+      'dist/handlers/message/sendMessage.handler',
+      'Send message in conversation'
+    );
+
+    this.getMessages = createLambdaFunction(
+      'GetMessagesFunction',
+      'get-messages',
+      'dist/handlers/message/getMessages.handler',
+      'Get messages for conversation'
+    );
+
+    // Block
+    this.blockUser = createLambdaFunction(
+      'BlockUserFunction',
+      'block-user',
+      'dist/handlers/block/blockUser.handler',
+      'Block a user'
+    );
+
+    this.unblockUser = createLambdaFunction(
+      'UnblockUserFunction',
+      'unblock-user',
+      'dist/handlers/block/unblockUser.handler',
+      'Unblock a user'
+    );
+
+    this.getBlockList = createLambdaFunction(
+      'GetBlockListFunction',
+      'get-block-list',
+      'dist/handlers/block/getBlockList.handler',
+      'Get blocked users list'
     );
 
     // =====================================================

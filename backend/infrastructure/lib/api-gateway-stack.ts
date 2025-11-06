@@ -40,6 +40,17 @@ interface ApiGatewayStackProps extends cdk.StackProps {
     // Room
     createRoom: lambda.Function;
     joinRoom: lambda.Function;
+
+    // DM (Conversation & Message)
+    createConversation: lambda.Function;
+    getConversations: lambda.Function;
+    sendMessage: lambda.Function;
+    getMessages: lambda.Function;
+
+    // Block
+    blockUser: lambda.Function;
+    unblockUser: lambda.Function;
+    getBlockList: lambda.Function;
   };
   userPool: cognito.UserPool;
 }
@@ -408,6 +419,108 @@ export class ApiGatewayStack extends cdk.Stack {
     joinResource.addMethod(
       'POST',
       new apigateway.LambdaIntegration(lambdaFunctions.joinRoom, {
+        proxy: true,
+      }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+      }
+    );
+
+    // =====================================================
+    // /conversations リソース（DM機能）
+    // =====================================================
+    const conversationsResource = this.api.root.addResource('conversations');
+
+    // POST /conversations - 会話作成
+    conversationsResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(lambdaFunctions.createConversation, {
+        proxy: true,
+      }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // GET /conversations - 会話一覧取得
+    conversationsResource.addMethod(
+      'GET',
+      new apigateway.LambdaIntegration(lambdaFunctions.getConversations, {
+        proxy: true,
+      }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+      }
+    );
+
+    // /conversations/{conversation_id} リソース
+    const conversationResource = conversationsResource.addResource('{conversation_id}');
+
+    // POST /conversations/{conversation_id}/messages - メッセージ送信
+    const messagesResource = conversationResource.addResource('messages');
+    messagesResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(lambdaFunctions.sendMessage, {
+        proxy: true,
+      }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // GET /conversations/{conversation_id}/messages - メッセージ履歴取得
+    messagesResource.addMethod(
+      'GET',
+      new apigateway.LambdaIntegration(lambdaFunctions.getMessages, {
+        proxy: true,
+      }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+      }
+    );
+
+    // =====================================================
+    // /block リソース（ブロック機能）
+    // =====================================================
+    const blockResource = this.api.root.addResource('block');
+
+    // POST /block - ユーザーブロック
+    blockResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(lambdaFunctions.blockUser, {
+        proxy: true,
+      }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // GET /block - ブロックリスト取得
+    blockResource.addMethod(
+      'GET',
+      new apigateway.LambdaIntegration(lambdaFunctions.getBlockList, {
+        proxy: true,
+      }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+      }
+    );
+
+    // DELETE /block/{account_id} - ブロック解除
+    const blockAccountResource = blockResource.addResource('{account_id}');
+    blockAccountResource.addMethod(
+      'DELETE',
+      new apigateway.LambdaIntegration(lambdaFunctions.unblockUser, {
         proxy: true,
       }),
       {
