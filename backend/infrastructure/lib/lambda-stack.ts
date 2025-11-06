@@ -48,6 +48,31 @@ export class LambdaStack extends cdk.Stack {
   public readonly createRepost: lambda.Function;
   public readonly deleteRepost: lambda.Function;
 
+  // Report
+  public readonly createReport: lambda.Function;
+  public readonly getReports: lambda.Function;
+
+  // Notification
+  public readonly getNotifications: lambda.Function;
+  public readonly markAsRead: lambda.Function;
+  public readonly markAllAsRead: lambda.Function;
+  public readonly getNotificationSettings: lambda.Function;
+  public readonly updateNotificationSettings: lambda.Function;
+
+  // Session
+  public readonly createSession: lambda.Function;
+  public readonly getAllAccountSessions: lambda.Function;
+  public readonly logoutSession: lambda.Function;
+
+  // Hashtag
+  public readonly searchByHashtag: lambda.Function;
+  public readonly getTrendingHashtags: lambda.Function;
+
+  // Mute
+  public readonly muteUser: lambda.Function;
+  public readonly unmuteUser: lambda.Function;
+  public readonly getMutedUsers: lambda.Function;
+
   // Cognito Triggers
   public readonly postConfirmation: lambda.Function;
 
@@ -303,6 +328,116 @@ export class LambdaStack extends cdk.Stack {
       'delete-repost',
       'dist/handlers/repost/deleteRepost.handler',
       'Delete a repost'
+    );
+
+    // Report
+    this.createReport = createLambdaFunction(
+      'CreateReportFunction',
+      'create-report',
+      'dist/handlers/report/createReport.handler',
+      'Create a report'
+    );
+
+    this.getReports = createLambdaFunction(
+      'GetReportsFunction',
+      'get-reports',
+      'dist/handlers/report/getReports.handler',
+      'Get reports'
+    );
+
+    // Notification
+    this.getNotifications = createLambdaFunction(
+      'GetNotificationsFunction',
+      'get-notifications',
+      'dist/handlers/notification/getNotifications.handler',
+      'Get user notifications'
+    );
+
+    this.markAsRead = createLambdaFunction(
+      'MarkAsReadFunction',
+      'mark-as-read',
+      'dist/handlers/notification/markAsRead.handler',
+      'Mark notification as read'
+    );
+
+    this.markAllAsRead = createLambdaFunction(
+      'MarkAllAsReadFunction',
+      'mark-all-as-read',
+      'dist/handlers/notification/markAllAsRead.handler',
+      'Mark all notifications as read'
+    );
+
+    this.getNotificationSettings = createLambdaFunction(
+      'GetNotificationSettingsFunction',
+      'get-notification-settings',
+      'dist/handlers/notification/getNotificationSettings.handler',
+      'Get notification settings'
+    );
+
+    this.updateNotificationSettings = createLambdaFunction(
+      'UpdateNotificationSettingsFunction',
+      'update-notification-settings',
+      'dist/handlers/notification/updateNotificationSettings.handler',
+      'Update notification settings'
+    );
+
+    // Session
+    this.createSession = createLambdaFunction(
+      'CreateSessionFunction',
+      'create-session',
+      'dist/handlers/session/createSession.handler',
+      'Create a session'
+    );
+
+    this.getAllAccountSessions = createLambdaFunction(
+      'GetAllAccountSessionsFunction',
+      'get-all-account-sessions',
+      'dist/handlers/session/getAllAccountSessions.handler',
+      'Get all account sessions'
+    );
+
+    this.logoutSession = createLambdaFunction(
+      'LogoutSessionFunction',
+      'logout-session',
+      'dist/handlers/session/logoutSession.handler',
+      'Logout a session'
+    );
+
+    // Hashtag
+    this.searchByHashtag = createLambdaFunction(
+      'SearchByHashtagFunction',
+      'search-by-hashtag',
+      'dist/handlers/hashtag/searchByHashtag.handler',
+      'Search posts by hashtag'
+    );
+
+    this.getTrendingHashtags = createLambdaFunction(
+      'GetTrendingHashtagsFunction',
+      'get-trending-hashtags',
+      'dist/handlers/hashtag/getTrendingHashtags.handler',
+      'Get trending hashtags'
+    );
+
+    // Mute
+    this.muteUser = createLambdaFunction(
+      'MuteUserFunction',
+      'mute-user',
+      'dist/handlers/mute/muteUser.handler',
+      'Mute a user'
+    );
+
+    this.unmuteUser = createLambdaFunction(
+      'UnmuteUserFunction',
+      'unmute-user',
+      'dist/handlers/mute/unmuteUser.handler',
+      'Unmute a user'
+    );
+
+    this.getMutedUsers = createLambdaFunction(
+      'GetMutedUsersFunction',
+      'get-muted-users',
+      'dist/handlers/mute/getMutedUsers.handler',
+      'Get muted users list'
     );
 
     // =====================================================
