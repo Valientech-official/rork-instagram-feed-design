@@ -4,7 +4,6 @@
 
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { logError } from '../../lib/utils/error';
-import { TableNames, deleteItem } from '../../lib/dynamodb';
 
 /**
  * WebSocket切断Lambda関数

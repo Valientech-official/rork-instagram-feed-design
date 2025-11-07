@@ -48,7 +48,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     const nextToken = event.queryStringParameters?.nextToken;
 
     // バリデーション
-    const validatedLimit = validatePaginationLimit(limit, 100);
+    const validatedLimit = validatePaginationLimit(limit);
 
     // 複数のフィルタは指定不可
     const filterCount = [roomId, accountId, status].filter(Boolean).length;

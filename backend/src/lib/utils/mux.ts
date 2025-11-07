@@ -60,10 +60,11 @@ export async function getMuxClient(): Promise<Mux> {
 
   const credentials = await getMuxCredentials();
 
-  muxClientCache = new Mux({
-    tokenId: credentials.accessTokenId,
-    tokenSecret: credentials.secretKey,
-  });
+  // Mux v7 API
+  muxClientCache = new Mux(
+    credentials.accessTokenId,
+    credentials.secretKey
+  );
 
   return muxClientCache;
 }
@@ -76,11 +77,11 @@ export async function verifyMuxWebhook(
   headers: Record<string, string | string[] | undefined>
 ): Promise<any> {
   const credentials = await getMuxCredentials();
-  const client = await getMuxClient();
 
   try {
-    // Mux SDKのwebhooks.unwrapメソッドを使用して署名検証
-    const event = Mux.webhooks.unwrap(payload, headers, credentials.webhookSecret);
+    // Mux v7 SDK のWebhooks APIを使用
+    const { Webhooks } = Mux;
+    const event = Webhooks.verifyHeader(payload, headers['mux-signature'] as string, credentials.webhookSecret);
     return event;
   } catch (error) {
     console.error('Webhook verification failed:', error);
@@ -92,16 +93,13 @@ export async function verifyMuxWebhook(
  * Muxエラーハンドリング
  */
 export function handleMuxError(error: unknown): Error {
-  if (error instanceof Mux.APIError) {
-    console.error('Mux API Error:', {
-      status: error.status,
+  // Mux v7ではエラーハンドリングが異なる
+  if (error instanceof Error) {
+    console.error('Mux Error:', {
+      name: error.name,
       message: error.message,
     });
-    return new Error(`Mux API error: ${error.message}`);
-  }
-
-  if (error instanceof Error) {
-    return error;
+    return new Error(`Mux error: ${error.message}`);
   }
 
   return new Error('Unknown Mux error occurred');

@@ -3,7 +3,7 @@
  */
 
 import { APIGatewayProxyHandler } from 'aws-lambda';
-import { LiveStreamItem, AccountItem } from '../../types/dynamodb';
+import { LiveStreamItem, AccountItem, RoomItem } from '../../types/dynamodb';
 import {
   successResponse,
   internalErrorResponse,
@@ -85,7 +85,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     }
 
     // ルーム情報を取得
-    const room = await getItem({
+    const room = await getItem<RoomItem>({
       TableName: TableNames.ROOM,
       Key: {
         room_id: stream.room_id,
@@ -119,7 +119,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       },
       room: {
         room_id: room.room_id,
-        name: room.name,
+        name: room.room_name,
       },
     };
 

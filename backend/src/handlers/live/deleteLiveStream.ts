@@ -80,7 +80,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     // Mux Live Streamを削除
     try {
       const muxClient = await getMuxClient();
-      await muxClient.video.liveStreams.delete(existingStream.mux_live_stream_id);
+      await muxClient.Video.LiveStreams.del(existingStream.mux_live_stream_id);
     } catch (error) {
       const muxError = handleMuxError(error);
       logError(muxError, {

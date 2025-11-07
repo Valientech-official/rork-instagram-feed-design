@@ -15,9 +15,11 @@
  */
 import * as cdk from 'aws-cdk-lib';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
 interface CognitoStackProps extends cdk.StackProps {
     environment: 'dev' | 'prod';
+    postConfirmationLambda: lambda.Function;
 }
 export declare class CognitoStack extends cdk.Stack {
     readonly userPool: cognito.UserPool;

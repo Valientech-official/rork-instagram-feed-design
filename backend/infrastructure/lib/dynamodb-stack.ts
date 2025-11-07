@@ -485,7 +485,7 @@ export class DynamoDBStack extends cdk.Stack {
     });
 
     // =====================================================
-    // 17. LIVE_STREAM テーブル (GSI: 3, TTL: 30日)
+    // 17. LIVE_STREAM テーブル (GSI: 4, TTL: 30日)
     // =====================================================
     // ライブ配信管理
     // viewer_count使用（ベストプラクティス）
@@ -518,6 +518,12 @@ export class DynamoDBStack extends cdk.Stack {
           indexName: 'GSI_active_lives',
           partitionKey: { name: 'status', type: dynamodb.AttributeType.STRING },
           sortKey: { name: 'started_at', type: dynamodb.AttributeType.NUMBER },
+        },
+        {
+          // GSI4: Mux Webhook用（mux_live_stream_idからstream_idを検索）
+          indexName: 'GSI_mux_stream_lookup',
+          partitionKey: { name: 'mux_live_stream_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'created_at', type: dynamodb.AttributeType.NUMBER },
         },
       ],
     });

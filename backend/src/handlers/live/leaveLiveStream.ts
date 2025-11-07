@@ -12,7 +12,7 @@ import {
   notFoundResponse,
 } from '../../lib/utils/response';
 import { logError } from '../../lib/utils/error';
-import { TableNames, query, getItem, updateItem } from '../../lib/dynamodb';
+import { TableNames, query, updateItem } from '../../lib/dynamodb';
 
 interface LeaveLiveStreamResponse {
   stream_id: string;

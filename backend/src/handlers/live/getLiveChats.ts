@@ -8,11 +8,10 @@ import {
   successResponse,
   internalErrorResponse,
   notFoundResponse,
-  validationErrorResponse,
 } from '../../lib/utils/response';
 import { validatePaginationLimit } from '../../lib/validators';
 import { logError } from '../../lib/utils/error';
-import { TableNames, query, batchGet } from '../../lib/dynamodb';
+import { TableNames, query, getItem } from '../../lib/dynamodb';
 
 interface GetLiveChatsResponse {
   items: Array<{
@@ -49,7 +48,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     const nextToken = event.queryStringParameters?.nextToken;
 
     // バリデーション
-    const validatedLimit = validatePaginationLimit(limit, 100);
+    const validatedLimit = validatePaginationLimit(limit);
 
     // LIVE_CHATテーブルからチャットを取得
     const result = await query({
@@ -78,26 +77,25 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
     const chats = result.items as LiveChatItem[];
 
-    // ユーザー情報を一括取得
+    // ユーザー情報を取得
     const accountIds = Array.from(new Set(chats.map((chat) => chat.account_id)));
-    const accountKeys = accountIds.map((id) => ({
-      PK: `ACCOUNT#${id}`,
-      SK: 'PROFILE',
-    }));
-
-    const accounts = await batchGet<AccountItem>({
-      RequestItems: {
-        [TableNames.ACCOUNT]: {
-          Keys: accountKeys,
-        },
-      },
-    });
 
     // アカウントマップを作成
     const accountMap = new Map<string, AccountItem>();
-    accounts.forEach((account) => {
-      accountMap.set(account.account_id, account);
-    });
+    await Promise.all(
+      accountIds.map(async (id) => {
+        const account = await getItem<AccountItem>({
+          TableName: TableNames.ACCOUNT,
+          Key: {
+            PK: `ACCOUNT#${id}`,
+            SK: 'PROFILE',
+          },
+        });
+        if (account) {
+          accountMap.set(account.account_id, account);
+        }
+      })
+    );
 
     // チャットとユーザー情報を結合
     const items = chats

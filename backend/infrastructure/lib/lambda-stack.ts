@@ -105,6 +105,26 @@ export class LambdaStack extends cdk.Stack {
   public readonly getPostProducts: lambda.Function;
   public readonly clickProduct: lambda.Function;
 
+  // Stage 2E: Live Streaming (REST API - 14 functions)
+  public readonly createLiveStream: lambda.Function;
+  public readonly deleteLiveStream: lambda.Function;
+  public readonly getLiveStream: lambda.Function;
+  public readonly getLiveStreams: lambda.Function;
+  public readonly endLiveStream: lambda.Function;
+  public readonly joinLiveStream: lambda.Function;
+  public readonly leaveLiveStream: lambda.Function;
+  public readonly sendLiveChat: lambda.Function;
+  public readonly getLiveChats: lambda.Function;
+  public readonly sendGift: lambda.Function;
+  public readonly addModerator: lambda.Function;
+  public readonly banUserFromLive: lambda.Function;
+  public readonly muxWebhook: lambda.Function;
+
+  // Stage 2E: Live Streaming (WebSocket - 3 functions)
+  public readonly wsConnect: lambda.Function;
+  public readonly wsDisconnect: lambda.Function;
+  public readonly wsMessage: lambda.Function;
+
   // Cognito Triggers
   public readonly postConfirmation: lambda.Function;
 
@@ -670,6 +690,149 @@ export class LambdaStack extends cdk.Stack {
       'dist/handlers/product/clickProduct.handler',
       'Track product link clicks'
     );
+
+    // =====================================================
+    // Stage 2E: Live Streaming (17 functions)
+    // =====================================================
+
+    // REST API Functions (14)
+
+    this.createLiveStream = createLambdaFunction(
+      'CreateLiveStreamFunction',
+      'create-live-stream',
+      'dist/handlers/live/createLiveStream.handler',
+      'Create a live stream'
+    );
+
+    this.deleteLiveStream = createLambdaFunction(
+      'DeleteLiveStreamFunction',
+      'delete-live-stream',
+      'dist/handlers/live/deleteLiveStream.handler',
+      'Delete a live stream'
+    );
+
+    this.getLiveStream = createLambdaFunction(
+      'GetLiveStreamFunction',
+      'get-live-stream',
+      'dist/handlers/live/getLiveStream.handler',
+      'Get live stream details'
+    );
+
+    this.getLiveStreams = createLambdaFunction(
+      'GetLiveStreamsFunction',
+      'get-live-streams',
+      'dist/handlers/live/getLiveStreams.handler',
+      'Get list of live streams'
+    );
+
+    this.endLiveStream = createLambdaFunction(
+      'EndLiveStreamFunction',
+      'end-live-stream',
+      'dist/handlers/live/endLiveStream.handler',
+      'End a live stream'
+    );
+
+    this.joinLiveStream = createLambdaFunction(
+      'JoinLiveStreamFunction',
+      'join-live-stream',
+      'dist/handlers/live/joinLiveStream.handler',
+      'Join a live stream as viewer'
+    );
+
+    this.leaveLiveStream = createLambdaFunction(
+      'LeaveLiveStreamFunction',
+      'leave-live-stream',
+      'dist/handlers/live/leaveLiveStream.handler',
+      'Leave a live stream'
+    );
+
+    this.sendLiveChat = createLambdaFunction(
+      'SendLiveChatFunction',
+      'send-live-chat',
+      'dist/handlers/live/sendLiveChat.handler',
+      'Send a chat message during live stream'
+    );
+
+    this.getLiveChats = createLambdaFunction(
+      'GetLiveChatsFunction',
+      'get-live-chats',
+      'dist/handlers/live/getLiveChats.handler',
+      'Get chat messages from live stream'
+    );
+
+    this.sendGift = createLambdaFunction(
+      'SendGiftFunction',
+      'send-gift',
+      'dist/handlers/live/sendGift.handler',
+      'Send a gift during live stream'
+    );
+
+    this.addModerator = createLambdaFunction(
+      'AddModeratorFunction',
+      'add-moderator',
+      'dist/handlers/live/addModerator.handler',
+      'Add a moderator to live stream'
+    );
+
+    this.banUserFromLive = createLambdaFunction(
+      'BanUserFromLiveFunction',
+      'ban-user-from-live',
+      'dist/handlers/live/banUserFromLive.handler',
+      'Ban a user from live stream'
+    );
+
+    this.muxWebhook = createLambdaFunction(
+      'MuxWebhookFunction',
+      'mux-webhook',
+      'dist/handlers/live/muxWebhook.handler',
+      'Handle Mux webhook events'
+    );
+
+    // WebSocket Functions (3)
+
+    this.wsConnect = createLambdaFunction(
+      'WsConnectFunction',
+      'ws-connect',
+      'dist/handlers/websocket/connect.handler',
+      'WebSocket connection handler'
+    );
+
+    this.wsDisconnect = createLambdaFunction(
+      'WsDisconnectFunction',
+      'ws-disconnect',
+      'dist/handlers/websocket/disconnect.handler',
+      'WebSocket disconnection handler'
+    );
+
+    this.wsMessage = createLambdaFunction(
+      'WsMessageFunction',
+      'ws-message',
+      'dist/handlers/websocket/message.handler',
+      'WebSocket message handler'
+    );
+
+    // Secrets Manager権限を追加（Mux認証情報取得用）
+    const secretsManagerPolicy = new iam.PolicyStatement({
+      actions: ['secretsmanager:GetSecretValue'],
+      resources: [
+        `arn:aws:secretsmanager:${cdk.Stack.of(this).region}:${cdk.Stack.of(this).account}:secret:rork/mux-credentials-*`,
+      ],
+    });
+
+    this.createLiveStream.addToRolePolicy(secretsManagerPolicy);
+    this.deleteLiveStream.addToRolePolicy(secretsManagerPolicy);
+    this.muxWebhook.addToRolePolicy(secretsManagerPolicy);
+
+    // WebSocket API Gateway Management権限を追加
+    const apiGatewayManagementPolicy = new iam.PolicyStatement({
+      actions: ['execute-api:ManageConnections', 'execute-api:Invoke'],
+      resources: [
+        `arn:aws:execute-api:${cdk.Stack.of(this).region}:${cdk.Stack.of(this).account}:*`,
+      ],
+    });
+
+    this.wsConnect.addToRolePolicy(apiGatewayManagementPolicy);
+    this.wsMessage.addToRolePolicy(apiGatewayManagementPolicy);
 
     // =====================================================
     // Cognito Triggers

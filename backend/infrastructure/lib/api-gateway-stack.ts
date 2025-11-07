@@ -112,6 +112,21 @@ interface ApiGatewayStackProps extends cdk.StackProps {
     tagProductOnPost: lambda.Function;
     getPostProducts: lambda.Function;
     clickProduct: lambda.Function;
+
+    // Stage 2E: Live Streaming
+    createLiveStream: lambda.Function;
+    deleteLiveStream: lambda.Function;
+    getLiveStream: lambda.Function;
+    getLiveStreams: lambda.Function;
+    endLiveStream: lambda.Function;
+    joinLiveStream: lambda.Function;
+    leaveLiveStream: lambda.Function;
+    sendLiveChat: lambda.Function;
+    getLiveChats: lambda.Function;
+    sendGift: lambda.Function;
+    addModerator: lambda.Function;
+    banUserFromLive: lambda.Function;
+    muxWebhook: lambda.Function;
   };
   userPool: cognito.UserPool;
 }
@@ -474,19 +489,7 @@ export class ApiGatewayStack extends cdk.Stack {
       }
     );
 
-    // POST /rooms/{room_id}/join - ROOM参加
-    const roomResource = roomsResource.addResource('{room_id}');
-    const joinResource = roomResource.addResource('join');
-    joinResource.addMethod(
-      'POST',
-      new apigateway.LambdaIntegration(lambdaFunctions.joinRoom, {
-        proxy: true,
-      }),
-      {
-        authorizer: this.authorizer,
-        authorizationType: apigateway.AuthorizationType.COGNITO,
-      }
-    );
+    // POST /rooms/{room_id}/join - ROOM参加 (後で作成するため、ここではスキップ)
 
     // =====================================================
     // /conversations リソース（DM機能）
@@ -1008,6 +1011,19 @@ export class ApiGatewayStack extends cdk.Stack {
       }
     );
 
+    // POST /rooms/{room_id}/join - ROOM参加
+    const joinResource = roomResource.addResource('join');
+    joinResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(lambdaFunctions.joinRoom, {
+        proxy: true,
+      }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+      }
+    );
+
     // GET /rooms/{room_id}/members - ルームメンバー一覧
     const roomMembersResource = roomResource.addResource('members');
     roomMembersResource.addMethod(
@@ -1185,6 +1201,153 @@ export class ApiGatewayStack extends cdk.Stack {
           requestValidator,
         }
       );
+
+    // =====================================================
+    // Stage 2E: Live Streaming (14 REST API endpoints)
+    // =====================================================
+
+    // POST /live-streams - ライブ配信作成
+    const liveStreamsResource = this.api.root.addResource('live-streams');
+    liveStreamsResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(lambdaFunctions.createLiveStream, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // GET /live-streams - ライブ配信一覧
+    liveStreamsResource.addMethod(
+      'GET',
+      new apigateway.LambdaIntegration(lambdaFunctions.getLiveStreams, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // GET /live-streams/{stream_id} - ライブ配信詳細
+    const streamIdResource = liveStreamsResource.addResource('{stream_id}');
+    streamIdResource.addMethod(
+      'GET',
+      new apigateway.LambdaIntegration(lambdaFunctions.getLiveStream, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // DELETE /live-streams/{stream_id} - ライブ配信削除
+    streamIdResource.addMethod(
+      'DELETE',
+      new apigateway.LambdaIntegration(lambdaFunctions.deleteLiveStream, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // POST /live-streams/{stream_id}/end - 配信終了
+    streamIdResource.addResource('end').addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(lambdaFunctions.endLiveStream, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // POST /live-streams/{stream_id}/join - 配信参加
+    streamIdResource.addResource('join').addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(lambdaFunctions.joinLiveStream, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // POST /live-streams/{stream_id}/leave - 配信退出
+    streamIdResource.addResource('leave').addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(lambdaFunctions.leaveLiveStream, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // GET /live-streams/{stream_id}/chat - チャット一覧
+    const chatResource = streamIdResource.addResource('chat');
+    chatResource.addMethod(
+      'GET',
+      new apigateway.LambdaIntegration(lambdaFunctions.getLiveChats, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // POST /live-streams/{stream_id}/chat - チャット送信
+    chatResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(lambdaFunctions.sendLiveChat, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // POST /live-streams/{stream_id}/gifts - ギフト送信
+    streamIdResource.addResource('gifts').addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(lambdaFunctions.sendGift, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // POST /live-streams/{stream_id}/moderators - モデレーター追加
+    streamIdResource.addResource('moderators').addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(lambdaFunctions.addModerator, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // POST /live-streams/{stream_id}/ban - ユーザーBAN
+    streamIdResource.addResource('ban').addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(lambdaFunctions.banUserFromLive, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // POST /webhooks/mux - Mux Webhook（認証なし）
+    this.api.root
+      .addResource('webhooks')
+      .addResource('mux')
+      .addMethod('POST', new apigateway.LambdaIntegration(lambdaFunctions.muxWebhook, { proxy: true }), {
+        requestValidator,
+      });
 
     // =====================================================
     // Outputs

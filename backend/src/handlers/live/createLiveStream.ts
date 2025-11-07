@@ -82,7 +82,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
 
     // ルームのオーナーまたはモデレーターのみライブ配信を作成可能
     // TODO: モデレーター権限チェックも追加
-    if (room.owner_account_id !== accountId) {
+    if (room.created_by !== accountId) {
       return unauthorizedResponse('このルームでライブ配信を作成する権限がありません');
     }
 
@@ -92,7 +92,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     // Mux Live Streamを作成
     let muxLiveStream;
     try {
-      muxLiveStream = await muxClient.video.liveStreams.create({
+      muxLiveStream = await muxClient.Video.LiveStreams.create({
         playback_policy: ['public'],
         reconnect_window: 60, // 60秒間の再接続を許可
         new_asset_settings: {
