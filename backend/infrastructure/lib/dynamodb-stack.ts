@@ -829,7 +829,38 @@ export class DynamoDBStack extends cdk.Stack {
     });
 
     // =====================================================
-    // 全27テーブル作成完了
+    // 28. CONNECTIONS テーブル (TTL: 24時間)
+    // =====================================================
+    // WebSocket接続管理
+    this.tables.connections = new dynamodb.TableV2(this, 'ConnectionsTable', {
+      tableName: `CONNECTIONS${tableSuffix}`,
+
+      // PK: connection_id (API Gateway接続ID)
+      // SK: account_id
+      partitionKey: { name: 'connection_id', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'account_id', type: dynamodb.AttributeType.STRING },
+
+      ...commonTableProps,
+      timeToLiveAttribute: 'ttl', // 24時間後に削除
+
+      globalSecondaryIndexes: [
+        {
+          // GSI1: アカウントの接続一覧
+          indexName: 'GSI_account_connections',
+          partitionKey: { name: 'account_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'connected_at', type: dynamodb.AttributeType.NUMBER },
+        },
+        {
+          // GSI2: ライブ配信ごとの接続者一覧
+          indexName: 'GSI_live_connections',
+          partitionKey: { name: 'stream_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'connected_at', type: dynamodb.AttributeType.NUMBER },
+        },
+      ],
+    });
+
+    // =====================================================
+    // 全28テーブル作成完了
     // =====================================================
 
     // =====================================================

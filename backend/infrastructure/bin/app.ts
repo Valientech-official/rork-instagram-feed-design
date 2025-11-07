@@ -3,6 +3,8 @@ import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { S3Stack } from '../lib/s3-stack';
 import { DynamoDBStack } from '../lib/dynamodb-stack';
+import { SecretsManagerStack } from '../lib/secrets-manager-stack';
+import { WebSocketStack } from '../lib/websocket-stack';
 import { LambdaStack } from '../lib/lambda-stack';
 import { CognitoStack } from '../lib/cognito-stack';
 import { ApiGatewayStack } from '../lib/api-gateway-stack';
@@ -25,7 +27,7 @@ const devDynamoDBStack = new DynamoDBStack(app, 'PieceApp-DynamoDB-Dev', {
   env: devEnv,
   environment: 'dev',
   removalPolicy: cdk.RemovalPolicy.DESTROY, // 開発環境: スタック削除時にテーブルも削除
-  description: '27 DynamoDB tables with 50 GSIs (Development)',
+  description: '28 DynamoDB tables with 53 GSIs (Development)',
 });
 
 // 2. S3 Stack（独立）
@@ -36,15 +38,31 @@ const devS3Stack = new S3Stack(app, 'PieceApp-S3-Dev', {
   description: 'S3 bucket for media files (Development)',
 });
 
-// 3. Lambda Stack（DynamoDBに依存）
+// 3. Secrets Manager Stack（独立）
+const devSecretsManagerStack = new SecretsManagerStack(app, 'PieceApp-SecretsManager-Dev', {
+  env: devEnv,
+  description: 'AWS Secrets Manager for Mux credentials (Development)',
+});
+
+// 4. Lambda Stack（DynamoDB + SecretsManagerに依存）
 const devLambdaStack = new LambdaStack(app, 'PieceApp-Lambda-Dev', {
   env: devEnv,
   environment: 'dev',
-  description: '67 Lambda functions (66 API handlers + 1 Cognito Trigger) (Development)',
+  description: '84 Lambda functions (83 API handlers + 1 Cognito Trigger) (Development)',
 });
 devLambdaStack.addDependency(devDynamoDBStack);
+devLambdaStack.addDependency(devSecretsManagerStack);
 
-// 4. Cognito Stack（Lambdaに依存）
+// 5. WebSocket Stack（DynamoDBに依存）
+const devWebSocketStack = new WebSocketStack(app, 'PieceApp-WebSocket-Dev', {
+  env: devEnv,
+  environment: 'dev',
+  connectionsTable: devDynamoDBStack.tables.connections,
+  description: 'WebSocket API for live streaming chat (Development)',
+});
+devWebSocketStack.addDependency(devDynamoDBStack);
+
+// 6. Cognito Stack（Lambdaに依存）
 const devCognitoStack = new CognitoStack(app, 'PieceApp-Cognito-Dev', {
   env: devEnv,
   environment: 'dev',
@@ -53,7 +71,7 @@ const devCognitoStack = new CognitoStack(app, 'PieceApp-Cognito-Dev', {
 });
 devCognitoStack.addDependency(devLambdaStack);
 
-// 5. API Gateway Stack（Lambda + Cognitoに依存）
+// 7. API Gateway Stack（Lambda + Cognitoに依存）
 const devApiGatewayStack = new ApiGatewayStack(app, 'PieceApp-ApiGateway-Dev', {
   env: devEnv,
   environment: 'dev',
@@ -215,6 +233,8 @@ cdk.Tags.of(app).add('ManagedBy', 'CDK');
 // 開発環境タグ
 cdk.Tags.of(devDynamoDBStack).add('Environment', 'Development');
 cdk.Tags.of(devS3Stack).add('Environment', 'Development');
+cdk.Tags.of(devSecretsManagerStack).add('Environment', 'Development');
+cdk.Tags.of(devWebSocketStack).add('Environment', 'Development');
 cdk.Tags.of(devLambdaStack).add('Environment', 'Development');
 cdk.Tags.of(devCognitoStack).add('Environment', 'Development');
 cdk.Tags.of(devApiGatewayStack).add('Environment', 'Development');

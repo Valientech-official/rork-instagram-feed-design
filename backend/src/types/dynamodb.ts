@@ -256,6 +256,60 @@ export interface LiveViewerItem {
 }
 
 // =====================================================
+// LIVE_CHAT テーブル
+// =====================================================
+export interface LiveChatItem {
+  stream_id: string;
+  chat_id: ULID;
+  account_id: string;
+  message: string;
+  created_at: Timestamp;
+  is_deleted: boolean;
+  deleted_at?: Timestamp;
+  ttl?: number; // 7日後削除
+}
+
+// =====================================================
+// LIVE_GIFT テーブル
+// =====================================================
+export interface LiveGiftItem {
+  gift_id: ULID;
+  created_at: Timestamp;
+  stream_id: string;
+  sender_account_id: string;
+  receiver_account_id: string;
+  gift_type: string;
+  gift_amount: number;
+  message?: string;
+  ttl?: number; // 30日後削除
+}
+
+// =====================================================
+// LIVE_MODERATOR テーブル
+// =====================================================
+export interface LiveModeratorItem {
+  stream_id: string;
+  account_id: string;
+  added_by_account_id: string;
+  added_at: Timestamp;
+}
+
+// =====================================================
+// MODERATOR_ACTION_LOG テーブル
+// =====================================================
+export interface ModeratorActionLogItem {
+  log_id: ULID;
+  created_at: Timestamp;
+  stream_id: string;
+  moderator_account_id: string;
+  action_type: 'ban' | 'timeout' | 'delete_message';
+  target_account_id: string;
+  target_message_id?: string;
+  reason?: string;
+  ttl?: number; // 30日後削除
+}
+
+// =====================================================
 // PRODUCT テーブル
 // =====================================================
 export interface ProductItem {
@@ -373,4 +427,16 @@ export interface BlockItem {
   blocker_account_id: string; // ブロックした人
   blocked_account_id: string; // ブロックされた人
   blocked_at: Timestamp;
+}
+
+// =====================================================
+// CONNECTIONS テーブル
+// =====================================================
+export interface ConnectionItem {
+  connection_id: string; // WebSocket接続ID（API Gateway）
+  account_id: string;
+  stream_id?: string; // 視聴中のライブ配信ID
+  connected_at: Timestamp;
+  last_ping_at: Timestamp;
+  ttl: number; // 24時間後削除
 }
