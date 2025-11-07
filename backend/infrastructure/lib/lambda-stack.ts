@@ -95,6 +95,16 @@ export class LambdaStack extends cdk.Stack {
   public readonly getAccountAnalytics: lambda.Function;
   public readonly getDashboard: lambda.Function;
 
+  // Stage 2C: Product/Shop
+  public readonly createProduct: lambda.Function;
+  public readonly getProduct: lambda.Function;
+  public readonly updateProduct: lambda.Function;
+  public readonly deleteProduct: lambda.Function;
+  public readonly getProducts: lambda.Function;
+  public readonly tagProductOnPost: lambda.Function;
+  public readonly getPostProducts: lambda.Function;
+  public readonly clickProduct: lambda.Function;
+
   // Cognito Triggers
   public readonly postConfirmation: lambda.Function;
 
@@ -599,6 +609,66 @@ export class LambdaStack extends cdk.Stack {
       'get-dashboard',
       'dist/handlers/analytics/getDashboard.handler',
       'Get dashboard summary data'
+    );
+
+    // =====================================================
+    // Stage 2C: Product/Shop (8 functions)
+    // =====================================================
+
+    this.createProduct = createLambdaFunction(
+      'CreateProductFunction',
+      'create-product',
+      'dist/handlers/product/createProduct.handler',
+      'Create a product listing'
+    );
+
+    this.getProduct = createLambdaFunction(
+      'GetProductFunction',
+      'get-product',
+      'dist/handlers/product/getProduct.handler',
+      'Get product details'
+    );
+
+    this.updateProduct = createLambdaFunction(
+      'UpdateProductFunction',
+      'update-product',
+      'dist/handlers/product/updateProduct.handler',
+      'Update product information'
+    );
+
+    this.deleteProduct = createLambdaFunction(
+      'DeleteProductFunction',
+      'delete-product',
+      'dist/handlers/product/deleteProduct.handler',
+      'Delete a product'
+    );
+
+    this.getProducts = createLambdaFunction(
+      'GetProductsFunction',
+      'get-products',
+      'dist/handlers/product/getProducts.handler',
+      'Get product list with filters'
+    );
+
+    this.tagProductOnPost = createLambdaFunction(
+      'TagProductOnPostFunction',
+      'tag-product-on-post',
+      'dist/handlers/product/tagProductOnPost.handler',
+      'Tag products on a post'
+    );
+
+    this.getPostProducts = createLambdaFunction(
+      'GetPostProductsFunction',
+      'get-post-products',
+      'dist/handlers/product/getPostProducts.handler',
+      'Get products tagged on a post'
+    );
+
+    this.clickProduct = createLambdaFunction(
+      'ClickProductFunction',
+      'click-product',
+      'dist/handlers/product/clickProduct.handler',
+      'Track product link clicks'
     );
 
     // =====================================================

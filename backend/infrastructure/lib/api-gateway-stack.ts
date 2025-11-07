@@ -102,6 +102,16 @@ interface ApiGatewayStackProps extends cdk.StackProps {
     getPostAnalytics: lambda.Function;
     getAccountAnalytics: lambda.Function;
     getDashboard: lambda.Function;
+
+    // Stage 2C: Product/Shop
+    createProduct: lambda.Function;
+    getProduct: lambda.Function;
+    updateProduct: lambda.Function;
+    deleteProduct: lambda.Function;
+    getProducts: lambda.Function;
+    tagProductOnPost: lambda.Function;
+    getPostProducts: lambda.Function;
+    clickProduct: lambda.Function;
   };
   userPool: cognito.UserPool;
 }
@@ -1075,6 +1085,106 @@ export class ApiGatewayStack extends cdk.Stack {
         requestValidator,
       }
     );
+
+    // =====================================================
+    // Stage 2C: Product/Shop (8 endpoints)
+    // =====================================================
+
+    // POST /products - 商品作成
+    const productsResource = this.api.root.addResource('products');
+    productsResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(lambdaFunctions.createProduct, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // GET /products - 商品一覧
+    productsResource.addMethod(
+      'GET',
+      new apigateway.LambdaIntegration(lambdaFunctions.getProducts, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // GET /products/{product_id} - 商品詳細
+    const productIdResource = productsResource.addResource('{product_id}');
+    productIdResource.addMethod(
+      'GET',
+      new apigateway.LambdaIntegration(lambdaFunctions.getProduct, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // PUT /products/{product_id} - 商品更新
+    productIdResource.addMethod(
+      'PUT',
+      new apigateway.LambdaIntegration(lambdaFunctions.updateProduct, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // DELETE /products/{product_id} - 商品削除
+    productIdResource.addMethod(
+      'DELETE',
+      new apigateway.LambdaIntegration(lambdaFunctions.deleteProduct, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // POST /products/{product_id}/click - クリック追跡
+    productIdResource.addResource('click').addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(lambdaFunctions.clickProduct, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // POST /posts/{post_id}/products - 投稿に商品タグ付け
+    postsResource
+      .addResource('{post_id}')
+      .addResource('products')
+      .addMethod(
+        'POST',
+        new apigateway.LambdaIntegration(lambdaFunctions.tagProductOnPost, { proxy: true }),
+        {
+          authorizer: this.authorizer,
+          authorizationType: apigateway.AuthorizationType.COGNITO,
+          requestValidator,
+        }
+      );
+
+    // GET /posts/{post_id}/products - 投稿の商品一覧
+    postsResource
+      .addResource('{post_id}')
+      .addResource('products')
+      .addMethod(
+        'GET',
+        new apigateway.LambdaIntegration(lambdaFunctions.getPostProducts, { proxy: true }),
+        {
+          authorizer: this.authorizer,
+          authorizationType: apigateway.AuthorizationType.COGNITO,
+          requestValidator,
+        }
+      );
 
     // =====================================================
     // Outputs

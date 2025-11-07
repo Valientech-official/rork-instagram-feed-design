@@ -1079,3 +1079,111 @@ export interface DashboardData {
 export interface GetDashboardResponse {
   dashboard: DashboardData;
 }
+
+// =====================================================
+// Stage 2C: Product/Shop
+// =====================================================
+
+// createProduct
+export interface CreateProductRequest {
+  name: string;
+  description?: string;
+  price: number;
+  sale_price?: number;
+  currency: string;
+  image_urls: string[];
+  primary_image_url: string;
+  external_url: string;
+  external_shop_name?: string;
+  category: 'fashion' | 'beauty' | 'food' | 'other';
+  tags?: string[];
+}
+
+export interface CreateProductResponse {
+  product_id: string;
+  created_at: number;
+}
+
+// getProduct
+export interface GetProductResponse {
+  product: ProductItem;
+  seller: {
+    account_id: string;
+    username: string;
+    handle: string;
+    profile_image?: string;
+    account_type: string;
+  };
+}
+
+// updateProduct
+export interface UpdateProductRequest {
+  name?: string;
+  description?: string;
+  price?: number;
+  sale_price?: number;
+  currency?: string;
+  image_urls?: string[];
+  primary_image_url?: string;
+  external_url?: string;
+  external_shop_name?: string;
+  category?: 'fashion' | 'beauty' | 'food' | 'other';
+  tags?: string[];
+  status?: 'active' | 'inactive';
+}
+
+export interface UpdateProductResponse {
+  product_id: string;
+  updated_at: number;
+}
+
+// deleteProduct
+export interface DeleteProductResponse {
+  product_id: string;
+  deleted_at: number;
+}
+
+// getProducts
+export interface GetProductsResponse {
+  items: ProductItem[];
+  nextToken?: string;
+  count: number;
+}
+
+// tagProductOnPost
+export interface TagProductOnPostRequest {
+  product_ids: string[];
+}
+
+export interface TagProductOnPostResponse {
+  post_id: string;
+  tagged_products: number;
+  tags: Array<{
+    product_id: string;
+    tagged_at: number;
+  }>;
+}
+
+// getPostProducts
+export interface GetPostProductsResponse {
+  post_id: string;
+  products: Array<{
+    product: ProductItem;
+    seller: {
+      account_id: string;
+      username: string;
+      handle: string;
+      profile_image?: string;
+    };
+    tagged_at: number;
+    tagged_by_account_id: string;
+  }>;
+  count: number;
+}
+
+// clickProduct
+export interface ClickProductResponse {
+  product_id: string;
+  external_url: string;
+  click_count: number;
+}

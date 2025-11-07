@@ -284,6 +284,17 @@ export interface ProductItem {
 }
 
 // =====================================================
+// PRODUCT_TAG テーブル
+// =====================================================
+export interface ProductTagItem {
+  post_id: string;
+  product_id: string;
+  tagged_by_account_id: string;
+  seller_account_id: string;
+  tagged_at: Timestamp;
+}
+
+// =====================================================
 // REPORT テーブル
 // =====================================================
 export interface ReportItem {
