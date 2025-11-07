@@ -89,6 +89,12 @@ export class LambdaStack extends cdk.Stack {
   public readonly getRoomMembers: lambda.Function;
   public readonly leaveRoom: lambda.Function;
 
+  // Stage 2B: Analytics
+  public readonly trackEvent: lambda.Function;
+  public readonly getPostAnalytics: lambda.Function;
+  public readonly getAccountAnalytics: lambda.Function;
+  public readonly getDashboard: lambda.Function;
+
   // Cognito Triggers
   public readonly postConfirmation: lambda.Function;
 
@@ -561,6 +567,38 @@ export class LambdaStack extends cdk.Stack {
       'leave-room',
       'dist/handlers/room/leaveRoom.handler',
       'Leave a room'
+    );
+
+    // =====================================================
+    // Stage 2B: Analytics (4 functions)
+    // =====================================================
+
+    this.trackEvent = createLambdaFunction(
+      'TrackEventFunction',
+      'track-event',
+      'dist/handlers/analytics/trackEvent.handler',
+      'Track user events and analytics'
+    );
+
+    this.getPostAnalytics = createLambdaFunction(
+      'GetPostAnalyticsFunction',
+      'get-post-analytics',
+      'dist/handlers/analytics/getPostAnalytics.handler',
+      'Get analytics for a specific post'
+    );
+
+    this.getAccountAnalytics = createLambdaFunction(
+      'GetAccountAnalyticsFunction',
+      'get-account-analytics',
+      'dist/handlers/analytics/getAccountAnalytics.handler',
+      'Get analytics for an account'
+    );
+
+    this.getDashboard = createLambdaFunction(
+      'GetDashboardFunction',
+      'get-dashboard',
+      'dist/handlers/analytics/getDashboard.handler',
+      'Get dashboard summary data'
     );
 
     // =====================================================

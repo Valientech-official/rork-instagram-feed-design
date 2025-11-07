@@ -40,7 +40,7 @@ const devS3Stack = new S3Stack(app, 'PieceApp-S3-Dev', {
 const devLambdaStack = new LambdaStack(app, 'PieceApp-Lambda-Dev', {
   env: devEnv,
   environment: 'dev',
-  description: '55 Lambda functions (54 API handlers + 1 Cognito Trigger) (Development)',
+  description: '59 Lambda functions (58 API handlers + 1 Cognito Trigger) (Development)',
 });
 devLambdaStack.addDependency(devDynamoDBStack);
 
@@ -113,6 +113,11 @@ const devApiGatewayStack = new ApiGatewayStack(app, 'PieceApp-ApiGateway-Dev', {
       updateRoom: devLambdaStack.updateRoom,
       getRoomMembers: devLambdaStack.getRoomMembers,
       leaveRoom: devLambdaStack.leaveRoom,
+      // Stage 2B: Analytics (4 functions)
+      trackEvent: devLambdaStack.trackEvent,
+      getPostAnalytics: devLambdaStack.getPostAnalytics,
+      getAccountAnalytics: devLambdaStack.getAccountAnalytics,
+      getDashboard: devLambdaStack.getDashboard,
   },
   userPool: devCognitoStack.userPool,
   description: 'REST API Gateway with Cognito authorizer (Development)',

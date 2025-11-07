@@ -978,3 +978,104 @@ export interface GetRoomMembersResponse {
   nextToken?: string;
   total?: number;
 }
+
+// =====================================================
+// Stage 2B: Analytics
+// =====================================================
+
+// trackEvent
+export interface TrackEventRequest {
+  event_type: string;
+  target_type?: 'post' | 'account' | 'comment' | 'room' | 'product';
+  target_id?: string;
+  metadata?: Record<string, any>;
+}
+
+export interface TrackEventResponse {
+  event_id: string;
+  timestamp: number;
+}
+
+// getPostAnalytics
+export interface PostAnalytics {
+  post_id: string;
+  views: number;
+  likes: number;
+  comments: number;
+  shares: number;
+  reposts: number;
+  engagement_rate: number;
+  recent_events: Array<{
+    event_type: string;
+    count: number;
+  }>;
+  daily_stats?: Array<{
+    date: string;
+    views: number;
+    likes: number;
+    comments: number;
+  }>;
+}
+
+export interface GetPostAnalyticsResponse {
+  analytics: PostAnalytics;
+}
+
+// getAccountAnalytics
+export interface AccountAnalytics {
+  account_id: string;
+  follower_count: number;
+  following_count: number;
+  post_count: number;
+  total_likes: number;
+  total_comments: number;
+  total_views: number;
+  engagement_rate: number;
+  growth: {
+    followers_last_7_days: number;
+    followers_last_30_days: number;
+    posts_last_7_days: number;
+    posts_last_30_days: number;
+  };
+  top_posts: Array<{
+    post_id: string;
+    views: number;
+    likes: number;
+    comments: number;
+  }>;
+}
+
+export interface GetAccountAnalyticsResponse {
+  analytics: AccountAnalytics;
+}
+
+// getDashboard
+export interface DashboardData {
+  overview: {
+    follower_count: number;
+    following_count: number;
+    post_count: number;
+    total_likes: number;
+    total_views: number;
+    engagement_rate: number;
+  };
+  recent_activity: Array<{
+    event_type: string;
+    count: number;
+    last_occurred: number;
+  }>;
+  trending_posts: Array<{
+    post_id: string;
+    views: number;
+    likes: number;
+    engagement_rate: number;
+  }>;
+  audience_insights: {
+    active_hours: Record<string, number>;
+    top_locations?: string[];
+  };
+}
+
+export interface GetDashboardResponse {
+  dashboard: DashboardData;
+}

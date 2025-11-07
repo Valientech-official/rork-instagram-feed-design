@@ -96,6 +96,12 @@ interface ApiGatewayStackProps extends cdk.StackProps {
     updateRoom: lambda.Function;
     getRoomMembers: lambda.Function;
     leaveRoom: lambda.Function;
+
+    // Stage 2B: Analytics
+    trackEvent: lambda.Function;
+    getPostAnalytics: lambda.Function;
+    getAccountAnalytics: lambda.Function;
+    getDashboard: lambda.Function;
   };
   userPool: cognito.UserPool;
 }
@@ -1008,6 +1014,61 @@ export class ApiGatewayStack extends cdk.Stack {
     roomMembersResource.addResource('me').addMethod(
       'DELETE',
       new apigateway.LambdaIntegration(lambdaFunctions.leaveRoom, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // =====================================================
+    // Stage 2B: Analytics (4 endpoints)
+    // =====================================================
+
+    // POST /analytics/events - イベント追跡
+    const analyticsResource = this.api.root.addResource('analytics');
+    analyticsResource.addResource('events').addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(lambdaFunctions.trackEvent, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
+
+    // GET /posts/{post_id}/analytics - 投稿分析データ
+    postsResource
+      .addResource('{post_id}')
+      .addResource('analytics')
+      .addMethod(
+        'GET',
+        new apigateway.LambdaIntegration(lambdaFunctions.getPostAnalytics, { proxy: true }),
+        {
+          authorizer: this.authorizer,
+          authorizationType: apigateway.AuthorizationType.COGNITO,
+          requestValidator,
+        }
+      );
+
+    // GET /accounts/{account_id}/analytics - アカウント分析データ
+    accountsResource
+      .addResource('{account_id}')
+      .addResource('analytics')
+      .addMethod(
+        'GET',
+        new apigateway.LambdaIntegration(lambdaFunctions.getAccountAnalytics, { proxy: true }),
+        {
+          authorizer: this.authorizer,
+          authorizationType: apigateway.AuthorizationType.COGNITO,
+          requestValidator,
+        }
+      );
+
+    // GET /dashboard - ダッシュボード
+    this.api.root.addResource('dashboard').addMethod(
+      'GET',
+      new apigateway.LambdaIntegration(lambdaFunctions.getDashboard, { proxy: true }),
       {
         authorizer: this.authorizer,
         authorizationType: apigateway.AuthorizationType.COGNITO,
