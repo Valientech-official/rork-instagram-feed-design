@@ -6,7 +6,9 @@ import { useThemeStore } from '@/store/themeStore';
 import Colors from '@/constants/colors';
 
 const { width } = Dimensions.get('window');
-const ITEM_WIDTH = (width - 48) / 2; // 16px padding on sides + 16px gap
+const COLUMN_GAP = 16;
+const ITEM_WIDTH = (width - 48) / 2; // 16px padding on each side + 16px gap
+const VISIBLE_CARD_COUNT = 6; // 2 columns x 3 rows
 
 interface RecommendedItem {
   id: string;
@@ -73,6 +75,48 @@ const ITEMS: RecommendedItem[] = [
     brand: 'モードミックス',
     liked: false,
   },
+  {
+    id: '9',
+    image: 'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?w=400',
+    title: 'デニムジャケット',
+    brand: 'クラシックライン',
+    liked: false,
+  },
+  {
+    id: '10',
+    image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400',
+    title: 'チェックスカート',
+    brand: 'スクールガール',
+    liked: false,
+  },
+  {
+    id: '11',
+    image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400',
+    title: 'ホワイトシャツ',
+    brand: 'ミニマルズ',
+    liked: false,
+  },
+  {
+    id: '12',
+    image: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400',
+    title: 'ワイドパンツ',
+    brand: 'リラックスフィット',
+    liked: false,
+  },
+  {
+    id: '13',
+    image: 'https://images.unsplash.com/photo-1504593811423-6dd665756598?w=400',
+    title: 'カシミヤコート',
+    brand: 'ラグジュアリーライン',
+    liked: false,
+  },
+  {
+    id: '14',
+    image: 'https://images.unsplash.com/photo-1542060748-10c28b62716c?w=400',
+    title: 'アスレジャーセット',
+    brand: 'モダンスポーツ',
+    liked: false,
+  },
 ];
 
 export default function RecommendedGrid() {
@@ -80,17 +124,18 @@ export default function RecommendedGrid() {
   const colors = Colors[theme];
   const styles = createStyles(colors);
   const [items, setItems] = useState(ITEMS);
-  const [displayCount, setDisplayCount] = useState(8);
+  const [showAll, setShowAll] = useState(false);
 
   const toggleLike = (id: string) => {
-    setItems(items.map(item =>
-      item.id === id ? { ...item, liked: !item.liked } : item
-    ));
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, liked: !item.liked } : item
+      )
+    );
   };
 
-  const handleLoadMore = () => {
-    setDisplayCount(prev => Math.min(prev + 8, items.length));
-  };
+  const visibleItems = showAll ? items : items.slice(0, VISIBLE_CARD_COUNT);
+  const canShowMore = !showAll && items.length > VISIBLE_CARD_COUNT;
 
   return (
     <View style={styles.container}>
@@ -107,7 +152,7 @@ export default function RecommendedGrid() {
       </View>
 
       <View style={styles.grid}>
-        {items.slice(0, displayCount).map((item, index) => (
+        {visibleItems.map((item, index) => (
           <TouchableOpacity
             key={item.id}
             style={[
@@ -132,21 +177,28 @@ export default function RecommendedGrid() {
               />
             </TouchableOpacity>
             <View style={styles.itemInfo}>
-              <Text style={styles.itemTitle} numberOfLines={1}>{item.title}</Text>
-              <Text style={styles.itemBrand} numberOfLines={1}>{item.brand}</Text>
+              <Text style={styles.itemTitle} numberOfLines={1}>
+                {item.title}
+              </Text>
+              <Text style={styles.itemBrand} numberOfLines={1}>
+                {item.brand}
+              </Text>
             </View>
           </TouchableOpacity>
         ))}
-        {displayCount < items.length && (
-          <TouchableOpacity
-            style={[styles.gridItem, styles.moreButton]}
-            onPress={handleLoadMore}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.moreButtonText}>more</Text>
-          </TouchableOpacity>
-        )}
       </View>
+
+      {items.length > VISIBLE_CARD_COUNT && (
+        <TouchableOpacity
+          style={styles.loadMoreButton}
+          onPress={() => setShowAll((prev) => !prev)}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.loadMoreText}>
+            {showAll ? '閉じる' : 'さらにもっと見る'}
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
@@ -187,10 +239,10 @@ const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
     backgroundColor: colors.shopCard,
   },
   leftItem: {
-    marginRight: 8,
+    marginRight: COLUMN_GAP / 2,
   },
   rightItem: {
-    marginLeft: 8,
+    marginLeft: COLUMN_GAP / 2,
   },
   itemImage: {
     width: '100%',
@@ -217,12 +269,17 @@ const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
     fontSize: 11,
     color: colors.secondaryText,
   },
-  moreButton: {
-    justifyContent: 'center',
+  loadMoreButton: {
+    marginTop: 4,
+    marginHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.cardBackground,
     alignItems: 'center',
-    backgroundColor: colors.border,
   },
-  moreButtonText: {
+  loadMoreText: {
     fontSize: 14,
     fontWeight: '600',
     color: colors.text,

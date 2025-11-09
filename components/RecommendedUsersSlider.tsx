@@ -5,9 +5,13 @@ import { useRouter } from 'expo-router';
 import { ChevronRight } from 'lucide-react-native';
 import { users } from '@/mocks/users';
 import Colors from '@/constants/colors';
+import { useThemeStore } from '@/store/themeStore';
 
 export default function RecommendedUsersSlider() {
   const router = useRouter();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
+  const styles = createStyles(colors);
 
   const handleUserPress = (userId: string) => {
     router.push(`/profile/${userId}`);
@@ -43,7 +47,7 @@ export default function RecommendedUsersSlider() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>あなたにおすすめアイテム&ユーザー</Text>
+        <Text style={styles.title}>おすすめユーザー</Text>
       </View>
       
       <FlatList
@@ -58,10 +62,10 @@ export default function RecommendedUsersSlider() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   container: {
     marginVertical: 16,
-    backgroundColor: Colors.light.background,
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -73,7 +77,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '600',
-    color: Colors.light.text,
+    color: colors.text,
   },
   seeAllButton: {
     flexDirection: 'row',
@@ -81,7 +85,7 @@ const styles = StyleSheet.create({
   },
   seeAllText: {
     fontSize: 14,
-    color: Colors.light.primary,
+    color: colors.primary,
     marginRight: 2,
   },
   listContent: {
@@ -99,26 +103,26 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     marginBottom: 8,
     borderWidth: 2,
-    borderColor: Colors.light.border,
+    borderColor: colors.border,
   },
   username: {
     fontSize: 12,
     fontWeight: '500',
-    color: Colors.light.text,
+    color: colors.text,
     textAlign: 'center',
   },
   verifiedBadge: {
     position: 'absolute',
     top: 48,
     right: 8,
-    backgroundColor: Colors.light.primary,
+    backgroundColor: colors.primary,
     borderRadius: 10,
     width: 20,
     height: 20,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: Colors.light.background,
+    borderColor: colors.background,
   },
   verifiedText: {
     color: 'white',
