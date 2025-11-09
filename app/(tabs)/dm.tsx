@@ -141,8 +141,7 @@ export default function DMScreen() {
 
   const handleMessagePress = (message: Message) => {
     // Navigate to individual chat screen
-    console.log('Open chat with:', message.username);
-    // router.push(`/dm/${message.userId}`);
+    router.push(`/dm/${message.userId}`);
 
     // Mark as read
     setMessages(prev =>
@@ -153,8 +152,7 @@ export default function DMScreen() {
   };
 
   const handleNewMessage = () => {
-    console.log('Start new message');
-    // Navigate to new message screen
+    router.push('/dm/new');
   };
 
   const filteredMessages = messages.filter(m =>
