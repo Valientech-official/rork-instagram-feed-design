@@ -14,19 +14,12 @@ export class SecretsManagerStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // Mux API認証情報用のシークレット
-    this.muxSecret = new secretsmanager.Secret(this, 'MuxSecret', {
-      secretName: 'rork/mux-credentials',
-      description: 'Mux API credentials for live streaming',
-      generateSecretString: {
-        secretStringTemplate: JSON.stringify({
-          accessTokenId: '',
-          secretKey: '',
-          webhookSecret: '',
-        }),
-        generateStringKey: 'placeholder',
-      },
-    });
+    // 既存のMux API認証情報シークレットをインポート
+    this.muxSecret = secretsmanager.Secret.fromSecretNameV2(
+      this,
+      'MuxSecret',
+      'rork/mux-credentials'
+    );
 
     // 出力
     new cdk.CfnOutput(this, 'MuxSecretArn', {

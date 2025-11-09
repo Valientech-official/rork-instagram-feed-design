@@ -1,5 +1,5 @@
 {
- "Description": "27 DynamoDB tables with 50 GSIs (Development)",
+ "Description": "28 DynamoDB tables with 53 GSIs (Development)",
  "Resources": {
   "AccountTable95876246": {
    "Type": "AWS::DynamoDB::GlobalTable",
@@ -1633,6 +1633,10 @@
      {
       "AttributeName": "status",
       "AttributeType": "S"
+     },
+     {
+      "AttributeName": "mux_live_stream_id",
+      "AttributeType": "S"
      }
     ],
     "BillingMode": "PAY_PER_REQUEST",
@@ -1684,6 +1688,22 @@
       "Projection": {
        "ProjectionType": "ALL"
       }
+     },
+     {
+      "IndexName": "GSI_mux_stream_lookup",
+      "KeySchema": [
+       {
+        "AttributeName": "mux_live_stream_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "created_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
      }
     ],
     "KeySchema": [
@@ -1707,6 +1727,9 @@
        },
        {
         "IndexName": "GSI_active_lives"
+       },
+       {
+        "IndexName": "GSI_mux_stream_lookup"
        }
       ],
       "PointInTimeRecoverySpecification": {
@@ -2865,6 +2888,118 @@
     "aws:cdk:path": "PieceApp-DynamoDB-Dev/AnalyticsTable/Resource"
    }
   },
+  "ConnectionsTable8000B8A1": {
+   "Type": "AWS::DynamoDB::GlobalTable",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "connection_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "account_id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "connected_at",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "stream_id",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI_account_connections",
+      "KeySchema": [
+       {
+        "AttributeName": "account_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "connected_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI_live_connections",
+      "KeySchema": [
+       {
+        "AttributeName": "stream_id",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "connected_at",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "connection_id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "account_id",
+      "KeyType": "RANGE"
+     }
+    ],
+    "Replicas": [
+     {
+      "GlobalSecondaryIndexes": [
+       {
+        "IndexName": "GSI_account_connections"
+       },
+       {
+        "IndexName": "GSI_live_connections"
+       }
+      ],
+      "PointInTimeRecoverySpecification": {
+       "PointInTimeRecoveryEnabled": false
+      },
+      "Region": "ap-northeast-1",
+      "Tags": [
+       {
+        "Key": "Environment",
+        "Value": "Development"
+       },
+       {
+        "Key": "ManagedBy",
+        "Value": "CDK"
+       },
+       {
+        "Key": "Project",
+        "Value": "PieceApp"
+       }
+      ]
+     }
+    ],
+    "SSESpecification": {
+     "SSEEnabled": true,
+     "SSEType": "KMS"
+    },
+    "TableName": "CONNECTIONS-dev",
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "PieceApp-DynamoDB-Dev/ConnectionsTable/Resource"
+   }
+  },
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
@@ -3117,6 +3252,34 @@
    },
    "Export": {
     "Name": "PieceApp-analytics-TableName-dev"
+   }
+  },
+  "connectionsTableName": {
+   "Description": "connections table name",
+   "Value": {
+    "Ref": "ConnectionsTable8000B8A1"
+   },
+   "Export": {
+    "Name": "PieceApp-connections-TableName-dev"
+   }
+  },
+  "ExportsOutputFnGetAttConnectionsTable8000B8A1Arn6FD6777C": {
+   "Value": {
+    "Fn::GetAtt": [
+     "ConnectionsTable8000B8A1",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "PieceApp-DynamoDB-Dev:ExportsOutputFnGetAttConnectionsTable8000B8A1Arn6FD6777C"
+   }
+  },
+  "ExportsOutputRefConnectionsTable8000B8A13717867F": {
+   "Value": {
+    "Ref": "ConnectionsTable8000B8A1"
+   },
+   "Export": {
+    "Name": "PieceApp-DynamoDB-Dev:ExportsOutputRefConnectionsTable8000B8A13717867F"
    }
   }
  },
