@@ -852,22 +852,18 @@ export class ApiGatewayStack extends cdk.Stack {
     // =====================================================
 
     // PUT /posts/{post_id} - 投稿更新
-    postsResource
-      .addResource('{post_id}')
-      .addMethod(
-        'PUT',
-        new apigateway.LambdaIntegration(lambdaFunctions.updatePost, { proxy: true }),
-        {
-          authorizer: this.authorizer,
-          authorizationType: apigateway.AuthorizationType.COGNITO,
-          requestValidator,
-        }
-      );
+    postResource.addMethod(
+      'PUT',
+      new apigateway.LambdaIntegration(lambdaFunctions.updatePost, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
 
     // GET /accounts/{account_id}/posts - ユーザー投稿一覧
-    const accountPostsResource = accountsResource
-      .addResource('{account_id}')
-      .addResource('posts');
+    const accountPostsResource = accountResource.addResource('posts');
     accountPostsResource.addMethod(
       'GET',
       new apigateway.LambdaIntegration(lambdaFunctions.getUserPosts, { proxy: true }),
@@ -890,10 +886,11 @@ export class ApiGatewayStack extends cdk.Stack {
       }
     );
 
+    // {room_id}リソース作成（後続のエンドポイントで使用）
+    const roomResource = roomsResource.addResource('{room_id}');
+
     // GET /rooms/{room_id}/posts - ルーム投稿一覧
-    const roomPostsResource = roomsResource
-      .addResource('{room_id}')
-      .addResource('posts');
+    const roomPostsResource = roomResource.addResource('posts');
     roomPostsResource.addMethod(
       'GET',
       new apigateway.LambdaIntegration(lambdaFunctions.getRoomPosts, { proxy: true }),
@@ -905,9 +902,7 @@ export class ApiGatewayStack extends cdk.Stack {
     );
 
     // GET /accounts/{account_id}/following - フォロー中一覧
-    const accountFollowingResource = accountsResource
-      .addResource('{account_id}')
-      .addResource('following');
+    const accountFollowingResource = accountResource.addResource('following');
     accountFollowingResource.addMethod(
       'GET',
       new apigateway.LambdaIntegration(lambdaFunctions.getFollowing, { proxy: true }),
@@ -919,9 +914,7 @@ export class ApiGatewayStack extends cdk.Stack {
     );
 
     // GET /accounts/{account_id}/followers - フォロワー一覧
-    const accountFollowersResource = accountsResource
-      .addResource('{account_id}')
-      .addResource('followers');
+    const accountFollowersResource = accountResource.addResource('followers');
     accountFollowersResource.addMethod(
       'GET',
       new apigateway.LambdaIntegration(lambdaFunctions.getFollowers, { proxy: true }),
@@ -933,9 +926,7 @@ export class ApiGatewayStack extends cdk.Stack {
     );
 
     // GET /posts/{post_id}/likes - 投稿のいいね一覧
-    const postLikesResource = postsResource
-      .addResource('{post_id}')
-      .addResource('likes');
+    const postLikesResource = postResource.addResource('likes');
     postLikesResource.addMethod(
       'GET',
       new apigateway.LambdaIntegration(lambdaFunctions.getPostLikes, { proxy: true }),
@@ -947,9 +938,7 @@ export class ApiGatewayStack extends cdk.Stack {
     );
 
     // GET /accounts/{account_id}/likes - ユーザーのいいね一覧
-    const accountLikesResource = accountsResource
-      .addResource('{account_id}')
-      .addResource('likes');
+    const accountLikesResource = accountResource.addResource('likes');
     accountLikesResource.addMethod(
       'GET',
       new apigateway.LambdaIntegration(lambdaFunctions.getUserLikes, { proxy: true }),
@@ -961,9 +950,7 @@ export class ApiGatewayStack extends cdk.Stack {
     );
 
     // GET /accounts/{account_id}/reposts - ユーザーのリポスト一覧
-    const accountRepostsResource = accountsResource
-      .addResource('{account_id}')
-      .addResource('reposts');
+    const accountRepostsResource = accountResource.addResource('reposts');
     accountRepostsResource.addMethod(
       'GET',
       new apigateway.LambdaIntegration(lambdaFunctions.getUserReposts, { proxy: true }),
@@ -975,9 +962,7 @@ export class ApiGatewayStack extends cdk.Stack {
     );
 
     // GET /posts/{post_id}/reposts - 投稿のリポスト一覧
-    const postRepostsResource = postsResource
-      .addResource('{post_id}')
-      .addResource('reposts');
+    const postRepostsResource = postResource.addResource('reposts');
     postRepostsResource.addMethod(
       'GET',
       new apigateway.LambdaIntegration(lambdaFunctions.getPostReposts, { proxy: true }),
@@ -989,7 +974,6 @@ export class ApiGatewayStack extends cdk.Stack {
     );
 
     // GET /rooms/{room_id} - ルーム詳細
-    const roomResource = roomsResource.addResource('{room_id}');
     roomResource.addMethod(
       'GET',
       new apigateway.LambdaIntegration(lambdaFunctions.getRoom, { proxy: true }),
@@ -1064,8 +1048,7 @@ export class ApiGatewayStack extends cdk.Stack {
     );
 
     // GET /posts/{post_id}/analytics - 投稿分析データ
-    postsResource
-      .addResource('{post_id}')
+    postResource
       .addResource('analytics')
       .addMethod(
         'GET',
@@ -1078,8 +1061,7 @@ export class ApiGatewayStack extends cdk.Stack {
       );
 
     // GET /accounts/{account_id}/analytics - アカウント分析データ
-    accountsResource
-      .addResource('{account_id}')
+    accountResource
       .addResource('analytics')
       .addMethod(
         'GET',
@@ -1174,33 +1156,30 @@ export class ApiGatewayStack extends cdk.Stack {
       }
     );
 
+    // /posts/{post_id}/products - 投稿の商品
+    const postProductsResource = postResource.addResource('products');
+
     // POST /posts/{post_id}/products - 投稿に商品タグ付け
-    postsResource
-      .addResource('{post_id}')
-      .addResource('products')
-      .addMethod(
-        'POST',
-        new apigateway.LambdaIntegration(lambdaFunctions.tagProductOnPost, { proxy: true }),
-        {
-          authorizer: this.authorizer,
-          authorizationType: apigateway.AuthorizationType.COGNITO,
-          requestValidator,
-        }
-      );
+    postProductsResource.addMethod(
+      'POST',
+      new apigateway.LambdaIntegration(lambdaFunctions.tagProductOnPost, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
 
     // GET /posts/{post_id}/products - 投稿の商品一覧
-    postsResource
-      .addResource('{post_id}')
-      .addResource('products')
-      .addMethod(
-        'GET',
-        new apigateway.LambdaIntegration(lambdaFunctions.getPostProducts, { proxy: true }),
-        {
-          authorizer: this.authorizer,
-          authorizationType: apigateway.AuthorizationType.COGNITO,
-          requestValidator,
-        }
-      );
+    postProductsResource.addMethod(
+      'GET',
+      new apigateway.LambdaIntegration(lambdaFunctions.getPostProducts, { proxy: true }),
+      {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
+        requestValidator,
+      }
+    );
 
     // =====================================================
     // Stage 2E: Live Streaming (14 REST API endpoints)
@@ -1346,6 +1325,7 @@ export class ApiGatewayStack extends cdk.Stack {
       .addResource('webhooks')
       .addResource('mux')
       .addMethod('POST', new apigateway.LambdaIntegration(lambdaFunctions.muxWebhook, { proxy: true }), {
+        authorizationType: apigateway.AuthorizationType.NONE,
         requestValidator,
       });
 

@@ -41,8 +41,8 @@ export class WebSocketStack extends cdk.Stack {
     // WebSocket接続ハンドラー
     const connectHandler = new lambda.Function(this, 'WsConnectHandler', {
       runtime: lambda.Runtime.NODEJS_20_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset('../src/dist/handlers/websocket/connect'),
+      handler: 'dist/handlers/websocket/connect.handler',
+      code: lambda.Code.fromAsset('../src'),
       role: lambdaRole,
       environment: {
         CONNECTIONS_TABLE_NAME: connectionsTable.tableName,
@@ -54,8 +54,8 @@ export class WebSocketStack extends cdk.Stack {
     // WebSocket切断ハンドラー
     const disconnectHandler = new lambda.Function(this, 'WsDisconnectHandler', {
       runtime: lambda.Runtime.NODEJS_20_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset('../src/dist/handlers/websocket/disconnect'),
+      handler: 'dist/handlers/websocket/disconnect.handler',
+      code: lambda.Code.fromAsset('../src'),
       role: lambdaRole,
       environment: {
         CONNECTIONS_TABLE_NAME: connectionsTable.tableName,
@@ -67,8 +67,8 @@ export class WebSocketStack extends cdk.Stack {
     // WebSocketメッセージハンドラー
     const messageHandler = new lambda.Function(this, 'WsMessageHandler', {
       runtime: lambda.Runtime.NODEJS_20_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset('../src/dist/handlers/websocket/message'),
+      handler: 'dist/handlers/websocket/message.handler',
+      code: lambda.Code.fromAsset('../src'),
       role: lambdaRole,
       environment: {
         CONNECTIONS_TABLE_NAME: connectionsTable.tableName,
