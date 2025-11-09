@@ -6,6 +6,7 @@ import { LiveStream } from '@/mocks/liveStreams';
 import LiveStreamItem from './LiveStreamItem';
 import Colors from '@/constants/colors';
 import { Image } from 'expo-image';
+import { useThemeStore } from '@/store/themeStore';
 
 interface LiveStreamsListProps {
   streams: LiveStream[];
@@ -23,6 +24,9 @@ export default function LiveStreamsList({
   doorSubtitle = "ウェーブス",
 }: LiveStreamsListProps) {
   const router = useRouter();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
+  const styles = createStyles(colors);
   const [displayCount, setDisplayCount] = useState(10);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
@@ -45,7 +49,7 @@ export default function LiveStreamsList({
     if (!isLoadingMore) return null;
     return (
       <View style={styles.footerLoader}>
-        <ActivityIndicator size="small" color={Colors.light.primary} />
+        <ActivityIndicator size="small" color={colors.primary} />
       </View>
     );
   };
@@ -64,7 +68,7 @@ export default function LiveStreamsList({
           {showSeeAll && (
             <TouchableOpacity style={styles.seeAllButton} onPress={handleSeeAllPress}>
               <Text style={styles.seeAllText}>See All</Text>
-              <ChevronRight size={16} color={Colors.light.primary} />
+              <ChevronRight size={16} color={colors.primary} />
             </TouchableOpacity>
           )}
         </View>
@@ -107,7 +111,7 @@ export default function LiveStreamsList({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   container: {
     marginVertical: 8,
   },
@@ -121,7 +125,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '600',
-    color: Colors.light.text,
+    color: colors.text,
   },
   seeAllButton: {
     flexDirection: 'row',
@@ -129,7 +133,7 @@ const styles = StyleSheet.create({
   },
   seeAllText: {
     fontSize: 14,
-    color: Colors.light.primary,
+    color: colors.primary,
     marginRight: 2,
   },
   contentRow: {
@@ -168,7 +172,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   doorSubtitle: {
-    color: '#fff',
+    color: colors.text,
     fontSize: 14,
     fontWeight: '600',
     textAlign: 'center',

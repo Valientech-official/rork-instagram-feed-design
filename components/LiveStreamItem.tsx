@@ -3,9 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-nati
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { LiveStream } from '@/mocks/liveStreams';
-import { User } from '@/mocks/users';
 import { Eye, MessageCircle, Heart, Share2 } from 'lucide-react-native';
 import Colors from '@/constants/colors';
+import { useThemeStore } from '@/store/themeStore';
 
 interface LiveStreamItemProps {
   stream: LiveStream;
@@ -17,6 +17,9 @@ const { width, height } = Dimensions.get('window');
 
 export default function LiveStreamItem({ stream, size = 'large', fullScreen = false }: LiveStreamItemProps) {
   const router = useRouter();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
+  const styles = createStyles(colors);
   const isSmall = size === 'small';
   
   const itemWidth = isSmall ? (width / 3) - 16 : width - 32; // Changed from width/2 to width/3
@@ -79,24 +82,24 @@ export default function LiveStreamItem({ stream, size = 'large', fullScreen = fa
           </View>
         )}
         
-        {fullScreen && (
-          <View style={styles.actionButtons}>
-            <TouchableOpacity style={styles.actionButton}>
-              <Heart size={24} color={Colors.light.text} />
-              <Text style={styles.actionText}>{Math.floor(Math.random() * 500) + 100}</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.actionButton}>
-              <MessageCircle size={24} color={Colors.light.text} />
-              <Text style={styles.actionText}>{Math.floor(Math.random() * 200) + 50}</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.actionButton}>
-              <Share2 size={24} color={Colors.light.text} />
-              <Text style={styles.actionText}>Share</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+      {fullScreen && (
+        <View style={styles.actionButtons}>
+          <TouchableOpacity style={styles.actionButton}>
+            <Heart size={24} color={colors.text} />
+            <Text style={styles.actionText}>{Math.floor(Math.random() * 500) + 100}</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.actionButton}>
+            <MessageCircle size={24} color={colors.text} />
+            <Text style={styles.actionText}>{Math.floor(Math.random() * 200) + 50}</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={styles.actionButton}>
+            <Share2 size={24} color={colors.text} />
+            <Text style={styles.actionText}>Share</Text>
+          </TouchableOpacity>
+        </View>
+      )}
       </View>
       
       {fullScreen && (
@@ -111,11 +114,11 @@ export default function LiveStreamItem({ stream, size = 'large', fullScreen = fa
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   container: {
     marginBottom: 12,
     borderRadius: 12,
-    backgroundColor: Colors.light.background,
+    backgroundColor: colors.cardBackground,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
@@ -181,6 +184,7 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     padding: 10,
+    backgroundColor: colors.cardBackground,
   },
   userInfo: {
     flexDirection: 'row',
@@ -198,13 +202,13 @@ const styles = StyleSheet.create({
   username: {
     fontSize: 14,
     fontWeight: '500',
-    color: Colors.light.secondaryText,
+    color: colors.secondaryText,
     marginBottom: 2,
   },
   title: {
     fontSize: 16,
     fontWeight: '600',
-    color: Colors.light.text,
+    color: colors.text,
   },
   tagsContainer: {
     flexDirection: 'row',
@@ -212,7 +216,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   tag: {
-    backgroundColor: Colors.light.shopBackground,
+    backgroundColor: colors.shopBackground,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
@@ -221,7 +225,7 @@ const styles = StyleSheet.create({
   },
   tagText: {
     fontSize: 12,
-    color: Colors.light.primary,
+    color: colors.primary,
   },
   actionButtons: {
     flexDirection: 'row',
@@ -229,7 +233,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: Colors.light.border,
+    borderTopColor: colors.border,
   },
   actionButton: {
     alignItems: 'center',
@@ -237,20 +241,21 @@ const styles = StyleSheet.create({
   actionText: {
     marginTop: 4,
     fontSize: 12,
-    color: Colors.light.secondaryText,
+    color: colors.secondaryText,
   },
   descriptionContainer: {
     paddingHorizontal: 12,
     paddingBottom: 12,
+    backgroundColor: colors.cardBackground,
   },
   descriptionText: {
     fontSize: 14,
-    color: Colors.light.text,
+    color: colors.text,
     lineHeight: 20,
   },
   timeText: {
     fontSize: 12,
-    color: Colors.light.secondaryText,
+    color: colors.secondaryText,
     marginTop: 4,
   },
 });

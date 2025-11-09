@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, FlatList } from 'react-native';
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { Image } from 'expo-image';
-import { Heart, Sparkles } from 'lucide-react-native';
+import { Heart, Sparkles, LayoutGrid, Rows } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Colors from '@/constants/colors';
 import { useFavoritesStore } from '@/store/favoritesStore';
@@ -14,9 +14,12 @@ const ITEM_WIDTH = (width - 48) / 2; // 2列分のカード幅
 const PAGE_WIDTH = width - 32; // ページ幅
 
 export default function DressUpScreen() {
+  const router = useRouter();
   const insets = useSafeAreaInsets();
   const { items: favoriteItems } = useFavoritesStore();
   const [showAIDressUpModal, setShowAIDressUpModal] = useState(false);
+  const [favoritesViewMode, setFavoritesViewMode] = useState<'horizontal' | 'vertical'>('horizontal');
+  const [modesViewMode, setModesViewMode] = useState<'vertical' | 'horizontal'>('vertical');
 
   // お気に入りを8個ずつのページに分割（2列×4行）
   const paginatedFavorites = [];
@@ -25,8 +28,8 @@ export default function DressUpScreen() {
   }
 
   const handleFavoritePress = (productId: string) => {
-    console.log('Favorite item pressed:', productId);
-    // TODO: 投稿詳細画面に遷移
+    // 投稿詳細画面に遷移
+    router.push(`/post/${productId}`);
   };
 
   const handleModePress = (mode: DressUpMode) => {
@@ -104,9 +107,7 @@ export default function DressUpScreen() {
           headerStyle: {
             backgroundColor: Colors.light.background,
           },
-          headerTitleStyle: {
-            marginTop: insets.top,
-          },
+          headerShadowVisible: false,
         }}
       />
 
@@ -141,21 +142,66 @@ export default function DressUpScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>お気に入り</Text>
-            <Text style={styles.sectionSubtitle}>二列</Text>
+            <View style={styles.sectionRight}>
+              <Text style={styles.sectionSubtitle}>二列</Text>
+              <TouchableOpacity
+                style={styles.toggleButton}
+                onPress={() => setFavoritesViewMode(favoritesViewMode === 'horizontal' ? 'vertical' : 'horizontal')}
+              >
+                {favoritesViewMode === 'horizontal' ? (
+                  <Rows size={20} color={Colors.light.text} />
+                ) : (
+                  <LayoutGrid size={20} color={Colors.light.text} />
+                )}
+              </TouchableOpacity>
+            </View>
           </View>
 
-          {paginatedFavorites.length > 0 ? (
-            <FlatList
-              horizontal
-              pagingEnabled
-              data={paginatedFavorites}
-              keyExtractor={(_, index) => `page_${index}`}
-              renderItem={renderFavoritePage}
-              showsHorizontalScrollIndicator={false}
-              snapToInterval={PAGE_WIDTH}
-              decelerationRate="fast"
-              contentContainerStyle={styles.favoritesScrollContent}
-            />
+          {favoriteItems.length > 0 ? (
+            favoritesViewMode === 'horizontal' ? (
+              <FlatList
+                horizontal
+                pagingEnabled
+                data={paginatedFavorites}
+                keyExtractor={(_, index) => `page_${index}`}
+                renderItem={renderFavoritePage}
+                showsHorizontalScrollIndicator={false}
+                snapToInterval={PAGE_WIDTH}
+                decelerationRate="fast"
+                contentContainerStyle={styles.favoritesScrollContent}
+              />
+            ) : (
+              <View style={styles.favoriteGrid}>
+                {favoriteItems.map((item) => {
+                  const isOnSale = item.salePrice && item.salePrice < item.price;
+                  return (
+                    <TouchableOpacity
+                      key={item.id}
+                      style={styles.favoriteCard}
+                      onPress={() => handleFavoritePress(item.productId)}
+                      activeOpacity={0.8}
+                    >
+                      <Image
+                        source={{ uri: item.image }}
+                        style={styles.favoriteImage}
+                        contentFit="cover"
+                        transition={200}
+                      />
+                      <View style={styles.favoriteInfo}>
+                        <Text style={styles.favoriteName} numberOfLines={1}>
+                          {item.name}
+                        </Text>
+                        {isOnSale ? (
+                          <Text style={styles.favoritePrice}>¥{item.salePrice?.toFixed(0)}</Text>
+                        ) : (
+                          <Text style={styles.favoritePrice}>¥{item.price.toFixed(0)}</Text>
+                        )}
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            )
           ) : (
             <View style={styles.emptyState}>
               <Heart size={48} color={Colors.light.border} />

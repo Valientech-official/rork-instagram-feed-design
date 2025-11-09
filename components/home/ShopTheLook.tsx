@@ -164,21 +164,9 @@ export default function ShopTheLook() {
                     contentFit="cover"
                   />
                   <View style={styles.overlay}>
-                    <View style={styles.textContainer}>
-                      <Text style={styles.itemTitle} numberOfLines={1}>
-                        {item.title}
-                      </Text>
-                      <Text style={styles.itemSubtitle} numberOfLines={1}>
-                        {item.subtitle}
-                      </Text>
-                    </View>
-                    <View style={styles.likesRow}>
-                      <Text style={styles.likesLabel}>今週いいね</Text>
-                      <Text style={styles.likesValue}>+{formatLikes(item.weeklyLikes)}</Text>
-                    </View>
-                  </View>
-                  <View style={styles.rankBadge}>
-                    <Text style={styles.rankText}>#{item.rank}</Text>
+                    <Text style={styles.infoPill}>
+                      #{item.rank} ・ +{formatLikes(item.weeklyLikes)}
+                    </Text>
                   </View>
                   <TouchableOpacity
                     style={styles.likeButton}
@@ -253,40 +241,24 @@ const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   },
   overlay: {
     position: 'absolute',
-    bottom: 0,
+    top: 0,
     left: 0,
     right: 0,
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.55)',
-  },
-  textContainer: {
-    gap: 2,
-  },
-  likesRow: {
-    flexDirection: 'row',
+    bottom: 0,
     justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 6,
+    padding: 8,
+    pointerEvents: 'none',
   },
-  likesLabel: {
+  infoPill: {
+    marginTop: 'auto',
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(0, 0, 0, 0.55)',
     color: '#fff',
-    fontSize: 11,
-  },
-  likesValue: {
-    color: '#fff',
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '700',
-  },
-  itemTitle: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  itemSubtitle: {
-    color: '#fff',
-    fontSize: 11,
-    opacity: 0.8,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
   likeButton: {
     position: 'absolute',
@@ -297,17 +269,13 @@ const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
   rankBadge: {
-    position: 'absolute',
-    top: 8,
-    left: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.55)',
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
-  },
-  rankText: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '700',
   },
 });
