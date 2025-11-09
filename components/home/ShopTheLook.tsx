@@ -6,7 +6,13 @@ import { useThemeStore } from '@/store/themeStore';
 import Colors from '@/constants/colors';
 
 const { width } = Dimensions.get('window');
-const ITEM_WIDTH = (width - 48) / 2; // 2列表示用の幅
+const GRID_COLUMNS = 4;
+const GRID_ROWS = 2;
+const GRID_CONTAINER_WIDTH = width - 32; // align with previous padding
+const GRID_GAP = 12;
+const ITEM_WIDTH =
+  (GRID_CONTAINER_WIDTH - GRID_GAP * (GRID_COLUMNS - 1)) / GRID_COLUMNS;
+const CHUNK_SIZE = GRID_COLUMNS * GRID_ROWS;
 
 interface LookItem {
   id: string;
@@ -14,6 +20,8 @@ interface LookItem {
   title: string;
   subtitle: string;
   liked: boolean;
+  weeklyLikes: number;
+  rank: number;
 }
 
 const ITEMS: LookItem[] = [
@@ -23,6 +31,8 @@ const ITEMS: LookItem[] = [
     title: 'エアリーワンピース',
     subtitle: 'サマーコレクション',
     liked: false,
+    weeklyLikes: 12840,
+    rank: 1,
   },
   {
     id: '2',
@@ -30,6 +40,8 @@ const ITEMS: LookItem[] = [
     title: 'オーバーサイズシャツ',
     subtitle: 'カジュアルスタイル',
     liked: false,
+    weeklyLikes: 11760,
+    rank: 2,
   },
   {
     id: '3',
@@ -37,6 +49,8 @@ const ITEMS: LookItem[] = [
     title: 'グラフィックTシャツ',
     subtitle: 'ストリート系',
     liked: false,
+    weeklyLikes: 10980,
+    rank: 3,
   },
   {
     id: '4',
@@ -44,6 +58,8 @@ const ITEMS: LookItem[] = [
     title: 'イエロージャケット',
     subtitle: 'アウター',
     liked: false,
+    weeklyLikes: 9980,
+    rank: 4,
   },
   {
     id: '5',
@@ -51,6 +67,8 @@ const ITEMS: LookItem[] = [
     title: 'カジュアルルック',
     subtitle: 'デイリーコーデ',
     liked: false,
+    weeklyLikes: 9320,
+    rank: 5,
   },
   {
     id: '6',
@@ -58,6 +76,8 @@ const ITEMS: LookItem[] = [
     title: 'ニットセーター',
     subtitle: '秋冬コレクション',
     liked: false,
+    weeklyLikes: 9040,
+    rank: 6,
   },
   {
     id: '7',
@@ -65,6 +85,8 @@ const ITEMS: LookItem[] = [
     title: 'ボヘミアンスタイル',
     subtitle: 'リゾートウェア',
     liked: false,
+    weeklyLikes: 8760,
+    rank: 7,
   },
   {
     id: '8',
@@ -72,8 +94,18 @@ const ITEMS: LookItem[] = [
     title: 'レイヤードコーデ',
     subtitle: 'トレンドスタイル',
     liked: false,
+    weeklyLikes: 8420,
+    rank: 8,
   },
 ];
+
+const formatLikes = (count: number) => {
+  if (count >= 1000) {
+    const value = (count / 1000).toFixed(1).replace(/\.0$/, '');
+    return `${value}K`;
+  }
+  return `${count}`;
+};
 
 export default function ShopTheLook() {
   const { theme } = useThemeStore();
@@ -82,15 +114,20 @@ export default function ShopTheLook() {
   const [items, setItems] = useState(ITEMS);
 
   const toggleLike = (id: string) => {
-    setItems(items.map(item =>
-      item.id === id ? { ...item, liked: !item.liked } : item
-    ));
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, liked: !item.liked } : item
+      )
+    );
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>HOT  ITEM</Text>
+        <View>
+          <Text style={styles.title}>ピース数 Weeklyランキング</Text>
+          <Text style={styles.subtitle}>1週間以内・全ジャンルいいね数ランキング</Text>
+        </View>
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.iconButton}>
             <Heart size={20} color={colors.secondaryText} />
@@ -105,40 +142,59 @@ export default function ShopTheLook() {
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
+        snapToInterval={GRID_CONTAINER_WIDTH + GRID_GAP * 2}
+        decelerationRate="fast"
       >
-        {Array.from({ length: Math.ceil(items.length / 2) }).map((_, groupIndex) => (
-          <View key={groupIndex} style={styles.columnGroup}>
-            {items.slice(groupIndex * 2, groupIndex * 2 + 2).map((item) => (
-              <TouchableOpacity
-                key={item.id}
-                style={styles.gridItem}
-                activeOpacity={0.8}
-              >
-                <Image
-                  source={{ uri: item.image }}
-                  style={styles.itemImage}
-                  contentFit="cover"
-                />
-                <View style={styles.overlay}>
-                  <View style={styles.textContainer}>
-                    <Text style={styles.itemTitle} numberOfLines={1}>{item.title}</Text>
-                    <Text style={styles.itemSubtitle} numberOfLines={1}>{item.subtitle}</Text>
-                  </View>
-                </View>
+        {Array.from({ length: Math.ceil(items.length / CHUNK_SIZE) }).map((_, chunkIndex) => {
+          const chunkItems = items.slice(
+            chunkIndex * CHUNK_SIZE,
+            chunkIndex * CHUNK_SIZE + CHUNK_SIZE
+          );
+          return (
+            <View key={chunkIndex} style={styles.gridPage}>
+              {chunkItems.map((item) => (
                 <TouchableOpacity
-                  style={styles.likeButton}
-                  onPress={() => toggleLike(item.id)}
+                  key={item.id}
+                  style={styles.gridItem}
+                  activeOpacity={0.85}
                 >
-                  <Heart
-                    size={16}
-                    color={item.liked ? colors.like : '#fff'}
-                    fill={item.liked ? colors.like : 'transparent'}
+                  <Image
+                    source={{ uri: item.image }}
+                    style={styles.itemImage}
+                    contentFit="cover"
                   />
+                  <View style={styles.overlay}>
+                    <View style={styles.textContainer}>
+                      <Text style={styles.itemTitle} numberOfLines={1}>
+                        {item.title}
+                      </Text>
+                      <Text style={styles.itemSubtitle} numberOfLines={1}>
+                        {item.subtitle}
+                      </Text>
+                    </View>
+                    <View style={styles.likesRow}>
+                      <Text style={styles.likesLabel}>今週いいね</Text>
+                      <Text style={styles.likesValue}>+{formatLikes(item.weeklyLikes)}</Text>
+                    </View>
+                  </View>
+                  <View style={styles.rankBadge}>
+                    <Text style={styles.rankText}>#{item.rank}</Text>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.likeButton}
+                    onPress={() => toggleLike(item.id)}
+                  >
+                    <Heart
+                      size={16}
+                      color={item.liked ? colors.like : '#fff'}
+                      fill={item.liked ? colors.like : 'transparent'}
+                    />
+                  </TouchableOpacity>
                 </TouchableOpacity>
-              </TouchableOpacity>
-            ))}
-          </View>
-        ))}
+              ))}
+            </View>
+          );
+        })}
       </ScrollView>
     </View>
   );
@@ -160,6 +216,11 @@ const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
     fontWeight: '700',
     color: colors.text,
   },
+  subtitle: {
+    fontSize: 12,
+    color: colors.secondaryText,
+    marginTop: 4,
+  },
   headerActions: {
     flexDirection: 'row',
     gap: 8,
@@ -169,12 +230,14 @@ const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 16,
-    gap: 12,
+    gap: 16,
   },
-  columnGroup: {
-    flexDirection: 'column',
-    gap: 12,
-    width: ITEM_WIDTH,
+  gridPage: {
+    width: GRID_CONTAINER_WIDTH,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: GRID_GAP,
+    marginRight: 16,
   },
   gridItem: {
     width: ITEM_WIDTH,
@@ -193,30 +256,58 @@ const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    paddingVertical: 8,
-    paddingHorizontal: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.55)',
   },
   textContainer: {
-    flex: 1,
+    gap: 2,
+  },
+  likesRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 6,
+  },
+  likesLabel: {
+    color: '#fff',
+    fontSize: 11,
+  },
+  likesValue: {
+    color: '#fff',
+    fontSize: 13,
+    fontWeight: '700',
   },
   itemTitle: {
-    fontSize: 11,
+    color: '#fff',
+    fontSize: 14,
     fontWeight: '600',
-    color: '#FFFFFF',
-    marginBottom: 2,
   },
   itemSubtitle: {
-    fontSize: 9,
-    color: '#FFFFFF',
+    color: '#fff',
+    fontSize: 11,
     opacity: 0.8,
   },
   likeButton: {
     position: 'absolute',
     top: 8,
     right: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    borderRadius: 20,
     padding: 6,
+    borderRadius: 16,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+  },
+  rankBadge: {
+    position: 'absolute',
+    top: 8,
+    left: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.55)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  rankText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '700',
   },
 });
