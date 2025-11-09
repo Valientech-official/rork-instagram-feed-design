@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   Image,
   Dimensions,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import Animated, { FadeInDown } from 'react-native-reanimated';
@@ -21,11 +22,14 @@ const IMAGE_SIZE = (width - 48) / 2;
 export default function WelcomeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { updateOnboardingStep } = useAuthStore();
+  const { updateOnboardingStep, onboardingStep } = useAuthStore();
   const [imagesLoaded, setImagesLoaded] = useState(false);
 
   useEffect(() => {
-    updateOnboardingStep(1);
+    // ステップ0の場合のみステップ1に更新（既に進んでいる場合は上書きしない）
+    if (onboardingStep === 0) {
+      updateOnboardingStep(1);
+    }
     // 画像読み込み開始をシミュレート
     const timer = setTimeout(() => {
       setImagesLoaded(true);
@@ -44,7 +48,13 @@ export default function WelcomeScreen() {
       </View>
       <View style={styles.content}>
         <View style={styles.header}>
-          <Text style={styles.title}>Pièce</Text>
+          <Text style={styles.title}>
+            <Text style={styles.logoP}>P</Text>
+            <Text style={styles.logoI}>i</Text>
+            <Text style={styles.logoE1}>è</Text>
+            <Text style={styles.logoC}>c</Text>
+            <Text style={styles.logoE2}>e</Text>
+          </Text>
           <Text style={styles.subtitle}>あなたのファッションの旅が始まります</Text>
         </View>
 
@@ -89,9 +99,30 @@ const styles = StyleSheet.create({
     paddingVertical: 32,
   },
   title: {
-    fontSize: 28,
-    fontWeight: '700',
+    fontSize: 36,
+    fontWeight: '800',
     marginBottom: 8,
+    fontFamily: Platform.select({
+      ios: 'Marker Felt',
+      android: 'casual',
+      web: 'Quicksand, Nunito, Fredoka One, Comfortaa, Poppins, sans-serif',
+    }),
+    letterSpacing: 0.5,
+  },
+  logoP: {
+    color: '#9ACD32', // Yellow-green
+  },
+  logoI: {
+    color: '#FF69B4', // Pink
+  },
+  logoE1: {
+    color: '#87CEEB', // Sky blue
+  },
+  logoC: {
+    color: '#FFD700', // Gold/Yellow
+  },
+  logoE2: {
+    color: '#DDA0DD', // Plum/Light purple
   },
   subtitle: {
     fontSize: 14,

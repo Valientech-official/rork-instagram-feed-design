@@ -12,6 +12,7 @@ import {
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useAuthStore } from '../../store/authStore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import type { OnboardingData } from '../../store/authStore';
 
 export default function VerifyEmailScreen() {
   const router = useRouter();
@@ -19,6 +20,8 @@ export default function VerifyEmailScreen() {
   const {
     confirmSignUp,
     resendConfirmationCode,
+    signIn,
+    onboardingData,
     error,
     clearError,
     isLoading,
@@ -91,18 +94,50 @@ export default function VerifyEmailScreen() {
       // 未確認状態を削除（確認完了）
       await AsyncStorage.removeItem('@pending_verification');
 
-      // SignUpでプロフィール情報は入力済み、ステップ3（avatar）から開始
-      await AsyncStorage.setItem('@onboarding_step', '3');
+      // 保存されたパスワードを取得して自動ログイン
+      const savedPassword = onboardingData.profile?.password;
 
-      // 確認完了後、ログイン画面へ誘導
-      Alert.alert(
-        '成功',
-        'メールアドレスが確認されました。ログインしてください。',
-        [{
-          text: 'OK',
-          onPress: () => router.replace('/(auth)/login')
-        }]
-      );
+      if (savedPassword) {
+        console.log('📝 Auto-login after email confirmation...');
+
+        try {
+          // SignUpでプロフィール情報は入力済み、ステップ3（avatar）から開始
+          // IMPORTANT: signInの前に設定して、signIn内のcheckAuthStatusで正しい値が読み込まれるようにする
+          await AsyncStorage.setItem('@onboarding_step', '3');
+          console.log('📍 Set onboarding step to 3 (avatar)');
+
+          // 自動ログイン
+          await signIn(username, savedPassword);
+
+          console.log('✅ Auto-login successful, redirecting to onboarding...');
+
+          // オンボーディング画面へ遷移（ステップ3: avatarから開始）
+          // profileはサインアップで完了済みなので、avatarから開始
+          router.replace('/(onboarding)/avatar');
+        } catch (loginError: any) {
+          console.error('❌ Auto-login failed:', loginError);
+
+          // ログイン失敗時はログイン画面へ誘導
+          Alert.alert(
+            '確認完了',
+            'メールアドレスが確認されました。ログインしてください。',
+            [{
+              text: 'OK',
+              onPress: () => router.replace('/(auth)/login')
+            }]
+          );
+        }
+      } else {
+        // パスワードが見つからない場合はログイン画面へ誘導
+        Alert.alert(
+          '確認完了',
+          'メールアドレスが確認されました。ログインしてください。',
+          [{
+            text: 'OK',
+            onPress: () => router.replace('/(auth)/login')
+          }]
+        );
+      }
     } catch (err) {
       // エラーは authStore.error に設定される
       console.error('Verify failed:', err);

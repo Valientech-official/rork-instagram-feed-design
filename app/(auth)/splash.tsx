@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SplashScreen() {
   const router = useRouter();
-  const { isAuthenticated, hasCompletedOnboarding, checkAuthStatus } = useAuthStore();
+  const { isAuthenticated, hasCompletedOnboarding, onboardingStep, checkAuthStatus } = useAuthStore();
   const [hasPendingVerification, setHasPendingVerification] = useState(false);
 
   useEffect(() => {
@@ -41,7 +41,21 @@ export default function SplashScreen() {
         if (hasCompletedOnboarding) {
           router.replace('/(tabs)');
         } else {
-          router.replace('/(onboarding)/welcome');
+          // オンボーディング未完了の場合、現在のステップに応じて遷移
+          const onboardingRoutes = [
+            '/(onboarding)/welcome',    // step 0 or 1
+            '/(onboarding)/welcome',    // step 1
+            '/(onboarding)/profile',    // step 2
+            '/(onboarding)/avatar',     // step 3
+            '/(onboarding)/styles',     // step 4
+            '/(onboarding)/genres',     // step 5
+            '/(onboarding)/brands',     // step 6
+            '/(onboarding)/social',     // step 7
+          ];
+
+          const targetRoute = onboardingRoutes[onboardingStep] || '/(onboarding)/welcome';
+          console.log(`📍 Redirecting to onboarding step ${onboardingStep}: ${targetRoute}`);
+          router.replace(targetRoute as any);
         }
       } else {
         router.replace('/(auth)/login');
@@ -49,7 +63,7 @@ export default function SplashScreen() {
     }, 2500);
 
     return () => clearTimeout(timer);
-  }, [isAuthenticated, hasCompletedOnboarding, hasPendingVerification]);
+  }, [isAuthenticated, hasCompletedOnboarding, onboardingStep, hasPendingVerification]);
 
   return (
     <View style={styles.container}>

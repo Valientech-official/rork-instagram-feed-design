@@ -511,10 +511,27 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         const onboardingCompleted = await AsyncStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED);
         const onboardingStep = await AsyncStorage.getItem(STORAGE_KEYS.ONBOARDING_STEP);
 
+        console.log('📊 checkAuthStatus - AsyncStorage values:', {
+          onboardingCompleted,
+          onboardingStep,
+          parsedStep: onboardingStep ? parseInt(onboardingStep, 10) : 0,
+        });
+
+        // TEMPORARY FIX: メール確認済みユーザーのステップを修正
+        // サインアップ完了後のユーザーは、profileステップ(2)をスキップしてavatar(3)から開始
+        let finalStep = onboardingStep ? parseInt(onboardingStep, 10) : 0;
+
+        // ステップ1でメール確認済みの場合、ステップ3に更新
+        if (finalStep === 1 && !onboardingCompleted) {
+          console.log('🔧 Migrating step 1 → 3 (profile already completed during signup)');
+          finalStep = 3;
+          await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDING_STEP, '3');
+        }
+
         set({
           isAuthenticated: true,
           hasCompletedOnboarding: onboardingCompleted === 'true',
-          onboardingStep: onboardingStep ? parseInt(onboardingStep, 10) : 0,
+          onboardingStep: finalStep,
           isLoading: false,
         });
       } catch (error) {
