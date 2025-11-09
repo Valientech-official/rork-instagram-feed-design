@@ -1,0 +1,314 @@
+================================================================================
+RORK INSTAGRAM FEED DESIGN - PROJECT ANALYSIS SUMMARY
+Generated: November 9, 2025
+================================================================================
+
+PROJECT OVERVIEW
+================================================================================
+Type:           Full-stack React Native Social Media Platform
+Platform:       iOS/Android (Expo) + Backend (AWS)
+Status:         Stage 2B/2C (Core features ready, integration incomplete)
+Team Size:      Solo development
+Complexity:     High (81 backend endpoints, 13+ screens)
+
+QUICK STATS
+================================================================================
+Backend:        81 Lambda functions (fully operational)
+API Endpoints:  REST API via AWS API Gateway
+Database:       DynamoDB (10+ tables with GSI indexes)
+Auth:           AWS Cognito (fully integrated on mobile)
+Storage:        S3 for images, Mux for video streaming
+
+Frontend:       React Native/Expo
+Screens:        13 main screens (all UI complete)
+Components:     60+ reusable components
+State:          Zustand (5 stores)
+Mock Data:      16 files (~2000+ sample items)
+
+BUILD STATUS
+================================================================================
+Can Build:      ✅ Yes (iOS, Android, Web)
+Can Run:        ✅ Yes (Expo Go on mobile)
+Has Tests:      ❌ No (0 test files)
+Has Errors:     ⚠️ Minor (Xcode/Gradle warnings only)
+
+API ENDPOINT SUMMARY (81 Total)
+================================================================================
+Authentication          4    POST/GET/PUT /account, /cognito
+Posts Management        10   Create, Read, Update, Delete, Timeline, Discovery
+Like System            4    Post likes, Like lists
+Comments               3    Create, Read, Delete comments
+Follow System          4    Follow, Unfollow, Lists
+Rooms/Community        6    CRUD, Members, Posts
+Messages/DM            4    Conversations, Messages
+Live Streaming         12   Streams, Chat, Gifts, Moderation
+Products/Shop          8    CRUD, Tagging, Tracking, Filtering
+Notifications          5    Get, Settings, Mark as read
+Analytics              4    Event tracking, Post/Account analytics
+Block/Mute             6    Block/Unblock, Mute/Unmute lists
+Repost/Report          6    Repost, Report CRUD
+Session Management     4    Create, List, Delete sessions
+Search                 2    Hashtag search and trending
+
+FRONTEND-BACKEND INTEGRATION STATUS
+================================================================================
+HIGHLY INTEGRATED (90%+):
+  ✅ Authentication (Cognito sign-up/login)
+  ✅ Cart Management (local storage only)
+  ✅ Theme Management (stored in AsyncStorage)
+
+PARTIALLY INTEGRATED (30-70%):
+  ⚠️ Feed Timeline         - Endpoint exists, UI uses 80% mock
+  ⚠️ Like System           - Buttons exist, API not called
+  ⚠️ Follow System         - Buttons exist, API not called
+  ⚠️ Product Listing       - 50% real, 50% mock
+  ⚠️ Notifications         - Shows mock data
+  ⚠️ User Profile          - Can fetch, mostly UI-driven
+  ⚠️ Rooms                 - API exists, UI shows mock
+
+NOT INTEGRATED (0-20%):
+  ❌ Comments              - UI exists, no submission
+  ❌ Direct Messages       - 100% mock list
+  ❌ Live Streaming        - Stream list mock, no interaction
+  ❌ Analytics             - Tracking not implemented
+  ❌ Search                - Only hashtag mockup
+  ❌ Hashtag Trending      - Mock data only
+
+CRITICAL FINDINGS
+================================================================================
+1. MOCK DATA EXPLOSION
+   - 16 mock files with 2000+ items
+   - Every screen has hardcoded fallback data
+   - Makes it hard to test real API integration
+   - Recommendation: Remove mocks after API integration
+
+2. MISSING API CLIENT LAYER
+   - No centralized HTTP client
+   - No error handling/retry logic
+   - No request/response interceptors
+   - No token refresh mechanism
+   - Recommendation: Create lib/api-client.ts (base class pattern)
+
+3. INCOMPLETE STATE MANAGEMENT
+   - Only 5 Zustand stores
+   - Missing: posts, products, users, notifications, live
+   - No data normalization (duplicates across stores)
+   - Recommendation: Create missing stores, implement caching
+
+4. NO ERROR HANDLING
+   - Network errors not caught
+   - No user-facing error messages
+   - No offline detection
+   - Recommendation: Add error boundaries, retry logic
+
+5. NO TESTS
+   - Zero unit tests
+   - Zero integration tests
+   - Zero E2E tests
+   - Recommendation: Setup Jest + React Native Testing Library
+
+6. WEB PLATFORM ISSUES
+   - Cognito disabled on web (OAuth listener error)
+   - Cannot test authentication flow on web
+   - Web stuck using mock auth
+   - Recommendation: Fix Cognito web setup or use different auth
+
+AUTHENTICATION DETAILS
+================================================================================
+Provider:       AWS Cognito User Pool
+User Pool ID:   ap-northeast-1_LKhwTdez4
+Client ID:      4dvma3506cs34sfs1c59he8i2l
+Region:         ap-northeast-1
+API Endpoint:   https://b6om6sz99f.execute-api.ap-northeast-1.amazonaws.com/dev/
+
+Implementation: Fully integrated in store/authStore.ts (563 lines)
+Custom Fields:  custom:handle, custom:accountType, custom:accountId
+Verification:   Email confirmation required
+Sessions:       Stored in AsyncStorage with TTL
+
+PRIORITY INTEGRATION ROADMAP
+================================================================================
+PHASE 1 (WEEK 1): Foundation
+  [ ] Create lib/api-client.ts with base HTTP client
+  [ ] Add error handling and retry logic
+  [ ] Setup response interceptors
+  [ ] Implement request logging
+  Estimated: 2-3 days
+
+PHASE 2 (WEEKS 2-3): Core Social
+  [ ] Timeline integration (replace mock posts)
+  [ ] Like system (connect buttons to API)
+  [ ] Follow system (connect buttons to API)
+  [ ] Comments (implement submission flow)
+  Estimated: 4-5 days
+
+PHASE 3 (WEEK 3-4): Shopping
+  [ ] Product listing (replace mock)
+  [ ] Product filtering (category/seller)
+  [ ] Click tracking
+  [ ] Cart checkout
+  Estimated: 3-4 days
+
+PHASE 4 (WEEK 4+): Communication
+  [ ] Notifications (replace mock)
+  [ ] Direct messages (real conversation list)
+  [ ] WebSocket setup
+  [ ] Live chat
+  Estimated: 4-5 days
+
+PHASE 5 (Future): Advanced
+  [ ] Analytics dashboard
+  [ ] Search implementation
+  [ ] Room integration
+  [ ] Hashtag trending
+
+ESTIMATED TOTAL EFFORT: 4-6 weeks (solo development)
+
+TECHNICAL DEBT ITEMS
+================================================================================
+HIGH PRIORITY:
+  1. Replace mock data architecture
+  2. Create HTTP client abstraction
+  3. Implement error handling
+  4. Add request/response logging
+  5. Setup offline support
+
+MEDIUM PRIORITY:
+  6. Create missing Zustand stores
+  7. Implement pagination awareness
+  8. Add image optimization
+  9. Fix web platform Cognito
+  10. Setup error boundaries
+
+LOW PRIORITY:
+  11. Add analytics tracking
+  12. Implement deep linking
+  13. Optimize bundle size
+  14. Add accessibility features
+  15. Setup crash reporting
+
+TOOLS & DEPENDENCIES
+================================================================================
+Frontend:
+  - React Native 0.81.5
+  - React 19.1.0
+  - Expo 54.0.10
+  - Zustand 5.0.2
+  - AWS Amplify 6.15.7
+  - Lucide React Native (icons)
+  - NativeWind (Tailwind CSS)
+
+Backend:
+  - AWS Lambda
+  - DynamoDB
+  - API Gateway
+  - Cognito
+  - S3
+  - Mux (video)
+  - WebSocket (real-time)
+
+Development:
+  - TypeScript 5.9.2
+  - Expo Router 6.0.8
+  - Async Storage 2.2.0
+  - ESLint (no custom config)
+  - No Jest/testing framework yet
+
+FILE LOCATIONS (Key Files)
+================================================================================
+Configuration:
+  /config/aws-config.ts              - AWS Amplify setup
+  /app.json, /app.config.js          - Expo config
+  /constants/colors.ts               - Theme colors
+
+Main Screens:
+  /app/(tabs)/index.tsx              - Feed/Home (450+ lines)
+  /app/(tabs)/shop.tsx               - Shop/Products
+  /app/(tabs)/live-tab.tsx           - Live Streaming
+  /app/(tabs)/profile.tsx            - User Profile
+  /app/(tabs)/dm.tsx                 - Direct Messages
+
+State Management:
+  /store/authStore.ts                - Auth (563 lines, fully integrated)
+  /store/cartStore.ts                - Shopping cart
+  /store/themeStore.ts               - Theme management
+
+Backend Types:
+  /backend/src/types/api.ts          - API types (1190 lines)
+  /backend/src/types/dynamodb.ts     - DB schema types
+  /backend/src/types/common.ts       - Shared types
+
+Backend Handlers:
+  /backend/src/handlers/             - 81 Lambda functions
+
+Mock Data:
+  /mocks/posts.ts                    - Sample posts
+  /mocks/products.ts                 - Sample products
+  /mocks/users.ts                    - Sample users
+  + 13 more mock files
+
+RECOMMENDATIONS FOR NEXT SESSION
+================================================================================
+1. START WITH API CLIENT
+   - Create lib/api-client.ts with full typing
+   - Import all types from backend/src/types/api.ts
+   - Setup error handling and interceptors
+   - Add request/response logging
+
+2. PRIORITIZE TIMELINE
+   - Replace hardcoded posts array in index.tsx
+   - Create postsStore.ts with pagination support
+   - Integrate getTimeline endpoint
+   - Test with real Cognito token
+
+3. ADD CRITICAL ERROR HANDLING
+   - Network error boundaries
+   - Offline detection
+   - Toast notifications for errors
+   - Retry mechanisms
+
+4. SETUP TESTING
+   - Create tests/ directory structure
+   - Setup Jest configuration
+   - Add first test for API client
+   - Add E2E test for auth flow
+
+5. REMOVE MOCK DATA GRADUALLY
+   - Keep mocks for dev/fallback only
+   - Replace screen-by-screen
+   - Don't delete mock files yet (useful reference)
+   - Add feature flags for dual data sources
+
+6. FIX WEB PLATFORM
+   - Either fix Cognito web setup
+   - Or implement alternative web auth
+   - Currently blocks web development
+
+QUESTIONS FOR STAKEHOLDERS
+================================================================================
+1. MVP Scope: What's the absolute minimum needed for launch?
+   - Feed only? Feed + Shop? Feed + Shop + DM?
+
+2. Timeline: When do you need this production-ready?
+   - Critical for timeline: Real posts vs. screenshots
+
+3. Analytics: Do you need product click tracking from day 1?
+   - Or can be added in Phase 2?
+
+4. Payments: Needed for shop or using affiliate links only?
+   - Affects architecture significantly
+
+5. Real-time: Do live chat and notifications need real-time?
+   - Or can they use polling?
+
+6. Web Version: Is web version needed for MVP?
+   - Currently blocked by Cognito issue
+
+================================================================================
+ANALYSIS COMPLETE
+Generated: November 9, 2025
+Files Created:
+  - CODEBASE_ANALYSIS.md (detailed technical analysis)
+  - API_INTEGRATION_MAP.md (implementation roadmap)
+  - ANALYSIS_SUMMARY.txt (this file)
+================================================================================
