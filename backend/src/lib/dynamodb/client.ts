@@ -67,4 +67,5 @@ export const TableNames = {
   MESSAGE: getTableName('MESSAGE'),
   ANALYTICS: getTableName('ANALYTICS'),
   CONNECTIONS: getTableName('CONNECTIONS'),
+  SUPPORT: getTableName('SUPPORT'),
 } as const;

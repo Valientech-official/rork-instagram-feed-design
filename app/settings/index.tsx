@@ -16,8 +16,8 @@ export default function SettingsScreen() {
       title: 'アカウント',
       items: [
         { icon: '👤', label: 'プロフィール編集', route: '/profile' },
-        { icon: '📧', label: 'メールアドレス', value: 'user@example.com' },
-        { icon: '📱', label: '電話番号', value: '設定なし' },
+        { icon: '⚙️', label: 'アカウント設定', route: '/settings/account' },
+        { icon: '🔒', label: 'プライバシー', route: '/settings/privacy' },
       ],
     },
     {
@@ -27,6 +27,20 @@ export default function SettingsScreen() {
         { icon: '🌐', label: '言語', value: '日本語' },
         { icon: '🎨', label: 'テーマカラー', value: 'デフォルト' },
         { icon: '🔊', label: 'サウンド', toggle: true, value: soundEnabled, onChange: setSoundEnabled },
+      ],
+    },
+    {
+      title: '通知',
+      items: [
+        { icon: '🔔', label: 'Notifications', route: '/settings/notifications' },
+      ],
+    },
+    {
+      title: 'サポート & 法的情報',
+      items: [
+        { icon: '❓', label: 'Help & Support', route: '/settings/help' },
+        { icon: '📄', label: 'Terms of Service', route: '/settings/terms' },
+        { icon: '🔒', label: 'Privacy Policy', route: '/settings/privacy-policy' },
       ],
     },
     {
