@@ -78,6 +78,8 @@ function RootLayoutNav() {
         <Stack.Screen name="post/[id]" options={{ title: "Post" }} />
         <Stack.Screen name="saved" options={{ title: "Saved Items" }} />
         <Stack.Screen name="split-view" options={{ title: "Split View" }} />
+        <Stack.Screen name="offline" options={{ headerShown: false, presentation: "modal" }} />
+        <Stack.Screen name="error" options={{ headerShown: false }} />
       </Stack>
     </SafeAreaProvider>
   );

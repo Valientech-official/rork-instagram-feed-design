@@ -72,18 +72,20 @@ export default function LiveStreamsList({
       
       <View style={styles.contentRow}>
         {/* Entrance room image */}
-        <View style={styles.doorImageContainer}>
-          <Image
-            source={{ uri: "https://images.unsplash.com/photo-1505686994434-e3cc5abf1330?w=400" }}
-            style={styles.doorImage}
-            contentFit="cover"
-          />
-          <View style={styles.doorOverlay}>
-            <Text style={styles.doorText}>Room</Text>
-            {!!doorSubtitle && (
-              <Text style={styles.doorSubtitle}>{doorSubtitle}</Text>
-            )}
+        <View style={styles.doorColumn}>
+          <View style={styles.doorImageContainer}>
+            <Image
+              source={{ uri: "https://images.unsplash.com/photo-1505686994434-e3cc5abf1330?w=400" }}
+              style={styles.doorImage}
+              contentFit="cover"
+            />
+            <View style={styles.doorOverlay}>
+              <Text style={styles.doorText}>Room</Text>
+            </View>
           </View>
+          {!!doorSubtitle && (
+            <Text style={styles.doorSubtitle}>{doorSubtitle}</Text>
+          )}
         </View>
         
         {/* Live Streams */}
@@ -134,11 +136,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingLeft: 16,
   },
-  doorImageContainer: {
+  doorColumn: {
     width: 100,
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  doorImageContainer: {
+    width: '100%',
     height: 125,
     borderRadius: 12,
-    marginRight: 12,
     overflow: 'hidden',
     position: 'relative',
   },
@@ -162,11 +168,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   doorSubtitle: {
-    color: 'white',
+    color: '#fff',
     fontSize: 14,
     fontWeight: '600',
     textAlign: 'center',
-    marginTop: 4,
+    marginTop: 6,
+    textShadowColor: 'rgba(0, 0, 0, 0.4)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+    alignSelf: 'center',
   },
   listContent: {
     paddingRight: 8,
