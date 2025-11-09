@@ -5,15 +5,23 @@ import Colors from '@/constants/colors';
 
 const { width: screenWidth } = Dimensions.get('window');
 
+type AspectRatioPreset = '1:1' | '16:9' | '9:16' | '4:5' | '3:4';
+
 interface ImageCarouselProps {
   images: string[];
   onDoubleTap: () => void;
   onPress?: () => void;
   width?: number;
-  aspectRatio?: '1:1' | '16:9' | '9:16';
+  aspectRatio?: AspectRatioPreset | number;
 }
 
-export default function ImageCarousel({ images, onDoubleTap, onPress, width = screenWidth, aspectRatio = '1:1' }: ImageCarouselProps) {
+export default function ImageCarousel({
+  images,
+  onDoubleTap,
+  onPress,
+  width = screenWidth,
+  aspectRatio = '1:1',
+}: ImageCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const lastTap = useRef<number>(0);
   
@@ -57,11 +65,19 @@ export default function ImageCarousel({ images, onDoubleTap, onPress, width = sc
 
   // Calculate height based on aspect ratio
   const getHeight = () => {
+    if (typeof aspectRatio === 'number') {
+      return width * aspectRatio;
+    }
+
     switch (aspectRatio) {
       case '16:9':
         return width * (9 / 16);
       case '9:16':
         return width * (16 / 9);
+      case '4:5':
+        return width * (5 / 4);
+      case '3:4':
+        return width * (4 / 3);
       case '1:1':
       default:
         return width;

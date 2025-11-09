@@ -69,13 +69,20 @@ export default function PostDetailModal({ visible, post, onClose }: PostDetailMo
         </View>
 
         <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+          <View style={styles.breadcrumbContainer}>
+            <Text style={styles.breadcrumbText}>ホーム</Text>
+            <Text style={styles.breadcrumbSeparator}>›</Text>
+            <Text style={styles.breadcrumbText}>{post.user.username}</Text>
+            <Text style={styles.breadcrumbSeparator}>›</Text>
+            <Text style={styles.breadcrumbCurrent}>投稿</Text>
+          </View>
           {/* Image Carousel with Double Tap */}
           <View style={styles.imageContainer}>
             <ImageCarousel
               images={post.images}
               onDoubleTap={handleDoubleTap}
               width={screenWidth}
-              aspectRatio={post.aspectRatio}
+              aspectRatio="4:5"
             />
             <DoubleTapLike
               visible={showLikeAnimation}
@@ -232,6 +239,26 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  breadcrumbContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingBottom: 8,
+    gap: 4,
+  },
+  breadcrumbText: {
+    fontSize: 13,
+    color: Colors.light.secondaryText,
+  },
+  breadcrumbSeparator: {
+    fontSize: 13,
+    color: Colors.light.secondaryText,
+  },
+  breadcrumbCurrent: {
+    fontSize: 13,
+    color: Colors.light.text,
+    fontWeight: '600',
   },
   imageContainer: {
     position: 'relative',

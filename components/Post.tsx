@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { Heart, MessageCircle } from 'lucide-react-native';
@@ -10,7 +10,7 @@ import Colors from '@/constants/colors';
 import { useThemeStore } from '@/store/themeStore';
 
 const { width: screenWidth } = Dimensions.get('window');
-const CARD_WIDTH = screenWidth - 24; // 両端余白12px × 2
+const CARD_WIDTH = screenWidth;
 
 const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   container: {
@@ -20,6 +20,8 @@ const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
     backgroundColor: colors.shopCard,
     borderWidth: 1,
     borderColor: colors.border,
+    alignSelf: 'center',
+    width: '100%',
   },
   headerRow: {
     padding: 12,
@@ -59,7 +61,13 @@ const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   caption: {
     fontSize: 14,
     color: colors.text,
-    lineHeight: 19,
+    lineHeight: 20,
+  },
+  moreLessButton: {
+    marginTop: 4,
+    color: colors.primary,
+    fontSize: 13,
+    fontWeight: '600',
   },
   stats: {
     flexDirection: 'row',
@@ -94,11 +102,15 @@ interface PostProps {
   post: PostType;
 }
 
+const CAPTION_PREVIEW_LENGTH = 120;
+const POST_IMAGE_ASPECT_RATIO: '4:5' = '4:5';
+
 export default function Post({ post }: PostProps) {
   const [liked, setLiked] = useState(post.liked);
   const [likes, setLikes] = useState(post.likes);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showLikeAnimation, setShowLikeAnimation] = useState(false);
+  const [showFullCaption, setShowFullCaption] = useState(false);
   const { theme } = useThemeStore();
   const colors = Colors[theme];
   const styles = createStyles(colors);
@@ -124,10 +136,15 @@ export default function Post({ post }: PostProps) {
     setShowDetailModal(true);
   };
 
-  const truncateText = (text: string, maxLength: number = 100) => {
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '…';
-  };
+  const { captionToDisplay, isLongCaption } = useMemo(() => {
+    const isLong = post.caption.length > CAPTION_PREVIEW_LENGTH;
+    return {
+      captionToDisplay: showFullCaption || !isLong
+        ? post.caption
+        : `${post.caption.substring(0, CAPTION_PREVIEW_LENGTH)}…`,
+      isLongCaption: isLong,
+    };
+  }, [post.caption, showFullCaption]);
 
   return (
     <>
@@ -166,9 +183,16 @@ export default function Post({ post }: PostProps) {
             </View>
           </View>
 
-          <Text style={styles.caption} numberOfLines={2}>
-            {truncateText(post.caption, 120)}
+          <Text style={styles.caption}>
+            {captionToDisplay}
           </Text>
+          {isLongCaption && (
+            <TouchableOpacity onPress={() => setShowFullCaption(prev => !prev)}>
+              <Text style={styles.moreLessButton}>
+                {showFullCaption ? '閉じる' : 'もっと見る'}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* Row 2: Image */}
@@ -178,7 +202,7 @@ export default function Post({ post }: PostProps) {
             onDoubleTap={handleDoubleTap}
             onPress={handleImagePress}
             width={CARD_WIDTH}
-            aspectRatio={post.aspectRatio}
+            aspectRatio={POST_IMAGE_ASPECT_RATIO}
           />
           <DoubleTapLike
             visible={showLikeAnimation}
