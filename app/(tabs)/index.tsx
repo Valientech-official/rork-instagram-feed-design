@@ -249,7 +249,11 @@ export default function FeedScreen() {
         {/* Live Streams */}
         {activeStreams.length > 0 && (
           <View style={styles.fullWidthLiveSection}>
-            <LiveStreamsList streams={activeStreams} />
+            <LiveStreamsList 
+              streams={activeStreams} 
+              showHeaderTitle={false}
+              doorSubtitle="ウェーブス"
+            />
           </View>
         )}
 

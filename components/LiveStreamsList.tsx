@@ -11,12 +11,16 @@ interface LiveStreamsListProps {
   streams: LiveStream[];
   title?: string;
   showSeeAll?: boolean;
+  showHeaderTitle?: boolean;
+  doorSubtitle?: string;
 }
 
 export default function LiveStreamsList({
   streams,
   title = "ウェーブス",
-  showSeeAll = false
+  showSeeAll = false,
+  showHeaderTitle = true,
+  doorSubtitle = "ウェーブス",
 }: LiveStreamsListProps) {
   const router = useRouter();
   const [displayCount, setDisplayCount] = useState(10);
@@ -54,9 +58,17 @@ export default function LiveStreamsList({
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>{title}</Text>
-      </View>
+      {showHeaderTitle && (
+        <View style={styles.header}>
+          <Text style={styles.title}>{title}</Text>
+          {showSeeAll && (
+            <TouchableOpacity style={styles.seeAllButton} onPress={handleSeeAllPress}>
+              <Text style={styles.seeAllText}>See All</Text>
+              <ChevronRight size={16} color={Colors.light.primary} />
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
       
       <View style={styles.contentRow}>
         {/* Entrance room image */}
@@ -68,6 +80,9 @@ export default function LiveStreamsList({
           />
           <View style={styles.doorOverlay}>
             <Text style={styles.doorText}>Room</Text>
+            {!!doorSubtitle && (
+              <Text style={styles.doorSubtitle}>{doorSubtitle}</Text>
+            )}
           </View>
         </View>
         
@@ -138,12 +153,20 @@ const styles = StyleSheet.create({
     right: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     padding: 8,
+    alignItems: 'center',
   },
   doorText: {
     color: 'white',
     fontSize: 14,
     fontWeight: '600',
     textAlign: 'center',
+  },
+  doorSubtitle: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginTop: 4,
   },
   listContent: {
     paddingRight: 8,
