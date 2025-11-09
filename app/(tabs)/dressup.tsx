@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Dimensions } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import { Image } from 'expo-image';
 import { Heart, Sparkles, LayoutGrid, Rows } from 'lucide-react-native';
@@ -10,94 +10,86 @@ import { dressUpModes, DressUpMode } from '@/mocks/dressUpItems';
 import AIDressUpModal from '@/components/AIDressUpModal';
 
 const { width } = Dimensions.get('window');
-const ITEM_WIDTH = (width - 48) / 2; // 2列分のカード幅
-const PAGE_WIDTH = width - 32; // ページ幅
+const ITEM_WIDTH = (width - 48) / 2;
+
+type ViewMode = 'horizontal' | 'vertical';
 
 export default function DressUpScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { items: favoriteItems } = useFavoritesStore();
   const [showAIDressUpModal, setShowAIDressUpModal] = useState(false);
-  const [favoritesViewMode, setFavoritesViewMode] = useState<'horizontal' | 'vertical'>('horizontal');
-  const [modesViewMode, setModesViewMode] = useState<'vertical' | 'horizontal'>('vertical');
+  const [viewMode, setViewMode] = useState<ViewMode>('vertical');
 
-  // お気に入りを8個ずつのページに分割（2列×4行）
-  const paginatedFavorites = [];
-  for (let i = 0; i < favoriteItems.length; i += 8) {
-    paginatedFavorites.push(favoriteItems.slice(i, i + 8));
-  }
+  const toggleViewMode = () => {
+    setViewMode(prev => prev === 'horizontal' ? 'vertical' : 'horizontal');
+  };
 
   const handleFavoritePress = (productId: string) => {
-    // 投稿詳細画面に遷移
     router.push(`/post/${productId}`);
   };
 
   const handleModePress = (mode: DressUpMode) => {
-    console.log('Dress up mode pressed:', mode.name);
     setShowAIDressUpModal(true);
   };
 
-  const renderFavoritePage = ({ item: pageItems }: { item: typeof favoriteItems }) => {
+  const renderFavoriteItem = ({ item }: { item: typeof favoriteItems[0] }) => {
+    const isOnSale = item.salePrice && item.salePrice < item.price;
     return (
-      <View style={styles.favoritePage}>
-        <View style={styles.favoriteGrid}>
-          {pageItems.map((item) => {
-            const isOnSale = item.salePrice && item.salePrice < item.price;
-            return (
-              <TouchableOpacity
-                key={item.id}
-                style={styles.favoriteCard}
-                onPress={() => handleFavoritePress(item.productId)}
-                activeOpacity={0.8}
-              >
-                <Image
-                  source={{ uri: item.image }}
-                  style={styles.favoriteImage}
-                  contentFit="cover"
-                  transition={200}
-                />
-                <View style={styles.favoriteInfo}>
-                  <Text style={styles.favoriteName} numberOfLines={1}>
-                    {item.name}
-                  </Text>
-                  {isOnSale ? (
-                    <Text style={styles.favoritePrice}>¥{item.salePrice?.toFixed(0)}</Text>
-                  ) : (
-                    <Text style={styles.favoritePrice}>¥{item.price.toFixed(0)}</Text>
-                  )}
-                </View>
-              </TouchableOpacity>
-            );
-          })}
+      <TouchableOpacity
+        style={[
+          styles.favoriteItem,
+          viewMode === 'horizontal' ? styles.favoriteItemHorizontal : {}
+        ]}
+        onPress={() => handleFavoritePress(item.productId)}
+        activeOpacity={0.8}
+      >
+        <Image
+          source={{ uri: item.image }}
+          style={[
+            styles.favoriteImage,
+            viewMode === 'horizontal' ? styles.favoriteImageHorizontal : {}
+          ]}
+          contentFit="cover"
+          transition={200}
+        />
+        <View style={styles.favoriteInfo}>
+          <Text style={styles.favoriteName} numberOfLines={1}>
+            {item.name}
+          </Text>
+          {isOnSale ? (
+            <Text style={styles.favoritePrice}>¥{item.salePrice?.toFixed(0)}</Text>
+          ) : (
+            <Text style={styles.favoritePrice}>¥{item.price.toFixed(0)}</Text>
+          )}
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
-  const renderModeRow = (modes: DressUpMode[]) => {
-    return (
-      <View style={styles.modeRow}>
-        {modes.map((mode) => (
-          <TouchableOpacity
-            key={mode.id}
-            style={styles.modeCard}
-            onPress={() => handleModePress(mode)}
-            activeOpacity={0.8}
-          >
-            <Image
-              source={{ uri: mode.imageUrl }}
-              style={styles.modeImage}
-              contentFit="cover"
-            />
-            <View style={[styles.modeOverlay, { backgroundColor: mode.color + '90' }]}>
-              <Text style={styles.modeName}>{mode.name}</Text>
-              <Text style={styles.modeDescription}>{mode.description}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
+  const renderModeItem = ({ item }: { item: DressUpMode }) => (
+    <TouchableOpacity
+      style={[
+        styles.modeItem,
+        viewMode === 'horizontal' ? styles.modeItemHorizontal : {}
+      ]}
+      onPress={() => handleModePress(item)}
+      activeOpacity={0.8}
+    >
+      <Image
+        source={{ uri: item.imageUrl }}
+        style={[
+          styles.modeImage,
+          viewMode === 'horizontal' ? styles.modeImageHorizontal : {}
+        ]}
+        contentFit="cover"
+      />
+      <View style={[styles.modeOverlay, { backgroundColor: item.color + '90' }]}>
+        <Text style={styles.modeName}>{item.name}</Text>
+        <Text style={styles.modeDescription}>{item.description}</Text>
       </View>
-    );
-  };
+    </TouchableOpacity>
+  );
 
   return (
     <>
@@ -111,126 +103,138 @@ export default function DressUpScreen() {
         }}
       />
 
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* ヘッダーボタン */}
-        <View style={styles.headerButtons}>
+      <View style={[styles.container, { paddingTop: insets.top }]}>
+        {/* Header Buttons */}
+        <View style={styles.headerButtonsContainer}>
           <TouchableOpacity
-            style={[styles.headerButton, styles.favoriteButton]}
-            onPress={() => {
-              // TODO: お気に入り一覧モーダルを開く
-              console.log('お気に入り一覧');
-            }}
-          >
-            <Heart size={20} color={Colors.light.like} fill={Colors.light.like} />
-            <Text style={styles.headerButtonText}>お気に入り</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.headerButton, styles.aiButton]}
+            style={[styles.headerButton, styles.aiHeaderButton]}
             onPress={() => setShowAIDressUpModal(true)}
           >
-            <Sparkles size={20} color="white" />
+            <Sparkles size={18} color="white" />
             <Text style={[styles.headerButtonText, styles.aiButtonText]}>AI着せ替え</Text>
+          </TouchableOpacity>
+
+          {/* Toggle View Mode Button */}
+          <TouchableOpacity
+            style={styles.toggleButton}
+            onPress={toggleViewMode}
+            activeOpacity={0.7}
+          >
+            {viewMode === 'horizontal' ? (
+              <Rows size={22} color={Colors.light.text} />
+            ) : (
+              <LayoutGrid size={22} color={Colors.light.text} />
+            )}
           </TouchableOpacity>
         </View>
 
-        {/* お気に入りセクション（横スライド二列） */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>お気に入り</Text>
-            <View style={styles.sectionRight}>
-              <Text style={styles.sectionSubtitle}>二列</Text>
-              <TouchableOpacity
-                style={styles.toggleButton}
-                onPress={() => setFavoritesViewMode(favoritesViewMode === 'horizontal' ? 'vertical' : 'horizontal')}
-              >
-                {favoritesViewMode === 'horizontal' ? (
-                  <Rows size={20} color={Colors.light.text} />
-                ) : (
-                  <LayoutGrid size={20} color={Colors.light.text} />
-                )}
-              </TouchableOpacity>
+        <View style={[
+          styles.contentContainer,
+          viewMode === 'horizontal'
+            ? styles.horizontalLayout
+            : styles.verticalLayout
+        ]}>
+          {/* Favorites Section */}
+          <View style={[
+            styles.section,
+            viewMode === 'horizontal' ? styles.halfHeight : styles.halfWidth
+          ]}>
+            <View style={[
+              styles.sectionHeader,
+              viewMode === 'horizontal' ? styles.sectionHeaderHorizontal : {}
+            ]}>
+              <View style={styles.titleWithIcon}>
+                <Text style={[
+                  styles.sectionTitle,
+                  viewMode === 'horizontal' ? styles.sectionTitleHorizontal : {}
+                ]}>お気に入り</Text>
+                <View style={styles.iconContainer}>
+                  <Heart
+                    size={viewMode === 'horizontal' ? 14 : 18}
+                    color={Colors.light.like}
+                    fill={Colors.light.like}
+                  />
+                  <Text style={[
+                    styles.itemCount,
+                    viewMode === 'horizontal' ? styles.itemCountHorizontal : {}
+                  ]}>{favoriteItems.length}</Text>
+                </View>
+              </View>
             </View>
-          </View>
 
-          {favoriteItems.length > 0 ? (
-            favoritesViewMode === 'horizontal' ? (
+            {favoriteItems.length > 0 ? (
               <FlatList
-                horizontal
-                pagingEnabled
-                data={paginatedFavorites}
-                keyExtractor={(_, index) => `page_${index}`}
-                renderItem={renderFavoritePage}
+                key={`favorites-${viewMode}`}
+                data={favoriteItems}
+                renderItem={renderFavoriteItem}
+                keyExtractor={item => item.id}
+                horizontal={viewMode === 'horizontal'}
                 showsHorizontalScrollIndicator={false}
-                snapToInterval={PAGE_WIDTH}
-                decelerationRate="fast"
-                contentContainerStyle={styles.favoritesScrollContent}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={[
+                  styles.list,
+                  viewMode === 'horizontal' ? styles.horizontalList : {}
+                ]}
+                ListEmptyComponent={
+                  <View style={styles.emptyContainer}>
+                    <Heart size={48} color={Colors.light.border} />
+                    <Text style={styles.emptyText}>お気に入りがありません</Text>
+                  </View>
+                }
               />
             ) : (
-              <View style={styles.favoriteGrid}>
-                {favoriteItems.map((item) => {
-                  const isOnSale = item.salePrice && item.salePrice < item.price;
-                  return (
-                    <TouchableOpacity
-                      key={item.id}
-                      style={styles.favoriteCard}
-                      onPress={() => handleFavoritePress(item.productId)}
-                      activeOpacity={0.8}
-                    >
-                      <Image
-                        source={{ uri: item.image }}
-                        style={styles.favoriteImage}
-                        contentFit="cover"
-                        transition={200}
-                      />
-                      <View style={styles.favoriteInfo}>
-                        <Text style={styles.favoriteName} numberOfLines={1}>
-                          {item.name}
-                        </Text>
-                        {isOnSale ? (
-                          <Text style={styles.favoritePrice}>¥{item.salePrice?.toFixed(0)}</Text>
-                        ) : (
-                          <Text style={styles.favoritePrice}>¥{item.price.toFixed(0)}</Text>
-                        )}
-                      </View>
-                    </TouchableOpacity>
-                  );
-                })}
+              <View style={styles.emptyContainer}>
+                <Heart size={48} color={Colors.light.border} />
+                <Text style={styles.emptyText}>お気に入りがありません</Text>
               </View>
-            )
-          ) : (
-            <View style={styles.emptyState}>
-              <Heart size={48} color={Colors.light.border} />
-              <Text style={styles.emptyText}>お気に入りがありません</Text>
-            </View>
-          )}
-        </View>
-
-        {/* 着せ替えモードセクション（縦スライド） */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>着せ替えモード</Text>
-            <Text style={styles.sectionSubtitle}>二行</Text>
+            )}
           </View>
 
-          <ScrollView
-            style={styles.modesScrollContainer}
-            showsVerticalScrollIndicator={false}
-            nestedScrollEnabled
-          >
-            {/* 2行ずつ表示 */}
-            {renderModeRow(dressUpModes.slice(0, 2))}
-            {renderModeRow(dressUpModes.slice(2, 4))}
-            {renderModeRow(dressUpModes.slice(4, 6))}
-          </ScrollView>
-        </View>
-      </ScrollView>
+          {/* Dress-up Modes Section */}
+          <View style={[
+            styles.section,
+            viewMode === 'horizontal' ? styles.halfHeight : styles.halfWidth
+          ]}>
+            <View style={[
+              styles.sectionHeader,
+              viewMode === 'horizontal' ? styles.sectionHeaderHorizontal : {}
+            ]}>
+              <View style={styles.titleWithIcon}>
+                <Text style={[
+                  styles.sectionTitle,
+                  viewMode === 'horizontal' ? styles.sectionTitleHorizontal : {}
+                ]}>着せ替えモード</Text>
+                <View style={styles.iconContainer}>
+                  <Sparkles
+                    size={viewMode === 'horizontal' ? 14 : 18}
+                    color={Colors.light.primary}
+                  />
+                  <Text style={[
+                    styles.itemCount,
+                    viewMode === 'horizontal' ? styles.itemCountHorizontal : {}
+                  ]}>{dressUpModes.length}</Text>
+                </View>
+              </View>
+            </View>
 
-      {/* AI着せ替えモーダル */}
+            <FlatList
+              key={`modes-${viewMode}`}
+              data={dressUpModes}
+              renderItem={renderModeItem}
+              keyExtractor={item => item.id}
+              horizontal={viewMode === 'horizontal'}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={[
+                styles.list,
+                viewMode === 'horizontal' ? styles.horizontalList : {}
+              ]}
+            />
+          </View>
+        </View>
+      </View>
+
+      {/* AI Dress-up Modal */}
       <AIDressUpModal
         visible={showAIDressUpModal}
         onClose={() => setShowAIDressUpModal(false)}
@@ -244,31 +248,31 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.light.background,
   },
-  contentContainer: {
-    paddingBottom: 24,
-  },
-  headerButtons: {
+  headerButtonsContainer: {
     flexDirection: 'row',
     gap: 12,
     paddingHorizontal: 16,
-    paddingVertical: 16,
+    paddingVertical: 12,
+    backgroundColor: Colors.light.background,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.light.border,
   },
   headerButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 14,
+    paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 12,
-    gap: 8,
+    gap: 6,
   },
-  favoriteButton: {
+  favoriteHeaderButton: {
     backgroundColor: Colors.light.shopBackground,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: Colors.light.like,
   },
-  aiButton: {
+  aiHeaderButton: {
     backgroundColor: Colors.light.primary,
   },
   headerButtonText: {
@@ -279,100 +283,141 @@ const styles = StyleSheet.create({
   aiButtonText: {
     color: 'white',
   },
+  toggleButton: {
+    backgroundColor: Colors.light.shopCard,
+    padding: 10,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    marginLeft: 4,
+  },
+  contentContainer: {
+    flex: 1,
+  },
+  horizontalLayout: {
+    flexDirection: 'column',
+  },
+  verticalLayout: {
+    flexDirection: 'row',
+  },
   section: {
-    marginTop: 8,
+    borderColor: Colors.light.border,
+  },
+  halfWidth: {
+    width: '50%',
+    borderRightWidth: 1,
+  },
+  halfHeight: {
+    height: '50%',
+    borderBottomWidth: 1,
+    width: '100%',
   },
   sectionHeader: {
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.light.border,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+  },
+  sectionHeaderHorizontal: {
+    padding: 8,
+    paddingHorizontal: 12,
+  },
+  titleWithIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: '700',
+    fontSize: 18,
+    fontWeight: 'bold',
     color: Colors.light.text,
   },
-  sectionSubtitle: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: Colors.light.secondaryText,
-    backgroundColor: Colors.light.shopBackground,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
+  sectionTitleHorizontal: {
+    fontSize: 16,
   },
-  favoritesScrollContent: {
-    paddingLeft: 16,
-  },
-  favoritePage: {
-    width: PAGE_WIDTH,
-    paddingRight: 16,
-  },
-  favoriteGrid: {
+  iconContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
+    alignItems: 'center',
+    gap: 4,
   },
-  favoriteCard: {
-    width: ITEM_WIDTH,
-    backgroundColor: Colors.light.shopCard,
+  itemCount: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: Colors.light.secondaryText,
+  },
+  itemCountHorizontal: {
+    fontSize: 12,
+  },
+  list: {
+    padding: 8,
+  },
+  horizontalList: {
+    paddingHorizontal: 8,
+    paddingBottom: 8,
+  },
+  favoriteItem: {
+    marginBottom: 12,
     borderRadius: 12,
     overflow: 'hidden',
+    backgroundColor: Colors.light.shopCard,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
   },
+  favoriteItemHorizontal: {
+    marginBottom: 0,
+    marginRight: 12,
+    width: 280,
+  },
   favoriteImage: {
     width: '100%',
-    height: ITEM_WIDTH,
+    height: 180,
+  },
+  favoriteImageHorizontal: {
+    width: 280,
+    height: 220,
   },
   favoriteInfo: {
-    padding: 10,
+    padding: 12,
   },
   favoriteName: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '500',
     color: Colors.light.text,
     marginBottom: 4,
   },
   favoritePrice: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '600',
     color: Colors.light.shopPrice,
   },
-  emptyState: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 48,
-  },
-  emptyText: {
-    fontSize: 15,
-    color: Colors.light.secondaryText,
-    marginTop: 12,
-  },
-  modesScrollContainer: {
-    maxHeight: 600,
-    paddingHorizontal: 16,
-  },
-  modeRow: {
-    flexDirection: 'row',
-    gap: 12,
+  modeItem: {
     marginBottom: 12,
-  },
-  modeCard: {
-    flex: 1,
-    height: 140,
     borderRadius: 16,
     overflow: 'hidden',
     position: 'relative',
+    height: 140,
+  },
+  modeItemHorizontal: {
+    marginBottom: 0,
+    marginRight: 12,
+    width: 280,
+    height: 180,
   },
   modeImage: {
     width: '100%',
     height: '100%',
+  },
+  modeImageHorizontal: {
+    width: 280,
+    height: 180,
   },
   modeOverlay: {
     position: 'absolute',
@@ -391,5 +436,16 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
     color: 'white',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 48,
+  },
+  emptyText: {
+    fontSize: 15,
+    color: Colors.light.secondaryText,
+    marginTop: 12,
   },
 });
