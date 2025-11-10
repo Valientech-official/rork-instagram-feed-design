@@ -313,100 +313,138 @@ Day 2 完了条件: ✅ 全て達成
 - 合計: 13ファイル、2,099行
 
 ================================================================================
-Day 3: 11月11日 (月) - カメラ機能実装 + P0機能統合 Part 1
+Day 3: 11月11日 (月) - カメラ機能実装 + P0機能統合 Part 1 ⏸️ 中断中
 ================================================================================
 目標: カメラ機能完成 + フィード・タイムライン、いいね機能の統合
 
-午前 (4時間)
-------------
-[ ] タスク 3.1: カメラ機能の完全実装
-    ファイル: lib/camera/cameraManager.ts, components/CameraView.tsx
-    実装内容:
+【現在の状況】
+✅ 午前のカメラ機能実装は完了
+❌ 実機テスト未実施（UIのCreateタブが消えているため）
+⏸️ 午後のAPI統合タスクは未着手
 
-    1. カメラマネージャー
+【次回再開時の作業】
+📌 まず：Createタブ（投稿作成画面）が表示されるか確認
+📌 次に：カメラ機能の実機テスト実施
+📌 その後：午後のAPI統合タスク（タスク3.3から）に進む
+
+午前 (4時間) ✅ 完了
+------------
+[✅] タスク 3.1: カメラ機能の完全実装 ✅ 完了
+    実装済みファイル:
+    - lib/camera/cameraManager.ts (330行)
+    - lib/camera/videoManager.ts (281行)
+    - components/CameraView.tsx (368行)
+
+    実装内容:
+    1. カメラマネージャー ✅
        - expo-camera の初期化
        - パーミッション管理
        - カメラタイプ切り替え（フロント/リア）
        - フラッシュモード制御
-       - ズーム機能
+       - CameraManagerクラス実装
 
-    2. 写真撮影機能
+    2. 写真撮影機能 ✅
        - 高解像度写真撮影
-       - プレビュー表示
-       - トリミング機能
-       - フィルター適用（基本）
-       - EXIF情報の保持
+       - パーミッション確認
+       - メディアライブラリ保存
+       - launchCamera関数
+       - launchImageLibrary関数
 
-    3. 動画撮影機能
-       - 動画撮影（最大60秒）
+    3. 動画撮影機能 ✅
+       - 動画撮影（最大60秒設定可能）
        - 録画中のUI表示
        - 録画時間カウンター
-       - 一時停止/再開機能
-       - 動画プレビュー
+       - VideoManagerクラス実装
+       - startRecording/stopRecording関数
 
-    4. UI実装
-       - カメラプレビュー画面
+    4. UI実装 ✅
+       - カメラプレビュー画面（フルスクリーン）
        - シャッターボタン（写真/動画切替）
-       - カメラ切替ボタン
-       - フラッシュボタン
-       - グリッド表示トグル
-       - タイマー設定（3秒/10秒）
-       - ギャラリーアクセスボタン
+       - カメラ切替ボタン（フロント/リア）
+       - フラッシュボタン（on/off/auto）
+       - 録画時間表示（赤い録画ドット+時間）
+       - モード選択（写真/動画）
+       - 閉じるボタン
 
-    5. 統合先
-       - 投稿作成画面（PostCreationFlow）
-       - プロフィール画像撮影
-       - ライブ配信開始画面（事前準備）
-       - DM画像送信
+    5. 統合先 ✅
+       - 投稿作成画面（PostCreationFlow）✅ 統合完了
+         - handleTakePhoto()をCameraView使用に変更
+         - showCameraステート追加
+         - onCapture後、編集画面に遷移
+       - プロフィール画像撮影（未統合）
+       - ライブ配信開始画面（未統合）
+       - DM画像送信（未統合）
 
-    所要時間: 3時間
+    実装完了: 2025年11月10日
 
-[ ] タスク 3.2: カメラ機能のテスト
-    実装内容:
-    - iOS実機テスト
-    - Android実機テスト
-    - パーミッション確認
-    - 各種解像度での動作確認
-    所要時間: 1時間
+[⏸️] タスク 3.2: カメラ機能のテスト ⏸️ 保留中
+    実施予定内容:
+    - iOS実機テスト ← 【次回ここから】
+    - カメラ起動確認
+    - 写真撮影→編集画面遷移確認
+    - フロント/リアカメラ切替確認
+    - フラッシュ動作確認
+    - 動画録画確認（時間あれば）
 
-午後 (4時間)
+    注意事項:
+    - Createタブが表示されない問題を先に解決する必要あり
+    - app/(tabs)/create.tsx の確認が必要
+
+    所要時間: 30分（問題なければ）
+
+午後 (4時間) ⏸️ 未着手
 ------------
-[ ] タスク 3.3: Timeline API クライアント作成
-    ファイル: lib/api/timeline.ts
+[ ] タスク 3.3: Timeline API クライアント作成 ← 【次回テスト完了後ここから】
+    ファイル: lib/api/timeline.ts（新規作成）
     実装内容:
-    - getTimeline() 関数（おすすめ統合）
-    - getUserPosts() 関数
-    - getDiscoveryPosts() 関数
-    - getRecommendedPosts() 関数（新規）
-    所要時間: 1時間
+    - getTimeline() 関数（タイムライン投稿取得）
+    - getUserPosts() 関数（ユーザー投稿取得）
+    - getRecommendedPosts() 関数（おすすめ投稿取得）
+    - apiClient使用、型安全なラッパー
+    所要時間: 40分
 
 [ ] タスク 3.4: フィード画面の統合
-    ファイル: app/(tabs)/index.tsx
+    ファイル: app/(tabs)/index.tsx（修正）
     実装内容:
-    - モックデータ削除
-    - postsStore 統合
-    - おすすめ投稿の混在表示
-    - useEffect でデータ取得
-    - FlatList の onEndReached 実装
-    - 引っ張って更新（RefreshControl）
+    - モックデータ削除（Line 10付近）
+      - import { posts } from '@/mocks/posts' ← 削除
+      - import { shoppingPosts } from '@/mocks/shoppingPosts' ← 削除
+    - usePostsStore() フックを追加
+    - Animated.ScrollView → FlatList に変更
+    - useEffect でfetchTimeline(true)呼び出し
+    - RefreshControl で引っ張り更新実装
+    - onEndReached で無限スクロール実装
     - loading/error 状態表示
-    所要時間: 2時間
+    所要時間: 1.5時間
 
 [ ] タスク 3.5: いいね機能の実装
-    ファイル: lib/api/likes.ts, components/Post.tsx
+    ファイル:
+    - lib/api/likes.ts（新規作成）
+    - components/Post.tsx（修正）
+
     実装内容:
-    - likePost() 関数
-    - unlikePost() 関数
-    - いいねボタンのAPI接続
-    - 楽観的UI更新
-    - 行動トラッキング（trackBehavior）
+    1. lib/api/likes.ts 作成:
+       - likePost() 関数
+       - unlikePost() 関数
+
+    2. components/Post.tsx 修正（Line 20-30付近）:
+       - useState(liked/likes) 削除
+       - usePostsStore() 追加
+       - post.is_liked, post.like_count を直接参照
+       - handleLike を async/await に変更
+       - likePost/unlikePost 呼び出し
+       - 楽観的UI更新（ストア側で自動処理）
+
     所要時間: 1時間
 
 Day 3 完了条件:
-- カメラ機能が完全に動作
-- フィードが実データで動作
-- いいねが完全に機能
-- 行動トラッキングが有効
+- ✅ カメラ機能が実装完了（コード完成）
+- ⏸️ カメラ機能の実機テスト完了（保留中）
+- ❌ フィードが実データで動作（未着手）
+- ❌ いいねが完全に機能（未着手）
+- ❌ 行動トラッキングが有効（未着手）
+
+進捗率: 40% （カメラ実装完了、テスト・API統合は未完了）
 
 ================================================================================
 Day 4: 11月12日 (火) - P0機能統合 Part 2

@@ -5,6 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Camera, Image as ImageIcon, Video, Sparkles, ChevronRight, MapPin, Hash, AtSign, Globe, BarChart3 } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import AIDressUpModal from './AIDressUpModal';
+import { CameraView } from './CameraView';
 import { dressUpModes } from '@/mocks/dressUpItems';
 
 const { width } = Dimensions.get('window');
@@ -24,6 +25,7 @@ export default function PostCreationFlow({ onClose }: PostCreationFlowProps) {
   const [currentStep, setCurrentStep] = useState<Step>('select');
   const [selectedMedia, setSelectedMedia] = useState<SelectedMedia | null>(null);
   const [showAIModal, setShowAIModal] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
 
   // 編集状態
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
@@ -53,19 +55,8 @@ export default function PostCreationFlow({ onClose }: PostCreationFlowProps) {
     '#古着コーデ',
   ];
 
-  const handleTakePhoto = async () => {
-    const result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      quality: 1,
-    });
-
-    if (!result.canceled && result.assets[0]) {
-      setSelectedMedia({
-        uri: result.assets[0].uri,
-        type: 'image',
-      });
-      setCurrentStep('edit');
-    }
+  const handleTakePhoto = () => {
+    setShowCamera(true);
   };
 
   const handlePickImage = async () => {
@@ -364,6 +355,38 @@ export default function PostCreationFlow({ onClose }: PostCreationFlowProps) {
       {currentStep === 'select' && renderSelectStep()}
       {currentStep === 'edit' && renderEditStep()}
       {currentStep === 'caption' && renderCaptionStep()}
+
+      {/* カメラモーダル */}
+      {showCamera && (
+        <CameraView
+          mode="photo"
+          onCapture={(result) => {
+            setSelectedMedia({
+              uri: result.uri,
+              type: result.type === 'video' ? 'video' : 'image',
+            });
+            setCurrentStep('edit');
+            setShowCamera(false);
+          }}
+          onClose={() => setShowCamera(false)}
+        />
+      )}
+
+      {/* AI着せ替えモーダル */}
+      {showAIModal && (
+        <AIDressUpModal
+          isVisible={showAIModal}
+          onClose={() => setShowAIModal(false)}
+          onComplete={(result) => {
+            setSelectedMedia({
+              uri: result.imageUri,
+              type: 'image',
+            });
+            setCurrentStep('edit');
+            setShowAIModal(false);
+          }}
+        />
+      )}
     </View>
   );
 }

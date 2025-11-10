@@ -1,0 +1,193 @@
+================================================================================
+Day 3 進捗サマリー - 2025年11月10日 中断時
+================================================================================
+
+【現在の状況】⏸️ 中断中
+
+✅ 午前のカメラ機能実装: 完了
+❌ 実機テスト: 未実施（UIのCreateタブが消えている）
+⏸️ 午後のAPI統合: 未着手
+
+================================================================================
+完了した作業
+================================================================================
+
+1. ✅ expo-av パッケージインストール
+   - コマンド実行済み: npx expo install expo-av
+
+2. ✅ lib/camera/cameraManager.ts 作成（330行）
+   - カメラ操作の共通ロジック
+   - パーミッション管理
+   - 写真撮影（launchCamera）
+   - ギャラリー選択（launchImageLibrary）
+   - カメラ切替・フラッシュ制御
+   - CameraManagerクラス実装
+
+3. ✅ lib/camera/videoManager.ts 作成（281行）
+   - 動画録画管理
+   - VideoManagerクラス
+   - startRecording/stopRecording
+   - 録画時間カウント
+   - 最大録画時間設定可能
+
+4. ✅ components/CameraView.tsx 作成（368行）
+   - フルスクリーンカメラUI
+   - 写真/動画モード切替
+   - カメラ切替ボタン（フロント/リア）
+   - フラッシュボタン（on/off/auto）
+   - シャッターボタン（写真撮影/動画録画）
+   - 録画時間表示（赤ドット + カウンター）
+   - パーミッションハンドリング
+
+5. ✅ components/PostCreationFlow.tsx 修正
+   - CameraViewコンポーネントをインポート
+   - showCamera ステート追加
+   - handleTakePhoto() を修正（ImagePicker → CameraView使用）
+   - onCapture後、編集画面に遷移
+   - カメラモーダル統合完了
+
+6. ✅ ビルドエラー修正
+   - インポートパス修正: '@/constants/Colors' → '@/constants/colors'
+
+================================================================================
+次回再開時の作業手順
+================================================================================
+
+【ステップ1】Createタブの確認・修正（優先度: 高）
+----------
+問題: UIのCreateタブが表示されない
+
+確認すべきファイル:
+  - app/(tabs)/create.tsx
+  - app/(tabs)/_layout.tsx
+
+修正内容:
+  - タブバーの設定を確認
+  - create.tsx が正しく配置されているか確認
+  - ルーティング設定を確認
+
+【ステップ2】カメラ機能の実機テスト（30分）
+----------
+テスト項目:
+  1. ✅ 投稿作成画面を開く
+  2. ✅ 「カメラ撮影」ボタンをタップ
+  3. ✅ カメラが起動するか確認
+  4. ✅ カメラパーミッションが要求されるか確認
+  5. ✅ フロント/リアカメラ切替が動作するか
+  6. ✅ フラッシュボタンが動作するか（on/off/auto）
+  7. ✅ 写真を撮影
+  8. ✅ 編集画面に遷移するか確認
+  9. （時間あれば）動画録画をテスト
+
+【ステップ3】午後のAPI統合タスク
+----------
+実装順序:
+
+1. lib/api/timeline.ts 作成（40分）
+   ```typescript
+   export const timelineApi = {
+     getTimeline: (params) => apiClient.get('/post/timeline', params),
+     getRecommendedPosts: (params) => apiClient.get('/recommendation/timeline', params),
+     getUserPosts: (accountId, params) => apiClient.get(`/account/${accountId}/posts`, params),
+   };
+   ```
+
+2. lib/api/likes.ts 作成（30分）
+   ```typescript
+   export const likesApi = {
+     likePost: (postId) => apiClient.post(`/post/${postId}/like`),
+     unlikePost: (postId) => apiClient.delete(`/post/${postId}/like`),
+   };
+   ```
+
+3. app/(tabs)/index.tsx 修正（1.5時間）
+   変更箇所:
+   - Line 10付近: モックデータインポート削除
+   - usePostsStore() 追加
+   - Animated.ScrollView → FlatList に変更
+   - useEffect で fetchTimeline(true)
+   - RefreshControl 追加
+   - onEndReached で無限スクロール
+   - loading/error 表示
+
+4. components/Post.tsx 修正（1時間）
+   変更箇所:
+   - Line 20-30付近: useState(liked/likes) 削除
+   - usePostsStore() 追加
+   - post.is_liked, post.like_count を直接参照
+   - handleLike を async/await に変更
+
+================================================================================
+実装済みファイル一覧
+================================================================================
+
+新規作成:
+  ✅ lib/camera/cameraManager.ts
+  ✅ lib/camera/videoManager.ts
+  ✅ components/CameraView.tsx
+
+修正:
+  ✅ components/PostCreationFlow.tsx
+
+未着手（次回作成）:
+  ❌ lib/api/timeline.ts
+  ❌ lib/api/likes.ts
+
+未着手（次回修正）:
+  ❌ app/(tabs)/index.tsx
+  ❌ components/Post.tsx
+
+================================================================================
+注意事項
+================================================================================
+
+1. Createタブ問題
+   - 実機テストの前に必ず解決する必要あり
+   - app/(tabs)/create.tsx の存在確認
+   - タブバー設定の確認
+
+2. カメラ機能
+   - 実機テスト必須（シミュレーターでは動作しない）
+   - パーミッションの確認
+   - expo-camera は実デバイスが必要
+
+3. API統合
+   - Day 2で作成したpostsStoreを使用
+   - 楽観的UI更新はストア側で実装済み
+   - エラーハンドリングはapiClientが対応
+
+4. データフロー
+   UI → usePostsStore → apiClient → バックエンド
+   バックエンド → apiClient → postsStore → UI更新
+
+================================================================================
+関連ドキュメント
+================================================================================
+
+- 実装計画_完全版_11月9日-21日.txt (Day 3セクション)
+- Day2_実装詳細解説.txt (ストアの使い方)
+- docs/recommendation-algorithm.md (推薦アルゴリズム設計)
+
+================================================================================
+次回再開のコマンド
+================================================================================
+
+# Createタブの確認
+cat app/(tabs)/create.tsx
+cat app/(tabs)/_layout.tsx
+
+# 実機でビルド
+npx expo start
+
+# API統合開始（テスト完了後）
+# lib/api/timeline.ts から作成開始
+
+================================================================================
+進捗率: 40%
+================================================================================
+✅ カメラ実装: 完了
+⏸️ 実機テスト: 保留
+❌ API統合: 未着手
+
+次回の目標: Day 3を100%完了させる
+所要時間（予想）: 3-4時間
