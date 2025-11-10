@@ -60,7 +60,10 @@ export interface LoginResponse {
 
 // プロフィール取得
 export interface GetProfileResponse {
-  account: AccountItem;
+  account: AccountItem & {
+    posts_count: number;
+    waves_count?: number;
+  };
 }
 
 // プロフィール更新

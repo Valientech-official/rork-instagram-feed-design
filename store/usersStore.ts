@@ -6,9 +6,15 @@
 import { create } from 'zustand';
 import { AccountSummary, AccountProfile } from '@/types/api';
 import { apiClient } from '@/lib/api/client';
+import { accountsApi, UpdateProfileParams } from '@/lib/api/accounts';
 import { handleError } from '@/lib/utils/errorHandler';
 
 interface UsersState {
+  // 自分のプロフィール
+  myProfile: AccountProfile | null;
+  myProfileLoading: boolean;
+  myProfileError: string | null;
+
   // プロフィールキャッシュ
   profileCache: Record<string, AccountProfile>; // account_id -> profile
   profileLoading: Record<string, boolean>;
@@ -30,6 +36,8 @@ interface UsersState {
   followersError: Record<string, string | null>;
 
   // アクション
+  fetchMyProfile: () => Promise<void>;
+  updateMyProfile: (data: UpdateProfileParams) => Promise<void>;
   getUserProfile: (accountId: string, forceRefresh?: boolean) => Promise<AccountProfile | null>;
   updateProfile: (accountId: string, updates: Partial<AccountProfile>) => Promise<void>;
   followUser: (accountId: string) => Promise<void>;
@@ -43,6 +51,10 @@ interface UsersState {
 
 export const useUsersStore = create<UsersState>((set, get) => ({
   // 初期状態
+  myProfile: null,
+  myProfileLoading: false,
+  myProfileError: null,
+
   profileCache: {},
   profileLoading: {},
   profileError: {},
@@ -58,6 +70,68 @@ export const useUsersStore = create<UsersState>((set, get) => ({
   followersList: {},
   followersLoading: {},
   followersError: {},
+
+  /**
+   * 自分のプロフィール取得
+   */
+  fetchMyProfile: async () => {
+    try {
+      set({ myProfileLoading: true, myProfileError: null });
+
+      const response = await accountsApi.getMyProfile();
+
+      if (response.success && response.data) {
+        set({
+          myProfile: response.data,
+          myProfileLoading: false,
+        });
+      } else {
+        throw new Error(response.error?.message || 'プロフィールの取得に失敗しました');
+      }
+    } catch (error: any) {
+      const { message } = handleError(error, 'fetchMyProfile');
+      set({
+        myProfileError: message,
+        myProfileLoading: false,
+      });
+
+      if (__DEV__) {
+        console.error('[usersStore] fetchMyProfile error:', message);
+      }
+    }
+  },
+
+  /**
+   * 自分のプロフィール更新
+   */
+  updateMyProfile: async (data: UpdateProfileParams) => {
+    try {
+      set({ myProfileLoading: true, myProfileError: null });
+
+      const response = await accountsApi.updateProfile(data);
+
+      if (response.success && response.data) {
+        set({
+          myProfile: response.data,
+          myProfileLoading: false,
+        });
+      } else {
+        throw new Error(response.error?.message || 'プロフィールの更新に失敗しました');
+      }
+    } catch (error: any) {
+      const { message } = handleError(error, 'updateMyProfile');
+      set({
+        myProfileError: message,
+        myProfileLoading: false,
+      });
+
+      if (__DEV__) {
+        console.error('[usersStore] updateMyProfile error:', message);
+      }
+
+      throw error;
+    }
+  },
 
   /**
    * ユーザープロフィール取得（キャッシュ機能付き）

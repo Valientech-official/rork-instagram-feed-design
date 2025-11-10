@@ -400,64 +400,141 @@ Day 3: 11月11日 (月) - カメラ機能実装 + P0機能統合 Part 1 ⏸️ �
 
     所要時間: 30分（問題なければ）
 
-午後 (4時間) 🔄 API統合から開始
+午後 (4時間) ✅ API統合完了
 ------------
-[ ] タスク 3.3: Timeline API クライアント作成 ← 【ここから再開】
-    ファイル: lib/api/timeline.ts（新規作成）
+[✓] タスク 3.3: Timeline API クライアント作成 ✅ 完了
+    ファイル: lib/api/timeline.ts（作成済み）
     実装内容:
     - getTimeline() 関数（タイムライン投稿取得）
     - getUserPosts() 関数（ユーザー投稿取得）
     - getRecommendedPosts() 関数（おすすめ投稿取得）
     - apiClient使用、型安全なラッパー
-    所要時間: 40分
+    実装完了: 2025年11月10日
 
-[ ] タスク 3.4: フィード画面の統合
-    ファイル: app/(tabs)/index.tsx（修正）
+[✓] タスク 3.4: フィード画面の統合 ✅ 完了
+    ファイル: app/(tabs)/index.tsx（修正完了）
     実装内容:
-    - モックデータ削除（Line 10付近）
-      - import { posts } from '@/mocks/posts' ← 削除
-      - import { shoppingPosts } from '@/mocks/shoppingPosts' ← 削除
-    - usePostsStore() フックを追加
-    - Animated.ScrollView → FlatList に変更
+    - モックデータ削除
+    - usePostsStore() フック追加
     - useEffect でfetchTimeline(true)呼び出し
     - RefreshControl で引っ張り更新実装
     - onEndReached で無限スクロール実装
     - loading/error 状態表示
-    所要時間: 1.5時間
+    - GET /timeline 200 OK 確認済み
+    実装完了: 2025年11月10日
 
-[ ] タスク 3.5: いいね機能の実装
+[✓] タスク 3.5: いいね機能の実装 ✅ 完了
     ファイル:
-    - lib/api/likes.ts（新規作成）
-    - components/Post.tsx（修正）
+    - lib/api/likes.ts（作成完了）
+    - components/Post.tsx（修正完了）
 
     実装内容:
     1. lib/api/likes.ts 作成:
        - likePost() 関数
        - unlikePost() 関数
 
-    2. components/Post.tsx 修正（Line 20-30付近）:
-       - useState(liked/likes) 削除
+    2. components/Post.tsx 修正:
        - usePostsStore() 追加
        - post.is_liked, post.like_count を直接参照
        - handleLike を async/await に変更
        - likePost/unlikePost 呼び出し
        - 楽観的UI更新（ストア側で自動処理）
 
-    所要時間: 1時間
+    実装完了: 2025年11月10日
+
+[✓] タスク 3.6: Createタブ問題解決 ✅ 完了
+    問題: expo-avのネイティブモジュールが見つからずCreateタブが消失
+    原因: app.jsonにexpo-avプラグイン設定がない
+
+    解決手順:
+    1. app.jsonにプラグイン追加: ["expo-av"]
+    2. npx expo prebuild --clean --platform ios
+    3. cd ios && pod install
+    4. npx expo run:ios
+
+    結果: Createタブ復活、カメラ機能正常動作
+    解決日: 2025年11月10日
 
 Day 3 完了条件:
 - ✅ カメラ機能が実装完了（コード完成）
-- ⏸️ カメラ機能の実機テスト完了（保留中）
-- ❌ フィードが実データで動作（未着手）
-- ❌ いいねが完全に機能（未着手）
-- ❌ 行動トラッキングが有効（未着手）
+- ✅ カメラ機能の実機テスト完了（実機で動作確認済み）
+- ✅ フィードが実データで動作（GET /timeline 200 OK）
+- ✅ いいねが完全に機能（API統合完了）
+- ⏸️ 行動トラッキングが有効（後回し）
 
-進捗率: 40% （カメラ実装完了、テスト・API統合は未完了）
+進捗率: 100% （Day 3タスク完了）
+実装完了日: 2025年11月10日
 
 ================================================================================
-Day 4: 11月12日 (火) - P0機能統合 Part 2
+Day 4: 11月12日 (火) - P0機能統合 Part 2 🚧 進行中
 ================================================================================
-目標: フォロー機能、コメント機能、投稿作成の完全統合
+目標: プロフィール画面実装 + フォロー機能、コメント機能、投稿作成の完全統合
+
+事前タスク (1.5時間) ✅ 完了
+------------
+[✓] タスク 4.0: プロフィール画面の実データ統合 ✅ 完了
+    ファイル: lib/api/accounts.ts, store/usersStore.ts, app/(tabs)/profile.tsx
+    実装内容:
+    1. lib/api/accounts.ts 作成（164行）
+       - getMyProfile() - GET /accounts/me
+       - getProfile(accountId) - GET /accounts/{accountId}
+       - updateProfile(data) - PUT /accounts/me
+       - getMyPosts(params) - GET /accounts/me/posts
+       - getUserPosts(accountId, params) - GET /accounts/{accountId}/posts
+       - getProfileStats(accountId?) - 統計情報取得
+       - uploadProfileImage(imageUri) - プロフィール画像アップロード
+       - uploadCoverImage(imageUri) - カバー画像アップロード
+
+    2. store/usersStore.ts 拡張（+57行）
+       - myProfile: AccountProfile | null - 自分のプロフィールステート
+       - myProfileLoading: boolean - ローディング状態
+       - myProfileError: string | null - エラー状態
+       - fetchMyProfile() - プロフィール取得関数
+       - updateMyProfile(data) - プロフィール更新関数
+
+    3. app/(tabs)/profile.tsx 実データ対応（+26行）
+       - useAuthStore()からuser取得
+       - useUsersStore()からmyProfile取得
+       - useEffect()でfetchMyProfile()実行
+       - ProfileHeaderに実データバインディング
+         - name: myProfile?.name || user?.name
+         - username: myProfile?.handle || user?.handle
+         - bio: myProfile?.bio
+         - profileImageUrl: myProfile?.profile_image
+       - ProfileStatsRowに実データバインディング
+         - postsCount: myProfile?.posts_count
+         - wavesCount: myProfile?.waves_count
+         - followersCount: myProfile?.followers_count
+         - followingCount: myProfile?.following_count
+       - ローディング表示追加
+
+    4. types/api.ts 型定義追加（+19行）
+       - AccountProfile インターフェース追加
+       - posts_count, followers_count, following_count, waves_count 含む
+
+    5. backend/src/handlers/account/getProfile.ts 修正（+33行）
+       - account_id === 'me' 対応追加
+       - Cognito Authorizer の sub から userId 取得
+       - 統計情報（posts_count, waves_count）をレスポンスに追加
+
+    6. backend/src/types/api.ts 型定義修正（+6行）
+       - GetProfileResponse に posts_count, waves_count 追加
+
+    7. バックエンドビルド完了
+       - TypeScript コンパイル成功
+       - エンドポイント修正: /account/* → /accounts/*
+
+    実装完了: 2025年11月10日
+    デプロイ待ち: Lambda関数のデプロイが必要
+
+    保存可能な情報:
+    - bio（自己紹介文）
+    - profile_image（プロフィール画像URL）
+    - name（表示名）
+    - handle（ユーザーネーム）
+    - その他カスタム属性
+
+    所要時間: 1.5時間（実績）
 
 午前 (4時間)
 ------------

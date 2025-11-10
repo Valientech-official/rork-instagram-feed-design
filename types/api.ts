@@ -62,6 +62,29 @@ export interface AccountDetail extends AccountSummary {
   created_at: Timestamp;
 }
 
+/**
+ * プロフィール情報（統計情報含む）
+ */
+export interface AccountProfile {
+  account_id: string;
+  username: string;
+  handle: string;
+  name?: string;
+  bio?: string;
+  profile_image?: string;
+  cover_image?: string;
+  website?: string;
+  location?: string;
+  is_private: boolean;
+  account_type: AccountType;
+  posts_count: number;
+  followers_count: number;
+  following_count: number;
+  waves_count?: number;
+  created_at: Timestamp;
+  updated_at?: Timestamp;
+}
+
 export interface UpdateProfileRequest {
   username?: string;
   bio?: string;

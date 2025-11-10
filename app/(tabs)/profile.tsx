@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import React, { useState, useRef, useEffect } from 'react';
+import { View, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
 import Colors from '@/constants/colors';
 import ProfileHeader from '@/components/ProfileHeader';
 import ProfileStatsRow from '@/components/ProfileStatsRow';
@@ -13,6 +13,8 @@ import ProfilePostsGrid from '@/components/ProfilePostsGrid';
 import { profilePosts } from '@/mocks/profilePosts';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import MenuDrawer from '@/components/MenuDrawer';
+import { useAuthStore } from '@/store/authStore';
+import { useUsersStore } from '@/store/usersStore';
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
@@ -20,12 +22,30 @@ export default function ProfileScreen() {
   const scrollViewRef = useRef<ScrollView>(null);
   const postsLayoutY = useRef(0);
 
+  // ストアからデータ取得
+  const { user } = useAuthStore();
+  const { myProfile, fetchMyProfile, myProfileLoading } = useUsersStore();
+
+  // プロフィール情報を取得
+  useEffect(() => {
+    fetchMyProfile();
+  }, []);
+
   const handlePostsPress = () => {
     scrollViewRef.current?.scrollTo({
       y: postsLayoutY.current,
       animated: true,
     });
   };
+
+  // ローディング表示
+  if (myProfileLoading && !myProfile) {
+    return (
+      <View style={[styles.container, styles.loadingContainer, { paddingTop: insets.top }]}>
+        <ActivityIndicator size="large" color={Colors.light.primary} />
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -36,18 +56,18 @@ export default function ProfileScreen() {
         showsVerticalScrollIndicator={false}
       >
         <ProfileHeader
-          name="山田 太郎"
-          username="yamada_taro"
-          bio="ファッション好きです。コーディネートを楽しんでいます！"
-          profileImageUrl="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&auto=format&fit=crop&w=150&q=80"
+          name={myProfile?.name || user?.name || 'ユーザー'}
+          username={myProfile?.handle || user?.handle || user?.username || ''}
+          bio={myProfile?.bio || ''}
+          profileImageUrl={myProfile?.profile_image || user?.avatar || ''}
           onMenuPress={() => setIsMenuOpen(true)}
         />
 
         <ProfileStatsRow
-          postsCount={profilePosts.length}
-          wavesCount={42}
-          followersCount={1234}
-          followingCount={567}
+          postsCount={myProfile?.posts_count || 0}
+          wavesCount={myProfile?.waves_count || 0}
+          followersCount={myProfile?.followers_count || 0}
+          followingCount={myProfile?.following_count || 0}
           onPostsPress={handlePostsPress}
         />
 
@@ -90,5 +110,9 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
