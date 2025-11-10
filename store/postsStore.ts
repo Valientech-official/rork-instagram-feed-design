@@ -63,7 +63,7 @@ export const usePostsStore = create<PostsState>((set, get) => ({
       set({ timelineLoading: true, timelineError: null });
 
       const response = await apiClient.get<{ items: Post[]; nextToken?: string }>(
-        '/post/timeline',
+        '/timeline',
         {
           limit: 20,
           nextToken: refresh ? undefined : get().timelineNextToken,

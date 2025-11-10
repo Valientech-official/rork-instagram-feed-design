@@ -50,7 +50,7 @@ export const getTimeline = async (
   const { limit = 20, nextToken } = params;
 
   return apiClient.get<PaginatedResponse<Post>>(
-    '/post/timeline',
+    '/timeline',
     {
       limit,
       nextToken,

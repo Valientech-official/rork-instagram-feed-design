@@ -11,7 +11,7 @@ import { ErrorCode } from '@/types/common';
 // 環境別エンドポイント設定
 const getApiUrl = (): string => {
   const environment = Constants.expoConfig?.extra?.EXPO_PUBLIC_ENVIRONMENT || 'development';
-  const apiUrl = Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL;
+  const apiUrl = Constants.expoConfig?.extra?.API_URL;
 
   if (apiUrl) {
     return apiUrl;
