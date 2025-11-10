@@ -3,10 +3,9 @@
  * Handles all live streaming API operations with Mux integration
  */
 
-import { fetchAuthSession } from 'aws-amplify/auth';
-import { awsConfig } from '@/config/aws-config';
+import Constants from 'expo-constants';
 
-const API_BASE_URL = awsConfig.apiUrl;
+const API_BASE_URL = Constants.expoConfig?.extra?.API_URL || 'https://b6om6sz99f.execute-api.ap-northeast-1.amazonaws.com/dev/';
 
 export interface LiveStream {
   stream_id: string;
@@ -77,20 +76,11 @@ export interface LiveStreamHistoryItem {
 }
 
 /**
- * Get authorization header with JWT token
+ * Get authorization header with mock token (Cognito disabled for Expo Go)
  */
 async function getAuthHeader(): Promise<{ Authorization: string }> {
-  try {
-    const session = await fetchAuthSession();
-    const token = session.tokens?.idToken?.toString();
-    if (!token) {
-      throw new Error('No authentication token available');
-    }
-    return { Authorization: `Bearer ${token}` };
-  } catch (error) {
-    console.error('Failed to get auth token:', error);
-    throw error;
-  }
+  console.log('⚠️ Using mock auth token (Cognito disabled for Expo Go)');
+  return { Authorization: `Bearer mock_token_for_expo_go` };
 }
 
 /**

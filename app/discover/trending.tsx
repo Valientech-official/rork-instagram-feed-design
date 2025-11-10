@@ -15,7 +15,6 @@ import { ArrowLeft, TrendingUp, TrendingDown, Minus } from 'lucide-react-native'
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Colors from '@/constants/colors';
-import { awsConfig } from '@/config/aws-config';
 
 type TimeframeType = 'day' | 'week' | 'month';
 
