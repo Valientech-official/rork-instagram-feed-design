@@ -1,0 +1,24 @@
+# CDK Build Output
+*.js
+*.d.ts
+*.js.map
+cdk.out/
+.cdk.staging/
+
+# Dependencies
+node_modules/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local

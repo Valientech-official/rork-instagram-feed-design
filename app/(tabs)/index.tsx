@@ -1,12 +1,11 @@
-import React, { useState, useRef, useCallback, useMemo } from 'react';
-import { FlatList, StyleSheet, View, Text, TouchableOpacity, Dimensions, ScrollView, Animated, NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
+import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
+import { FlatList, StyleSheet, View, Text, TouchableOpacity, Dimensions, ScrollView, Animated, NativeScrollEvent, NativeSyntheticEvent, RefreshControl, ActivityIndicator } from 'react-native';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Minus, Plus, Trash2, Circle } from 'lucide-react-native';
-import { posts } from '@/mocks/posts';
-import { shoppingPosts } from '@/mocks/shoppingPosts';
 import { liveStreams } from '@/mocks/liveStreams';
 import { users } from '@/mocks/users';
+import { usePostsStore } from '@/store/postsStore';
 import Post from '@/components/Post';
 import ShoppingPost from '@/components/ShoppingPost';
 import FeedHeader from '@/components/FeedHeader';
@@ -18,8 +17,7 @@ import PhotoGallery from '@/components/PhotoGallery';
 import { useCartStore, CartItem } from '@/store/cartStore';
 import { useThemeStore } from '@/store/themeStore';
 import Colors from '@/constants/colors';
-import { ShoppingPost as ShoppingPostType } from '@/mocks/shoppingPosts';
-import { Post as PostType } from '@/mocks/posts';
+import { Post as PostType } from '@/types/api';
 import RecommendationCard from '@/components/RecommendationCard';
 import RecommendationsSlider from '@/components/RecommendationsSlider';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -27,7 +25,6 @@ import MenuDrawer from '@/components/MenuDrawer';
 import TopStylists from '@/components/home/TopStylists';
 import RecommendedGrid from '@/components/home/RecommendedGrid';
 import ShopTheLook from '@/components/home/ShopTheLook';
-import { mixFollowerAndRecommendedPosts } from '@/utils/feedUtils';
 
 const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width / 2) - 24;
@@ -37,12 +34,22 @@ export default function FeedScreen() {
   const [showCart, setShowCart] = useState(false);
   const [showPhotoGallery, setShowPhotoGallery] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { items: cartItems, updateQuantity, removeItem, getTotalPrice } = useCartStore();
   const { theme } = useThemeStore();
   const colors = Colors[theme];
+
+  // Posts store
+  const {
+    timelinePosts,
+    timelineLoading,
+    timelineError,
+    fetchTimeline,
+    loadMoreTimeline,
+  } = usePostsStore();
 
   // Header animation state
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -51,8 +58,10 @@ export default function FeedScreen() {
 
   const activeStreams = liveStreams.filter(stream => stream.isActive);
 
-  // Mix follower posts with recommended posts (2-3 follower posts, then 1 recommended)
-  const mixedPosts = useMemo(() => mixFollowerAndRecommendedPosts(posts), []);
+  // Fetch timeline on mount
+  useEffect(() => {
+    fetchTimeline(true);
+  }, [fetchTimeline]);
 
   const handleCloseFavorites = () => {
     setShowFavorites(false);
@@ -97,6 +106,20 @@ export default function FeedScreen() {
   const handleRemoveItem = (itemId: string) => {
     removeItem(itemId);
   };
+
+  // Refresh timeline
+  const handleRefresh = useCallback(async () => {
+    setRefreshing(true);
+    await fetchTimeline(true);
+    setRefreshing(false);
+  }, [fetchTimeline]);
+
+  // Load more timeline posts
+  const handleLoadMore = useCallback(async () => {
+    if (!timelineLoading) {
+      await loadMoreTimeline();
+    }
+  }, [timelineLoading, loadMoreTimeline]);
 
   // Handle scroll events for header animation
   const handleScroll = Animated.event(
@@ -237,59 +260,83 @@ export default function FeedScreen() {
         <FeedHeader onMenuPress={handleMenuPress} />
       </Animated.View>
 
-      <Animated.ScrollView
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
+      <FlatList<PostType>
+        data={timelinePosts}
+        renderItem={({ item }) => <Post key={item.post_id} post={item} />}
+        keyExtractor={(item) => item.post_id}
         contentContainerStyle={[
           styles.listContent,
           { paddingTop: Math.max(insets.top + 8, 16) + 48 } // Header height + safe area
         ]}
         showsVerticalScrollIndicator={false}
-      >
-        {/* Live Streams */}
-        {activeStreams.length > 0 && (
-          <View style={styles.fullWidthLiveSection}>
-            <LiveStreamsList 
-              streams={activeStreams} 
-              showHeaderTitle={false}
-              doorSubtitle="ウェーブス"
-            />
-          </View>
-        )}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            tintColor={colors.tint}
+          />
+        }
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        ListHeaderComponent={
+          <>
+            {/* Live Streams */}
+            {activeStreams.length > 0 && (
+              <View style={styles.fullWidthLiveSection}>
+                <LiveStreamsList
+                  streams={activeStreams}
+                  showHeaderTitle={false}
+                  doorSubtitle="ウェーブス"
+                />
+              </View>
+            )}
 
-        {/* Top Stylists Section */}
-        <TopStylists />
+            {/* Top Stylists Section */}
+            <TopStylists />
 
-        {/* Shop the Look Section - 2x4 Grid */}
-        <ShopTheLook />
+            {/* Shop the Look Section - 2x4 Grid */}
+            <ShopTheLook />
 
-        {/* Recommended Grid Section */}
-        <RecommendedGrid />
+            {/* Recommended Grid Section */}
+            <RecommendedGrid />
 
-        {/* Recommended Users Section */}
-        <RecommendedUsersSlider />
+            {/* Recommended Users Section */}
+            <RecommendedUsersSlider />
 
-        {/* Shopping Posts */}
-        {shoppingPosts.slice(0, 2).map((post) => (
-          <ShoppingPost key={post.id} post={post} />
-        ))}
+            {/* Shopping Posts - Day 5で統合予定 */}
+            {/* {shoppingPosts.slice(0, 2).map((post) => (
+              <ShoppingPost key={post.id} post={post} />
+            ))} */}
 
-        {/* Room Lives Section - 投稿の途中に表示 */}
-        <RoomLivesList />
+            {/* Room Lives Section - 投稿の途中に表示 */}
+            <RoomLivesList />
 
-        {/* More Shopping Posts */}
-        {shoppingPosts.slice(2, 3).map((post) => (
-          <ShoppingPost key={post.id} post={post} />
-        ))}
+            {/* More Shopping Posts - Day 5で統合予定 */}
+            {/* {shoppingPosts.slice(2, 3).map((post) => (
+              <ShoppingPost key={post.id} post={post} />
+            ))} */}
 
-        {/* Recommendations Slider */}
-        <RecommendationsSlider />
-
-        {/* Mixed Posts (Followers + Recommended) */}
-        {mixedPosts.map((post) => (
-          <Post key={post.id} post={post} />
-        ))}
-      </Animated.ScrollView>
+            {/* Recommendations Slider */}
+            <RecommendationsSlider />
+          </>
+        }
+        ListFooterComponent={
+          timelineLoading && !refreshing ? (
+            <View style={styles.loadingFooter}>
+              <ActivityIndicator size="large" color={colors.tint} />
+            </View>
+          ) : null
+        }
+        ListEmptyComponent={
+          !timelineLoading ? (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>
+                {timelineError || '投稿がありません'}
+              </Text>
+            </View>
+          ) : null
+        }
+      />
 
       <MenuDrawer visible={isMenuOpen} onClose={handleMenuClose} />
     </View>
@@ -445,5 +492,10 @@ const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   emptyText: {
     fontSize: 16,
     color: colors.secondaryText,
+  },
+  loadingFooter: {
+    paddingVertical: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
