@@ -1,10 +1,10 @@
 /**
  * ベースAPIクライアント
  * 全APIリクエストの基盤となるクラス
+ * Mock Implementation for Expo Go (no Cognito)
  */
 
 import Constants from 'expo-constants';
-import { fetchAuthSession } from 'aws-amplify/auth';
 import { ApiResponse, ApiError } from '@/types/api';
 import { ErrorCode } from '@/types/common';
 
@@ -42,15 +42,16 @@ export class BaseAPIClient {
   }
 
   /**
-   * 認証トークンを取得
+   * 認証トークンを取得（モック実装）
    */
   private async getAuthToken(): Promise<string | null> {
     try {
-      const session = await fetchAuthSession();
-      const idToken = session.tokens?.idToken?.toString();
-      return idToken || null;
+      // モック実装：実際のトークンは返さない
+      // 必要に応じてAsyncStorageからユーザー情報を取得してモックトークンを生成できる
+      console.log('⚠️ Mock auth token (Cognito disabled for Expo Go)');
+      return 'mock_token_for_expo_go';
     } catch (error) {
-      console.error('Failed to get auth token:', error);
+      console.error('Failed to get mock auth token:', error);
       return null;
     }
   }

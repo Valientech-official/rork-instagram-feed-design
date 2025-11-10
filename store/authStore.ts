@@ -1,40 +1,27 @@
 /**
- * Authentication Store with AWS Cognito Integration
- * Amplify v6 Auth API + Zustand
+ * Authentication Store - Mock Implementation for Expo Go
+ * No AWS Cognito (for development with Expo Go)
  */
 
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
-import {
-  signUp,
-  signIn,
-  signOut,
-  confirmSignUp,
-  resendSignUpCode,
-  resetPassword,
-  confirmResetPassword,
-  getCurrentUser,
-  fetchUserAttributes,
-  updateUserAttributes,
-  type SignUpInput,
-} from 'aws-amplify/auth';
 
 // =====================================================
 // Types
 // =====================================================
 
 export interface User {
-  userId: string; // Cognito sub
-  username: string; // Cognito username
+  userId: string;
+  username: string;
   email: string;
   emailVerified: boolean;
   phoneNumber?: string;
   phoneNumberVerified: boolean;
-  handle?: string; // custom:handle
-  accountType?: string; // custom:accountType
-  accountId?: string; // custom:accountId (DynamoDB ACCOUNT.account_id)
-  name?: string; // given_name
+  handle?: string;
+  accountType?: string;
+  accountId?: string;
+  name?: string;
   avatar?: string;
 }
 
@@ -152,153 +139,122 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   // =====================================================
 
   /**
-   * サインアップ（Cognito User Pool）
+   * サインアップ（モック実装 - Expo Go用）
    */
   signUp: async (params: SignUpParams) => {
-    // Web環境ではモック実装
-    if (Platform.OS === 'web') {
-      console.warn('⚠️ Web platform: Using mock signUp');
-      set({ error: 'Web環境ではサインアップできません。iOS/Androidアプリをご使用ください' });
-      return { success: false, username: '' };
-    }
-
     try {
       set({ isLoading: true, error: null });
 
       const { username, email, password, phoneNumber, handle, name, birthday } = params;
 
-      console.log('📝 SignUp params:', {
+      console.log('📝 Mock SignUp params:', {
         username,
         email,
         phoneNumber,
         handle,
         name,
         birthday,
-        passwordLength: password.length,
       });
 
-      const signUpInput: SignUpInput = {
+      // モックユーザーを作成
+      const mockUser: User = {
+        userId: `mock_${Date.now()}`,
         username,
-        password,
-        options: {
-          userAttributes: {
-            email,
-            phone_number: phoneNumber, // E.164形式（例: +81901234567）
-            'custom:handle': handle,
-            ...(name && { given_name: name }),
-            ...(birthday && { birthdate: birthday }),
-          },
-        },
+        email,
+        emailVerified: true, // モックでは検証済みとして扱う
+        phoneNumber,
+        phoneNumberVerified: true,
+        handle,
+        name,
       };
 
-      const { userId, nextStep } = await signUp(signUpInput);
+      // ローカルストレージに保存
+      await AsyncStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(mockUser));
+      await AsyncStorage.setItem(`@user_credentials_${username}`, JSON.stringify({ username, password }));
 
-      console.log('✅ SignUp successful:', { userId, nextStep });
+      console.log('✅ Mock SignUp successful:', mockUser);
 
       set({ isLoading: false });
       return { success: true, username };
     } catch (error: any) {
-      // 詳細なエラーログ
-      console.error('❌ SignUp failed - Full error:', {
-        name: error?.name,
-        message: error?.message,
-        code: error?.code,
-        fullError: error,
-      });
-
-      const errorMessage = getErrorMessage(error);
+      console.error('❌ Mock SignUp failed:', error);
+      const errorMessage = error?.message || '予期しないエラーが発生しました';
       set({ error: errorMessage, isLoading: false });
       throw new Error(errorMessage);
     }
   },
 
   /**
-   * メール確認コード送信
+   * メール確認コード送信（モック実装）
    */
   confirmSignUp: async (username: string, code: string) => {
-    if (Platform.OS === 'web') {
-      console.warn('⚠️ Web platform: Using mock confirmSignUp');
-      set({ error: 'Web環境では確認できません' });
-      return;
-    }
-
     try {
       set({ isLoading: true, error: null });
 
-      const { isSignUpComplete, nextStep } = await confirmSignUp({
-        username,
-        confirmationCode: code,
-      });
-
-      console.log('✅ Confirm SignUp successful:', { isSignUpComplete, nextStep });
+      console.log('✅ Mock Confirm SignUp successful (any code accepted)');
 
       set({ isLoading: false });
     } catch (error: any) {
-      const errorMessage = getErrorMessage(error);
-      console.error('❌ Confirm SignUp failed:', error);
+      console.error('❌ Mock Confirm SignUp failed:', error);
+      const errorMessage = error?.message || '予期しないエラーが発生しました';
       set({ error: errorMessage, isLoading: false });
       throw new Error(errorMessage);
     }
   },
 
   /**
-   * 確認コード再送信
+   * 確認コード再送信（モック実装）
    */
   resendConfirmationCode: async (username: string) => {
-    if (Platform.OS === 'web') {
-      console.warn('⚠️ Web platform: Using mock resendConfirmationCode');
-      return;
-    }
-
     try {
       set({ isLoading: true, error: null });
 
-      await resendSignUpCode({ username });
-
-      console.log('✅ Confirmation code resent');
+      console.log('✅ Mock confirmation code resent');
       set({ isLoading: false });
     } catch (error: any) {
-      const errorMessage = getErrorMessage(error);
-      console.error('❌ Resend confirmation code failed:', error);
+      console.error('❌ Mock resend confirmation code failed:', error);
+      const errorMessage = error?.message || '予期しないエラーが発生しました';
       set({ error: errorMessage, isLoading: false });
       throw new Error(errorMessage);
     }
   },
 
   /**
-   * サインイン
+   * サインイン（モック実装）
    */
   signIn: async (username: string, password: string) => {
-    if (Platform.OS === 'web') {
-      console.warn('⚠️ Web platform: Using mock signIn');
-      // Webでのモック実装
-      const mockUser: User = {
-        userId: `web_mock_${Date.now()}`,
-        username,
-        email: `${username}@example.com`,
-        emailVerified: true,
-        phoneNumberVerified: false,
-      };
-      await AsyncStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(mockUser));
-      set({ isAuthenticated: true, user: mockUser, isLoading: false });
-      return;
-    }
-
     try {
       set({ isLoading: true, error: null });
 
-      const { isSignedIn, nextStep } = await signIn({
-        username,
-        password,
-        options: {
-          authFlowType: "USER_PASSWORD_AUTH"
-        }
-      });
+      // 保存された認証情報を確認
+      const credentialsJson = await AsyncStorage.getItem(`@user_credentials_${username}`);
+      const credentials = credentialsJson ? JSON.parse(credentialsJson) : null;
 
-      console.log('✅ SignIn successful:', { isSignedIn, nextStep });
+      // パスワードチェック（認証情報がある場合のみ）
+      if (credentials && credentials.password !== password) {
+        set({ error: 'ユーザー名またはパスワードが間違っています', isLoading: false });
+        throw new Error('ユーザー名またはパスワードが間違っています');
+      }
 
-      // ユーザー情報を取得
-      await get().refreshUser();
+      // ユーザーデータを取得または作成
+      let userJson = await AsyncStorage.getItem(STORAGE_KEYS.USER_DATA);
+      let user: User;
+
+      if (userJson) {
+        user = JSON.parse(userJson);
+      } else {
+        // 新規ユーザーの場合はモックユーザーを作成
+        user = {
+          userId: `mock_${Date.now()}`,
+          username,
+          email: credentials?.email || `${username}@example.com`,
+          emailVerified: true,
+          phoneNumberVerified: false,
+        };
+        await AsyncStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(user));
+      }
+
+      console.log('✅ Mock SignIn successful:', user);
 
       // オンボーディング状態を取得
       const onboardingCompleted = await AsyncStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED);
@@ -306,36 +262,25 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
       set({
         isAuthenticated: true,
+        user,
         hasCompletedOnboarding: onboardingCompleted === 'true',
         onboardingStep: onboardingStep ? parseInt(onboardingStep, 10) : 0,
         isLoading: false
       });
     } catch (error: any) {
-      const errorMessage = getErrorMessage(error);
-      console.error('❌ SignIn failed:', error);
+      console.error('❌ Mock SignIn failed:', error);
+      const errorMessage = error?.message || 'ログインに失敗しました';
       set({ error: errorMessage, isLoading: false });
-
-      // UserNotConfirmedExceptionの場合、特別なエラーとしてthrow
-      if (error?.name === 'UserNotConfirmedException') {
-        const err = new Error(errorMessage);
-        (err as any).name = 'UserNotConfirmedException';
-        throw err;
-      }
-
       throw new Error(errorMessage);
     }
   },
 
   /**
-   * サインアウト
+   * サインアウト（モック実装）
    */
   signOut: async () => {
     try {
       set({ isLoading: true, error: null });
-
-      if (Platform.OS !== 'web') {
-        await signOut();
-      }
 
       // ローカルストレージをクリア
       await AsyncStorage.multiRemove([
@@ -346,7 +291,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         STORAGE_KEYS.ONBOARDING_DATA,
       ]);
 
-      console.log('✅ SignOut successful');
+      console.log('✅ Mock SignOut successful');
 
       set({
         isAuthenticated: false,
@@ -357,94 +302,68 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         isLoading: false,
       });
     } catch (error: any) {
-      console.error('❌ SignOut failed:', error);
+      console.error('❌ Mock SignOut failed:', error);
       set({ isLoading: false });
     }
   },
 
   /**
-   * 現在のユーザー情報を更新
+   * 現在のユーザー情報を更新（モック実装）
    */
   refreshUser: async () => {
-    if (Platform.OS === 'web') {
-      return;
-    }
-
     try {
-      const currentUser = await getCurrentUser();
-      const attributes = await fetchUserAttributes();
+      const userJson = await AsyncStorage.getItem(STORAGE_KEYS.USER_DATA);
 
-      const user: User = {
-        userId: currentUser.userId,
-        username: currentUser.username,
-        email: attributes.email || '',
-        emailVerified: attributes.email_verified === 'true',
-        phoneNumber: attributes.phone_number,
-        phoneNumberVerified: attributes.phone_number_verified === 'true',
-        handle: attributes['custom:handle'],
-        accountType: attributes['custom:accountType'],
-        accountId: attributes['custom:accountId'],
-        name: attributes.given_name,
-      };
+      if (!userJson) {
+        throw new Error('No user data found');
+      }
 
-      await AsyncStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(user));
+      const user: User = JSON.parse(userJson);
       set({ user });
 
-      console.log('✅ User refreshed:', user);
+      console.log('✅ Mock User refreshed:', user);
     } catch (error: any) {
-      // 未ログイン状態でのエラーは正常な動作なので、ログを出さない
-      // checkAuthStatus()からの呼び出しで未認証ユーザーの場合に発生
       throw error; // checkAuthStatus()のtry-catchで処理
     }
   },
 
   /**
-   * パスワードリセット開始
+   * パスワードリセット開始（モック実装）
    */
   forgotPassword: async (username: string) => {
-    if (Platform.OS === 'web') {
-      console.warn('⚠️ Web platform: forgotPassword not supported');
-      return;
-    }
-
     try {
       set({ isLoading: true, error: null });
 
-      await resetPassword({ username });
-
-      console.log('✅ Password reset code sent');
+      console.log('✅ Mock password reset code sent');
       set({ isLoading: false });
     } catch (error: any) {
-      const errorMessage = getErrorMessage(error);
-      console.error('❌ Forgot password failed:', error);
+      console.error('❌ Mock forgot password failed:', error);
+      const errorMessage = error?.message || '予期しないエラーが発生しました';
       set({ error: errorMessage, isLoading: false });
       throw new Error(errorMessage);
     }
   },
 
   /**
-   * パスワードリセット確定
+   * パスワードリセット確定（モック実装）
    */
   confirmResetPassword: async (username: string, code: string, newPassword: string) => {
-    if (Platform.OS === 'web') {
-      console.warn('⚠️ Web platform: confirmResetPassword not supported');
-      return;
-    }
-
     try {
       set({ isLoading: true, error: null });
 
-      await confirmResetPassword({
-        username,
-        confirmationCode: code,
-        newPassword,
-      });
+      // パスワードを更新
+      const credentialsJson = await AsyncStorage.getItem(`@user_credentials_${username}`);
+      if (credentialsJson) {
+        const credentials = JSON.parse(credentialsJson);
+        credentials.password = newPassword;
+        await AsyncStorage.setItem(`@user_credentials_${username}`, JSON.stringify(credentials));
+      }
 
-      console.log('✅ Password reset successful');
+      console.log('✅ Mock password reset successful');
       set({ isLoading: false });
     } catch (error: any) {
-      const errorMessage = getErrorMessage(error);
-      console.error('❌ Confirm reset password failed:', error);
+      console.error('❌ Mock confirm reset password failed:', error);
+      const errorMessage = error?.message || '予期しないエラーが発生しました';
       set({ error: errorMessage, isLoading: false });
       throw new Error(errorMessage);
     }
@@ -489,36 +408,20 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     try {
       set({ isLoading: true });
 
-      if (Platform.OS === 'web') {
-        // Web環境: ローカルストレージから読み込み
-        const userData = await AsyncStorage.getItem(STORAGE_KEYS.USER_DATA);
-        const user = userData ? JSON.parse(userData) : null;
-        const onboardingCompleted = await AsyncStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED);
-
-        set({
-          isAuthenticated: !!user,
-          user,
-          hasCompletedOnboarding: onboardingCompleted === 'true',
-          isLoading: false,
-        });
-        return;
-      }
-
-      // ネイティブ環境: Cognitoから取得
+      // ローカルストレージから読み込み
       try {
         await get().refreshUser();
 
         const onboardingCompleted = await AsyncStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED);
         const onboardingStep = await AsyncStorage.getItem(STORAGE_KEYS.ONBOARDING_STEP);
 
-        console.log('📊 checkAuthStatus - AsyncStorage values:', {
+        console.log('📊 Mock checkAuthStatus - AsyncStorage values:', {
           onboardingCompleted,
           onboardingStep,
           parsedStep: onboardingStep ? parseInt(onboardingStep, 10) : 0,
         });
 
-        // TEMPORARY FIX: メール確認済みユーザーのステップを修正
-        // サインアップ完了後のユーザーは、profileステップ(2)をスキップしてavatar(3)から開始
+        // メール確認済みユーザーのステップを修正
         let finalStep = onboardingStep ? parseInt(onboardingStep, 10) : 0;
 
         // ステップ1でメール確認済みの場合、ステップ3に更新
@@ -535,7 +438,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
           isLoading: false,
         });
       } catch (error) {
-        // Cognitoセッションなし
+        // セッションなし
         set({
           isAuthenticated: false,
           user: null,
