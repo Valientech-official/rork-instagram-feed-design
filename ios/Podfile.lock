@@ -23,6 +23,9 @@ PODS:
     - Yoga
   - EASClient (1.0.7):
     - ExpoModulesCore
+  - EXAV (16.0.7):
+    - ExpoModulesCore
+    - ReactCommon/turbomodule/core
   - EXConstants (18.0.10):
     - ExpoModulesCore
   - EXImageLoader (6.0.0):
@@ -2376,6 +2379,7 @@ PODS:
 DEPENDENCIES:
   - "AmplifyRTNCore (from `../node_modules/@aws-amplify/react-native`)"
   - EASClient (from `../node_modules/expo-eas-client/ios`)
+  - EXAV (from `../node_modules/expo-av/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
   - EXImageLoader (from `../node_modules/expo-image-loader/ios`)
   - EXJSONUtils (from `../node_modules/expo-json-utils/ios`)
@@ -2504,6 +2508,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@aws-amplify/react-native"
   EASClient:
     :path: "../node_modules/expo-eas-client/ios"
+  EXAV:
+    :path: "../node_modules/expo-av/ios"
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
   EXImageLoader:
@@ -2727,6 +2733,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AmplifyRTNCore: fac75a5dbb337828554946fdb9e6b0e1fffd99d0
   EASClient: 68127f1248d2b25fdc82dbbfb17be95d1c4700be
+  EXAV: e3fefaca88f14624bca01d9a128562a5f8e738f8
   EXConstants: fd688cef4e401dcf798a021cfb5d87c890c30ba3
   EXImageLoader: 189e3476581efe3ad4d1d3fb4735b7179eb26f05
   EXJSONUtils: 1d3e4590438c3ee593684186007028a14b3686cd
