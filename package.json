@@ -8,7 +8,7 @@
     "start-web-dev": "DEBUG=expo* bunx rork start -p 9wafn0gn8nbgexw7n84p4 --web --tunnel",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "postinstall": "rm -rf node_modules/@aws-amplify/rtn-push-notification || true"
+    "postinstall": "node -e \"try{require('fs').rmSync('node_modules/@aws-amplify/rtn-push-notification',{recursive:true,force:true})}catch(e){}\""
   },
   "dependencies": {
     "@aws-amplify/react-native": "^1.2.0",

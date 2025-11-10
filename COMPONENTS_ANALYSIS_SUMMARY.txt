@@ -1,0 +1,21 @@
+# Components Directory - Comprehensive Analysis
+
+## Overview
+The project contains 60 React Native components organized in the components/ directory.
+These components form a fashion-focused Instagram-like social app called 'Piece' with e-commerce integration.
+
+## Component Directory Structure
+
+- Root level: 40 main components
+- home/: 5 components for home screen
+- icons/: 3 custom icon components
+- onboarding/: 6 components for onboarding flow
+
+## Key Statistics
+
+- Total Components: 60
+- Components Using Mock Data: 17
+- Mock Data Files: 16 different files
+- Navigation Routes: 13 main routes
+- Zustand Stores: 4 main stores
+- Theme Support: 28+ components

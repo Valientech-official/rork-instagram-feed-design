@@ -1,0 +1,1916 @@
+================================================================================
+RORK INSTAGRAM FEED DESIGN - 完全実装計画（本番環境移行含む）
+期間: 2025年11月9日 - 11月21日 (12日間)
+目標: ローンチ可能なアプリの完成、App Store/Google Play提出準備完了
+================================================================================
+
+最新の追加要求事項
+================================================================================
+1. おすすめアルゴリズム関数の作成（全機能で共通使用）
+   - タイムライン推薦
+   - Room推薦
+   - 商品推薦
+   - ユーザー推薦
+   - ハッシュタグ推薦
+
+2. カメラ機能の優先実装（Day 3-4に前倒し）
+   - ライブ配信での使用が必要
+   - 投稿作成での使用
+   - プロフィール画像撮影
+
+3. AWS dev環境から本番環境への移行（Day 12）
+   - インフラストラクチャのコピー
+   - 環境変数の切り替え
+   - 本番用ビルドの作成
+
+================================================================================
+現在のバックエンド環境
+================================================================================
+Dev環境:
+  - API URL: https://b6om6sz99f.execute-api.ap-northeast-1.amazonaws.com/dev/
+  - Cognito User Pool: ap-northeast-1_LKhwTdez4
+  - リージョン: ap-northeast-1
+
+本番環境移行予定:
+  - API URL: https://b6om6sz99f.execute-api.ap-northeast-1.amazonaws.com/prod/
+  - Cognito User Pool: 新規作成または既存
+  - 同一リージョン: ap-northeast-1
+
+================================================================================
+更新されたスケジュール概要
+================================================================================
+Day 1-2  (11/9-10)  : 基盤構築 + おすすめアルゴリズム設計
+Day 3-4  (11/11-12) : カメラ機能実装 + P0機能統合
+Day 5-6  (11/13-14) : P1機能統合 + アプリ内課金実装
+Day 7-8  (11/15-16) : P2機能統合（DM、ライブ配信）+ おすすめ統合
+Day 9    (11/17)    : P3機能統合 + AI機能強化実装
+Day 10   (11/18)    : IMPLEMENTATION_TODO対応 + テスト実装
+Day 11   (11/19)    : 品質保証 + バグフィックス
+Day 12   (11/20)    : AWS本番移行 + ストア準備
+Day 13   (11/21)    : 納品日
+
+================================================================================
+Day 1: 11月9日 (土) - 基盤構築 + おすすめアルゴリズム設計 ✅ 完了
+================================================================================
+目標: APIクライアント層の完成 + おすすめアルゴリズムの設計
+
+午前 (4時間)
+------------
+[✓] タスク 1.1: プロジェクト構造の整理 ✅ 完了
+    - lib/api/ ディレクトリ作成
+    - lib/utils/ ディレクトリ作成
+    - lib/iap/ ディレクトリ作成（アプリ内課金用）
+    - lib/recommendation/ ディレクトリ作成（推薦アルゴリズム用）
+    - lib/camera/ ディレクトリ作成（カメラ機能用）
+    - types/ ディレクトリ作成
+    所要時間: 30分
+
+[✓] タスク 1.2: 型定義のインポート ✅ 完了
+    - backend/src/types/api.ts の内容をコピー
+    - types/api.ts として配置（471行）
+    - types/common.ts を作成（132行）
+    - フロントエンド用に型を調整
+    - AI機能用の型追加（AIGenerationType, GenerateAIImageRequest等）
+    - IAP用の型追加（Subscription, VerifyPurchaseRequest等）
+    - 推薦システム用の型追加（RecommendationType, TrackBehaviorRequest等）
+    所要時間: 1時間
+
+[✓] タスク 1.3: ベースAPIクライアントの作成 ✅ 完了
+    ファイル: lib/api/client.ts（333行）
+    実装内容:
+    - BaseAPIClient クラス作成
+    - fetch ラッパー実装（タイムアウト付き）
+    - 認証トークン自動付与（AWS Amplify統合）
+    - リクエストインターセプター
+    - レスポンスインターセプター
+    - 環境別エンドポイント管理（dev/prod切替対応）
+    - GET/POST/PUT/PATCH/DELETEメソッド実装
+    - HTTPステータスコードのエラーコードマッピング
+    所要時間: 2時間
+
+[✓] タスク 1.4: エラーハンドリングユーティリティ ✅ 完了
+    ファイル: lib/utils/errorHandler.ts（259行）
+    実装内容:
+    - APIError クラス定義
+    - エラーコード変換（日本語メッセージ）
+    - ユーザー向けエラーメッセージ生成
+    - リトライ可否判定（isRetryableError）
+    - 認証エラー判定（isAuthError）
+    - ネットワークエラー判定
+    - エラーログ記録（開発環境のみ）
+    所要時間: 30分
+
+午後 (4時間)
+------------
+[✓] タスク 1.5: おすすめアルゴリズムの設計 ✅ 完了
+    ファイル: docs/recommendation-algorithm.md（完全な設計書）
+    設計内容:
+
+    1. アルゴリズムの種類
+       - コンテンツベースフィルタリング（60%）
+       - 協調フィルタリング（30%）
+       - 人気度ベース（10%）
+
+    2. スコアリング要素と重み
+       - タイムライン: カテゴリ35%、フォロー25%、人気15%、新鮮度15%、類似10%
+       - Room: 参加履歴40%、メンバー25%、投稿頻度15%、フォロワー10%、新規10%
+       - 商品: 閲覧履歴35%、価格帯20%、トレンド20%、販売実績15%、フォロワー10%
+       - ユーザー: 共通フォロワー30%、興味類似25%、アクティビティ20%、相互15%、投稿10%
+       - ハッシュタグ: 使用履歴35%、トレンド30%、関連20%、フォロワー15%
+
+    3. 推薦対象
+       - タイムライン投稿推薦
+       - Room推薦
+       - 商品推薦
+       - ユーザー推薦
+       - ハッシュタグ推薦
+
+    4. バックエンドテーブル設計
+       - USER_BEHAVIOR テーブル
+         - account_id (PK)
+         - behavior_type (いいね、コメント、閲覧等)
+         - target_id (投稿ID、商品ID等)
+         - timestamp
+         - weight (重み付け)
+         - ttl (30日)
+
+       - RECOMMENDATION_CACHE テーブル
+         - account_id (PK)
+         - recommendation_type (SK) (timeline, room, product, user)
+         - recommended_items (リスト)
+         - scores (リスト)
+         - updated_at
+         - expires_at (TTL: 1時間)
+
+    5. APIエンドポイント設計
+       - GET /recommendation/timeline
+       - GET /recommendation/rooms
+       - GET /recommendation/products
+       - GET /recommendation/users
+       - GET /recommendation/hashtags
+       - POST /recommendation/track-behavior
+
+    所要時間: 2時間
+
+[✓] タスク 1.6: おすすめアルゴリズムの基盤実装 ✅ 完了
+    ファイル: lib/recommendation/engine.ts（433行）
+    実装内容:
+
+    1. 基本スコアリング関数（4関数）
+       - calculateContentScore() - コンテンツベーススコア
+       - calculatePopularityScore() - 人気度スコア
+       - calculateFreshnessScore() - 新鮮度スコア（指数減衰）
+       - calculateSimilarityScore() - 類似度スコア
+
+    2. 統合スコアリング（2関数）
+       - combineScores() - 各スコアの重み付け統合
+       - normalizeScores() - Min-Max正規化
+
+    3. ユーティリティ関数（7関数）
+       - filterByCategory() - カテゴリフィルタ
+       - deduplicateItems() - 重複除去
+       - shuffleWithinBuckets() - バケット内シャッフル（多様性）
+       - scoreItem() - 単一アイテムのスコアリング
+       - scoreItems() - 複数アイテムのスコアリング
+       - getTopRecommendations() - トップN推薦取得
+       - mixRecommendations() - フォロー投稿とおすすめのミックス
+
+    所要時間: 1.5時間
+
+[✓] タスク 1.7: リトライロジックの実装 ✅ 完了
+    ファイル: lib/utils/retry.ts（262行）
+    実装内容:
+    - 指数バックオフ実装（ジッター付き）
+    - 最大リトライ回数設定（デフォルト: 3回）
+    - リトライ可能なエラーの判定（5xx, 429, ネットワークエラー）
+    - withRetry関数 - リトライ付き実行
+    - createRetryable関数 - リトライ可能な関数を作成
+    - retrySequence関数 - 順次リトライ実行
+    - retryParallel関数 - 並列リトライ実行
+    - withRetryAndTimeout関数 - タイムアウト付きリトライ
+    - RetryManagerクラス - リトライ状態管理
+    所要時間: 30分
+
+Day 1 完了条件: ✅ すべて達成
+- APIクライアント基盤が完成（環境切替対応）
+- おすすめアルゴリズムの設計が完了
+- おすすめエンジンの基盤が実装（13関数、433行）
+- エラーハンドリングが機能（日本語メッセージ対応）
+- 総実装行数: 1,890行
+- ライブラリ依存なし（自前実装）
+
+================================================================================
+Day 2: 11月10日 (日) - 基盤構築 Part 2 + おすすめバックエンド
+================================================================================
+目標: コアストアの作成 + おすすめバックエンド実装
+
+午前 (4時間)
+------------
+[ ] タスク 2.1: postsStore の作成
+    ファイル: store/postsStore.ts
+    実装内容:
+    - 投稿一覧の状態管理
+    - fetchTimeline() 関数（おすすめ統合）
+    - fetchRecommendedPosts() 関数（新規）
+    - loadMore() 関数（ページネーション）
+    - likePost() / unlikePost() 関数
+    - deletePost() 関数
+    - nextToken 管理
+    - loading/error 状態管理
+    所要時間: 2時間
+
+[ ] タスク 2.2: usersStore の作成
+    ファイル: store/usersStore.ts
+    実装内容:
+    - ユーザー情報のキャッシング
+    - getUserProfile() 関数
+    - followUser() / unfollowUser() 関数
+    - updateProfile() 関数
+    - fetchRecommendedUsers() 関数（新規）
+    - フォロワー/フォロー中リスト管理
+    所要時間: 1.5時間
+
+[ ] タスク 2.3: notificationsStore, productsStore の作成
+    ファイル: store/notificationsStore.ts, store/productsStore.ts
+    実装内容:
+    - 通知一覧の状態管理
+    - 商品一覧の状態管理
+    - fetchRecommendedProducts() 関数（新規）
+    所要時間: 30分
+
+午後 (4時間)
+------------
+[ ] タスク 2.4: おすすめバックエンドハンドラーの実装
+    ファイル: backend/src/handlers/recommendation/
+    実装内容:
+
+    1. getTimelineRecommendations.ts
+       - ユーザーの行動履歴を取得
+       - 興味カテゴリの抽出
+       - フォロー中ユーザーの投稿優先
+       - おすすめ投稿のスコアリング
+       - 上位N件を返却
+
+    2. getRoomRecommendations.ts
+       - ユーザーの参加Room履歴
+       - 興味トピックの抽出
+       - アクティブなRoom優先
+       - おすすめRoomのスコアリング
+
+    3. getProductRecommendations.ts
+       - 閲覧・いいね履歴
+       - カテゴリ別推薦
+       - 価格帯の考慮
+       - トレンド商品の混在
+
+    4. getUserRecommendations.ts
+       - フォロワーの展開性
+       - 興味の類似度
+       - アクティビティレベル
+       - 相互フォロー確率
+
+    5. trackBehavior.ts
+       - ユーザー行動の記録
+       - USER_BEHAVIORテーブルへの保存
+       - リアルタイム反映
+
+    所要時間: 2.5時間
+
+[ ] タスク 2.5: AI機能用ストアの作成
+    ファイル: store/aiStore.ts
+    実装内容:
+    - AI生成履歴の管理
+    - 使用回数の管理（ローカルキャッシュ）
+    - プロンプトテンプレートの管理
+    - generateImage() 関数
+    - checkUsageLimit() 関数
+    - resetUsageCount() 関数
+    所要時間: 1時間
+
+[ ] タスク 2.6: IAP用ストアの作成
+    ファイル: store/iapStore.ts
+    実装内容:
+    - サブスクリプション状態の管理
+    - 購入履歴の管理
+    - isPremium フラグ
+    - purchaseProduct() 関数
+    - restorePurchases() 関数
+    - checkSubscriptionStatus() 関数
+    所要時間: 30分
+
+Day 2 完了条件:
+- 全コアストアが完成（posts, users, notifications, products, ai, iap）
+- おすすめバックエンドハンドラーが実装
+- 全ストアがTypeScript型安全
+- テスト可能な構造
+
+================================================================================
+Day 3: 11月11日 (月) - カメラ機能実装 + P0機能統合 Part 1
+================================================================================
+目標: カメラ機能完成 + フィード・タイムライン、いいね機能の統合
+
+午前 (4時間)
+------------
+[ ] タスク 3.1: カメラ機能の完全実装
+    ファイル: lib/camera/cameraManager.ts, components/CameraView.tsx
+    実装内容:
+
+    1. カメラマネージャー
+       - expo-camera の初期化
+       - パーミッション管理
+       - カメラタイプ切り替え（フロント/リア）
+       - フラッシュモード制御
+       - ズーム機能
+
+    2. 写真撮影機能
+       - 高解像度写真撮影
+       - プレビュー表示
+       - トリミング機能
+       - フィルター適用（基本）
+       - EXIF情報の保持
+
+    3. 動画撮影機能
+       - 動画撮影（最大60秒）
+       - 録画中のUI表示
+       - 録画時間カウンター
+       - 一時停止/再開機能
+       - 動画プレビュー
+
+    4. UI実装
+       - カメラプレビュー画面
+       - シャッターボタン（写真/動画切替）
+       - カメラ切替ボタン
+       - フラッシュボタン
+       - グリッド表示トグル
+       - タイマー設定（3秒/10秒）
+       - ギャラリーアクセスボタン
+
+    5. 統合先
+       - 投稿作成画面（PostCreationFlow）
+       - プロフィール画像撮影
+       - ライブ配信開始画面（事前準備）
+       - DM画像送信
+
+    所要時間: 3時間
+
+[ ] タスク 3.2: カメラ機能のテスト
+    実装内容:
+    - iOS実機テスト
+    - Android実機テスト
+    - パーミッション確認
+    - 各種解像度での動作確認
+    所要時間: 1時間
+
+午後 (4時間)
+------------
+[ ] タスク 3.3: Timeline API クライアント作成
+    ファイル: lib/api/timeline.ts
+    実装内容:
+    - getTimeline() 関数（おすすめ統合）
+    - getUserPosts() 関数
+    - getDiscoveryPosts() 関数
+    - getRecommendedPosts() 関数（新規）
+    所要時間: 1時間
+
+[ ] タスク 3.4: フィード画面の統合
+    ファイル: app/(tabs)/index.tsx
+    実装内容:
+    - モックデータ削除
+    - postsStore 統合
+    - おすすめ投稿の混在表示
+    - useEffect でデータ取得
+    - FlatList の onEndReached 実装
+    - 引っ張って更新（RefreshControl）
+    - loading/error 状態表示
+    所要時間: 2時間
+
+[ ] タスク 3.5: いいね機能の実装
+    ファイル: lib/api/likes.ts, components/Post.tsx
+    実装内容:
+    - likePost() 関数
+    - unlikePost() 関数
+    - いいねボタンのAPI接続
+    - 楽観的UI更新
+    - 行動トラッキング（trackBehavior）
+    所要時間: 1時間
+
+Day 3 完了条件:
+- カメラ機能が完全に動作
+- フィードが実データで動作
+- いいねが完全に機能
+- 行動トラッキングが有効
+
+================================================================================
+Day 4: 11月12日 (火) - P0機能統合 Part 2
+================================================================================
+目標: フォロー機能、コメント機能、投稿作成の完全統合
+
+午前 (4時間)
+------------
+[ ] タスク 4.1: Follow API クライアント作成
+    ファイル: lib/api/follows.ts
+    実装内容:
+    - followUser() 関数
+    - unfollowUser() 関数
+    - getFollowers() 関数
+    - getFollowing() 関数
+    - 行動トラッキング統合
+    所要時間: 1時間
+
+[ ] タスク 4.2: フォローボタンの実装
+    ファイル: components/FollowButton.tsx
+    実装内容:
+    - フォロー/アンフォローボタン
+    - 楽観的UI更新
+    - loading 状態
+    - エラーハンドリング
+    所要時間: 1時間
+
+[ ] タスク 4.3: プロフィール画面のフォロー統合
+    ファイル: app/(tabs)/profile.tsx
+    実装内容:
+    - フォローボタン配置
+    - フォロワー数表示
+    - フォロー中数表示
+    - おすすめユーザー表示（新規）
+    所要時間: 1時間
+
+[ ] タスク 4.4: フォロワー/フォロー中リスト画面
+    ファイル: app/followers.tsx, app/following.tsx
+    実装内容:
+    - リスト表示
+    - フォロー/アンフォロー操作
+    - ページネーション
+    所要時間: 1時間
+
+午後 (4時間)
+------------
+[ ] タスク 4.5: Comment API クライアント作成
+    ファイル: lib/api/comments.ts
+    実装内容:
+    - createComment() 関数
+    - getComments() 関数
+    - deleteComment() 関数
+    - 行動トラッキング統合
+    所要時間: 1時間
+
+[ ] タスク 4.6: コメント機能の完全実装
+    ファイル: components/CommentModal.tsx, components/CommentList.tsx
+    実装内容:
+    - コメント入力フォーム
+    - 送信処理
+    - コメント一覧表示
+    - 返信機能（ネスト表示）
+    - ページネーション
+    - 削除機能
+    所要時間: 2時間
+
+[ ] タスク 4.7: 投稿作成機能の統合（カメラ統合）
+    ファイル: components/PostCreationFlow.tsx
+    実装内容:
+    - カメラ機能統合
+    - 写真/動画選択
+    - 複数画像対応
+    - キャプション入力
+    - ハッシュタグ機能
+    - 位置情報タグ
+    - 投稿送信処理
+    所要時間: 1時間
+
+Day 4 完了条件:
+- フォロー機能が完全動作
+- コメント機能が完全動作
+- 投稿作成がカメラ統合で完成
+- 行動トラッキングが全機能で動作
+
+================================================================================
+Day 5: 11月13日 (水) - P1機能統合 + アプリ内課金実装 Part 1
+================================================================================
+目標: 商品機能統合 + IAP基盤実装
+
+午前 (4時間)
+------------
+[ ] タスク 5.1: Product API クライアント作成
+    ファイル: lib/api/products.ts
+    実装内容:
+    - getProducts() 関数（フィルタ付き）
+    - getRecommendedProducts() 関数（新規）
+    - getProduct() 関数（詳細取得）
+    - createProduct() 関数
+    - updateProduct() 関数
+    - deleteProduct() 関数
+    - clickProduct() トラッキング
+    所要時間: 1.5時間
+
+[ ] タスク 5.2: ショップ画面の統合
+    ファイル: app/(tabs)/shop.tsx
+    実装内容:
+    - モックデータ削除
+    - productsStore 統合
+    - おすすめ商品セクション追加
+    - カテゴリフィルタ実装
+    - 検索機能
+    - ページネーション
+    所要時間: 2時間
+
+[ ] タスク 5.3: 商品詳細画面の実装
+    ファイル: app/product/[id].tsx
+    実装内容:
+    - 商品詳細表示
+    - カートへ追加
+    - 販売者情報表示
+    - 関連おすすめ商品表示（新規）
+    所要時間: 30分
+
+午後 (4時間)
+------------
+[ ] タスク 5.4: アプリ内課金パッケージのインストール
+    実装内容:
+    - react-native-iap インストール
+    - iOS設定（Capabilities追加）
+    - Android設定（build.gradle修正）
+    - App Store Connect / Google Play Console 設定確認
+    所要時間: 1時間
+
+[ ] タスク 5.5: IAP基盤の実装
+    ファイル: lib/iap/iapManager.ts
+    実装内容:
+    - IAP初期化
+    - 商品情報取得
+    - 購入処理
+    - レシート検証（バックエンド連携）
+    - リストア機能
+    - サブスクリプション状態確認
+    所要時間: 2.5時間
+
+[ ] タスク 5.6: バックエンドハンドラー作成（購入検証）
+    ファイル: backend/src/handlers/purchase/verifyPurchase.ts
+    実装内容:
+    - Apple/Googleレシート検証
+    - SUBSCRIPTIONテーブル更新
+    - PURCHASE_HISTORYテーブル記録
+    所要時間: 30分
+
+Day 5 完了条件:
+- 商品一覧が実データで表示
+- おすすめ商品が表示
+- IAPの基盤が完成
+- 購入検証が動作
+
+================================================================================
+Day 6: 11月14日 (木) - P1機能統合 + アプリ内課金実装 Part 2
+================================================================================
+目標: 通知システム、プロフィール機能、IAP UI実装
+
+午前 (4時間)
+------------
+[ ] タスク 6.1: Notification API クライアント作成
+    ファイル: lib/api/notifications.ts
+    実装内容:
+    - getNotifications() 関数
+    - markAsRead() 関数
+    - updateNotificationSettings() 関数
+    所要時間: 1時間
+
+[ ] タスク 6.2: 通知画面の統合
+    ファイル: app/(tabs)/activity.tsx
+    実装内容:
+    - モックデータ削除
+    - notificationsStore 統合
+    - 未読バッジ表示
+    - タップで該当画面へ遷移
+    - ページネーション
+    所要時間: 2時間
+
+[ ] タスク 6.3: プッシュ通知の設定（基本）
+    実装内容:
+    - Expo Notifications 設定
+    - デバイストークン取得
+    - バックエンドへの登録
+    所要時間: 1時間
+
+午後 (4時間)
+------------
+[ ] タスク 6.4: IAP UIの実装
+    ファイル: components/PremiumModal.tsx
+    実装内容:
+    - プレミアムプラン紹介
+    - 月額/年額選択
+    - 購入ボタン
+    - リストアボタン
+    - 利用規約・プライバシーポリシーリンク
+    所要時間: 2時間
+
+[ ] タスク 6.5: 設定画面へのIAP統合
+    ファイル: app/settings/index.tsx
+    実装内容:
+    - サブスクリプション状態表示
+    - プレミアムアップグレードボタン
+    - サブスクリプション管理リンク
+    - 購入履歴表示
+    所要時間: 1時間
+
+[ ] タスク 6.6: AI機能へのIAP統合
+    ファイル: components/AIDressUpModal.tsx
+    実装内容:
+    - 無料回数チェック
+    - 上限到達時のプレミアム誘導
+    - プレミアムユーザーの無制限使用
+    所要時間: 1時間
+
+Day 6 完了条件:
+- 通知が実データで動作
+- プッシュ通知の基盤完成
+- IAPが完全に機能
+- プレミアムプランが購入可能
+
+================================================================================
+Day 7: 11月15日 (金) - P2機能統合 Part 1（DM + おすすめ統合）
+================================================================================
+目標: ダイレクトメッセージ機能の統合 + おすすめユーザー統合
+
+午前 (4時間)
+------------
+[ ] タスク 7.1: Message API クライアント作成
+    ファイル: lib/api/messages.ts
+    実装内容:
+    - getConversations() 関数（会話一覧）
+    - getMessages() 関数（メッセージ取得）
+    - sendMessage() 関数
+    - deleteMessage() 関数
+    - createConversation() 関数
+    所要時間: 1.5時間
+
+[ ] タスク 7.2: messagesStore の作成
+    ファイル: store/messagesStore.ts
+    実装内容:
+    - 会話一覧の状態管理
+    - メッセージのキャッシング
+    - 未読数カウント
+    - リアルタイム更新対応
+    所要時間: 1.5時間
+
+[ ] タスク 7.3: 会話一覧画面の統合
+    ファイル: app/(tabs)/dm.tsx
+    実装内容:
+    - モックデータ削除
+    - messagesStore 統合
+    - 会話リスト表示
+    - 未読バッジ
+    - 最新メッセージ表示
+    所要時間: 1時間
+
+午後 (4時間)
+------------
+[ ] タスク 7.4: メッセージ画面の実装（カメラ統合）
+    ファイル: app/messages/[id].tsx（新規作成）
+    実装内容:
+    - メッセージ一覧表示
+    - メッセージ送信
+    - 画像送信（カメラ機能統合）
+    - リアルタイム更新
+    - ページネーション（上スクロール）
+    所要時間: 2時間
+
+[ ] タスク 7.5: おすすめユーザー統合
+    ファイル: components/RecommendedUsersSlider.tsx
+    実装内容:
+    - おすすめAPIの統合
+    - おすすめユーザー表示
+    - フォローボタン統合
+    - 定期更新
+    所要時間: 1.5時間
+
+[ ] タスク 7.6: 新規会話作成の実装
+    ファイル: app/new-message.tsx（新規作成）
+    実装内容:
+    - ユーザー検索
+    - おすすめユーザー表示
+    - 会話開始
+    - 初回メッセージ送信
+    所要時間: 30分
+
+Day 7 完了条件:
+- DM一覧が実データで表示
+- メッセージ送受信が可能
+- 画像送信が機能（カメラ統合）
+- おすすめユーザーが表示
+
+================================================================================
+Day 8: 11月16日 (土) - P2機能統合 Part 2（ライブ配信 + おすすめRoom）
+================================================================================
+目標: ライブ配信機能、WebSocketの統合 + おすすめRoom統合
+
+午前 (4時間)
+------------
+[ ] タスク 8.1: Live API クライアント作成
+    ファイル: lib/api/live.ts
+    実装内容:
+    - getActiveStreams() 関数
+    - getRecommendedStreams() 関数（新規）
+    - getStream() 関数
+    - createStream() 関数
+    - endStream() 関数
+    - sendGift() 関数
+    所要時間: 1.5時間
+
+[ ] タスク 8.2: liveStore の作成
+    ファイル: store/liveStore.ts
+    実装内容:
+    - ライブ配信一覧の状態管理
+    - おすすめライブの管理
+    - 現在視聴中のストリーム管理
+    - 視聴者数のリアルタイム更新
+    所要時間: 1時間
+
+[ ] タスク 8.3: ライブ配信一覧画面の統合
+    ファイル: app/(tabs)/live-tab.tsx
+    実装内容:
+    - モックデータ削除
+    - liveStore 統合
+    - おすすめライブ配信セクション追加
+    - ライブ配信カード表示
+    - オンライン/オフライン表示
+    所要時間: 1.5時間
+
+午後 (4時間)
+------------
+[ ] タスク 8.4: ライブ配信開始画面の実装（カメラ統合）
+    ファイル: components/LiveStart.tsx
+    実装内容:
+    - カメラプレビュー統合
+    - 配信タイトル入力
+    - カテゴリ選択
+    - サムネイル設定
+    - 配信開始処理
+    所要時間: 1.5時間
+
+[ ] タスク 8.5: WebSocket クライアントの実装
+    ファイル: lib/websocket/client.ts
+    実装内容:
+    - WebSocket接続管理
+    - 自動再接続
+    - メッセージハンドリング
+    - イベントリスナー
+    所要時間: 1.5時間
+
+[ ] タスク 8.6: ライブ視聴画面の実装
+    ファイル: app/live/[id].tsx
+    実装内容:
+    - 動画プレイヤー（Mux統合）
+    - ライブチャット表示（WebSocket）
+    - ギフト送信UI
+    - 視聴者数表示
+    所要時間: 1時間
+
+Day 8 完了条件:
+- ライブ配信一覧が表示
+- おすすめライブが表示
+- ライブ配信開始が可能（カメラ統合）
+- ライブ視聴が可能
+- WebSocketが安定動作
+
+================================================================================
+Day 9: 11月17日 (日) - P3機能統合 + AI機能強化 + おすすめRoom
+================================================================================
+目標: 検索、ルーム、分析機能の統合 + AI機能強化実装
+
+午前 (4時間)
+------------
+[ ] タスク 9.1: Search API クライアント作成
+    ファイル: lib/api/search.ts
+    実装内容:
+    - searchHashtags() 関数
+    - getTrendingHashtags() 関数
+    - getRecommendedHashtags() 関数（新規）
+    - searchUsers() 関数
+    - searchPosts() 関数
+    所要時間: 1時間
+
+[ ] タスク 9.2: 検索画面の実装
+    ファイル: app/(tabs)/search.tsx
+    実装内容:
+    - 検索フォーム
+    - おすすめハッシュタグ表示
+    - ハッシュタグ検索
+    - ユーザー検索
+    - 投稿検索
+    - トレンドハッシュタグ表示
+    所要時間: 1.5時間
+
+[ ] タスク 9.3: Room API クライアント + おすすめ統合
+    ファイル: lib/api/rooms.ts
+    実装内容:
+    - getRooms() 関数
+    - getRecommendedRooms() 関数（新規）
+    - getRoom() 関数
+    - createRoom() 関数
+    - joinRoom() 関数
+    - getRoomPosts() 関数
+    所要時間: 1時間
+
+[ ] タスク 9.4: Room画面の統合
+    ファイル: app/(tabs)/room.tsx
+    実装内容:
+    - おすすめRoomセクション追加
+    - Room一覧表示
+    - Room詳細表示
+    - メンバー管理
+    所要時間: 30分
+
+午後 (4時間)
+------------
+[ ] タスク 9.5: AI機能強化 - プロンプト管理システム
+    ファイル: lib/ai/promptManager.ts
+    実装内容:
+    - プロンプトテンプレート定義
+    - カテゴリ別プロンプト
+      - ファッションスタイル（カジュアル、フォーマル、ストリート等）
+      - 季節別（春夏秋冬）
+      - シーン別（オフィス、デート、パーティー等）
+    - プロンプト選択UI
+    - カスタムプロンプト機能
+    所要時間: 2時間
+
+[ ] タスク 9.6: AI機能強化 - 回数制限管理
+    ファイル: backend/src/handlers/ai/getUsage.ts
+    実装内容:
+    - AI_USAGEテーブル作成
+    - ユーザーごとの使用回数記録
+    - 月次リセット機能
+    - プレミアムユーザーの無制限対応
+    - 使用履歴の取得API
+    所要時間: 1.5時間
+
+[ ] タスク 9.7: Analytics トラッキングの実装
+    ファイル: lib/analytics/tracker.ts
+    実装内容:
+    - イベントトラッキング
+    - 画面遷移トラッキング
+    - 商品クリックトラッキング
+    - おすすめクリックトラッキング（新規）
+    - バックエンドへのデータ送信
+    所要時間: 30分
+
+Day 9 完了条件:
+- 検索機能が動作
+- おすすめハッシュタグが表示
+- Room機能が実装
+- おすすめRoomが表示
+- AI機能が強化（プロンプト管理、回数制限）
+- 分析トラッキングが有効
+
+================================================================================
+Day 10: 11月18日 (月) - IMPLEMENTATION_TODO対応 + テスト実装
+================================================================================
+目標: UI改善タスク + 自動テスト実装
+
+午前 (4時間)
+------------
+[ ] タスク 10.1: IMPLEMENTATION_TODO.md 高優先度タスク
+    実装内容:
+    - デイリーチャレンジとトレンドQ&Aの削除
+    - タイトル変更
+      - 「ウェーブス」
+      - 「おすすめ&トレンドアイテム」
+      - 「HOT ITEM」
+      - 「あなたにおすすめアイテム&ユーザー」
+    - See Allボタンの削除（複数箇所）
+    - StatusBarのダークモード対応
+    所要時間: 2時間
+
+[ ] タスク 10.2: IMPLEMENTATION_TODO.md 中優先度タスク
+    実装内容:
+    - RecommendedGridのmoreボタン機能追加
+    - ShopTheLookの横スクロール2列グリッド実装
+    - RoomLivesListの配置変更（投稿の途中に表示）
+    - ペア画像の変更
+    所要時間: 2時間
+
+午後 (4時間)
+------------
+[ ] タスク 10.3: テスト環境のセットアップ
+    実装内容:
+    - Jest インストール・設定
+    - React Native Testing Library セットアップ
+    - jest.config.js 作成
+    - テストヘルパー作成
+    所要時間: 1時間
+
+[ ] タスク 10.4: API クライアントのテスト
+    ファイル: lib/api/__tests__/
+    実装内容:
+    - timeline.test.ts
+    - likes.test.ts
+    - follows.test.ts
+    - comments.test.ts
+    - products.test.ts
+    - recommendation.test.ts（新規）
+    所要時間: 2時間
+
+[ ] タスク 10.5: ストア・機能のテスト
+    ファイル: store/__tests__/, lib/__tests__/
+    実装内容:
+    - authStore.test.ts
+    - postsStore.test.ts
+    - productsStore.test.ts
+    - iapStore.test.ts
+    - recommendationEngine.test.ts（新規）
+    - cameraManager.test.ts（新規）
+    所要時間: 1時間
+
+Day 10 完了条件:
+- IMPLEMENTATION_TODO.mdの全タスク完了
+- 主要機能のテストカバレッジ60%以上
+- 全テストがパス
+- UIが最終仕様に準拠
+
+================================================================================
+Day 11: 11月19日 (火) - 品質保証・バグフィックス
+================================================================================
+目標: 手動テスト、バグ修正、パフォーマンス最適化
+
+午前 (4時間)
+------------
+[ ] タスク 11.1: 認証フローの手動テスト
+    テスト項目:
+    - サインアップ（新規登録）
+    - メール確認
+    - ログイン
+    - ログアウト
+    - パスワードリセット
+    - トークンリフレッシュ
+    所要時間: 1時間
+
+[ ] タスク 11.2: コア機能の手動テスト
+    テスト項目:
+    - フィード表示・更新（おすすめ含む）
+    - 投稿作成・削除（カメラ使用）
+    - いいね・いいね解除
+    - コメント投稿・削除
+    - フォロー・アンフォロー
+    - プロフィール編集
+    所要時間: 1.5時間
+
+[ ] タスク 11.3: カメラ・ライブ・AI/IAP機能の手動テスト
+    テスト項目:
+    - カメラ撮影（写真・動画）
+    - ライブ配信開始・視聴
+    - AI着せ替え生成
+    - プロンプトテンプレート選択
+    - 回数制限チェック
+    - プレミアム購入フロー
+    - サブスクリプションリストア
+    - 購入後の無制限使用確認
+    所要時間: 1.5時間
+
+午後 (4時間)
+------------
+[ ] タスク 11.4: おすすめ機能の手動テスト
+    テスト項目:
+    - タイムラインおすすめ表示
+    - Roomおすすめ表示
+    - 商品おすすめ表示
+    - ユーザーおすすめ表示
+    - ハッシュタグおすすめ表示
+    - 行動に基づく推薦更新
+    所要時間: 1.5時間
+
+[ ] タスク 11.5: バグ修正
+    実装内容:
+    - 発見されたバグの優先度付け
+    - クリティカルバグの即座修正
+    - 中程度のバグの修正
+    - UIの微調整
+    所要時間: 2時間
+
+[ ] タスク 11.6: パフォーマンス最適化
+    実装内容:
+    - 画像の遅延読み込み
+    - リスト描画の最適化（FlatList）
+    - メモ化（useMemo, useCallback）
+    - 不要な再レンダリング削減
+    - おすすめキャッシュの最適化
+    - カメラプレビューのメモリ管理
+    所要時間: 30分
+
+Day 11 完了条件:
+- 全機能が安定動作
+- クリティカルバグゼロ
+- パフォーマンス許容範囲内
+- おすすめ機能が正常動作
+
+================================================================================
+Day 12: 11月20日 (水) - AWS本番移行 + ストア準備
+================================================================================
+目標: AWS本番環境への完全移行 + ストア提出準備
+
+午前 (4時間)
+------------
+[ ] タスク 12.1: AWS本番環境の準備
+    実施内容:
+
+    1. インフラストラクチャの確認
+       - backend/infrastructure/ ディレクトリの確認
+       - CDK/Serverless Framework の設定確認
+       - 環境変数ファイルの確認
+
+    2. 本番環境用設定ファイルの作成
+       ファイル: backend/.env.production
+       内容:
+       ```
+       ENVIRONMENT=production
+       STAGE=prod
+       AWS_REGION=ap-northeast-1
+       # その他の本番環境設定
+       ```
+
+    3. Cognito本番環境の設定
+       - 新規User Pool作成（推奨）または既存使用
+       - User Pool ID取得
+       - App Client ID取得
+       - カスタム属性設定（custom:handle, custom:accountType, custom:accountId）
+
+    4. DynamoDBテーブルの確認
+       - 全27テーブルのスキーマ確認
+       - GSI（35個）の確認
+       - TTL設定（6テーブル）の確認
+
+    所要時間: 1.5時間
+
+[ ] タスク 12.2: AWS本番環境へのデプロイ
+    実施内容:
+
+    1. バックエンドのデプロイ
+       コマンド（例）:
+       ```bash
+       cd backend/infrastructure
+
+       # CDKの場合
+       cdk deploy --context environment=production
+
+       # または Serverless Frameworkの場合
+       serverless deploy --stage prod --region ap-northeast-1
+       ```
+
+    2. デプロイ完了確認
+       - API Gateway エンドポイント取得
+       - Lambda関数の確認（81個）
+       - DynamoDBテーブルの確認（27個）
+       - Cognito設定の確認
+
+    3. 本番エンドポイントの記録
+       - API URL: https://xxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/prod/
+       - Cognito User Pool ID
+       - Cognito Client ID
+
+    所要時間: 1.5時間
+
+[ ] タスク 12.3: フロントエンド環境変数の更新
+    実施内容:
+
+    1. 本番用環境変数ファイルの作成
+       ファイル: .env.production
+       内容:
+       ```
+       # API Configuration (本番環境)
+       EXPO_PUBLIC_API_URL=https://xxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/prod/
+       EXPO_PUBLIC_COGNITO_USER_POOL_ID=ap-northeast-1_XXXXXXX
+       EXPO_PUBLIC_COGNITO_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxx
+       EXPO_PUBLIC_COGNITO_REGION=ap-northeast-1
+
+       # S3 Configuration
+       EXPO_PUBLIC_S3_BUCKET_NAME=rork-production-media
+       EXPO_PUBLIC_S3_REGION=ap-northeast-1
+
+       # AI Configuration
+       EXPO_PUBLIC_GEMINI_API_KEY=your_gemini_api_key_here
+
+       # Environment
+       EXPO_PUBLIC_ENVIRONMENT=production
+       ```
+
+    2. app.config.js の更新
+       - 環境に応じた設定の切り替え確認
+       - 本番環境での動作確認
+
+    3. ビルド設定の確認
+       - EAS Build 設定（eas.json）
+       - 本番環境でのビルド設定
+
+    所要時間: 30分
+
+[ ] タスク 12.4: 本番環境での動作確認
+    実施内容:
+
+    1. API接続テスト
+       - 認証（サインアップ、ログイン）
+       - 投稿取得
+       - いいね、コメント
+       - 商品取得
+       - 通知取得
+
+    2. 主要機能のテスト
+       - タイムライン表示
+       - 投稿作成
+       - ライブ配信
+       - DM送信
+       - AI機能
+       - IAP機能
+
+    3. エラー確認
+       - エラーログの確認
+       - CloudWatch Logs確認
+
+    所要時間: 30分
+
+午後 (4時間)
+------------
+[ ] タスク 12.5: アプリアイコン・スプラッシュ画面
+    実装内容:
+    - アプリアイコン（1024x1024）作成
+    - 各サイズのアイコン生成
+    - スプラッシュ画面作成
+    - app.json 設定更新
+    所要時間: 1時間
+
+[ ] タスク 12.6: アプリ情報の整備
+    実装内容:
+    - アプリ名の最終決定（Piece/Pièce）
+    - バンドルID/パッケージ名の確認
+      - iOS: app.rork.instagramfeeddesign
+      - Android: app.rork.instagramfeeddesign
+    - バージョン番号設定（1.0.0）
+    - ビルド番号設定
+    - 本番環境URLの確認
+    所要時間: 30分
+
+[ ] タスク 12.7: プライバシーポリシー・利用規約
+    実装内容:
+    - プライバシーポリシー作成/確認
+      - AI機能のデータ使用について明記
+      - カメラ・写真へのアクセスについて明記
+      - 位置情報の使用について明記
+      - サブスクリプション自動更新について明記
+      - ユーザー行動データの収集について明記（推薦用）
+      - AWS本番環境でのデータ保存について明記
+    - 利用規約作成/確認
+    - アプリ内リンク配置
+    所要時間: 1時間
+
+[ ] タスク 12.8: iOS ビルド準備（本番環境）
+    実施内容:
+
+    1. 本番環境設定の確認
+       - .env.production が使用されることを確認
+       - eas.json の production profile 確認
+
+    2. Apple Developer 設定
+       - Apple Developer アカウント確認
+       - 証明書・プロビジョニングプロファイル作成
+       - In-App Purchase 商品登録
+         - premium_monthly (980円/月)
+         - premium_yearly (9800円/年)
+
+    3. app.json iOS設定確認
+       - カメラ使用説明
+       - 写真ライブラリアクセス説明
+       - マイクアクセス説明（ライブ用）
+       - バンドルID確認
+
+    4. 本番ビルド実行
+       コマンド:
+       ```bash
+       eas build --platform ios --profile production
+       ```
+
+    所要時間: 1時間
+
+[ ] タスク 12.9: Android ビルド準備（本番環境）
+    実施内容:
+
+    1. 本番環境設定の確認
+       - .env.production が使用されることを確認
+       - eas.json の production profile 確認
+
+    2. Google Play Console 設定
+       - Google Play Console アカウント確認
+       - キーストア作成
+       - In-App Billing 商品登録
+         - premium_monthly (980円/月)
+         - premium_yearly (9800円/年)
+
+    3. app.json Android設定確認
+       - パーミッション確認（カメラ、マイク、ストレージ）
+       - パッケージ名確認
+
+    4. 本番ビルド実行
+       コマンド:
+       ```bash
+       eas build --platform android --profile production
+       ```
+
+    所要時間: 30分
+
+Day 12 完了条件:
+- AWS本番環境が完全稼働
+- フロントエンドが本番環境に接続
+- 本番環境での動作確認完了
+- iOS/Android 本番ビルドが完成
+- ストア情報が準備完了
+
+================================================================================
+Day 13: 11月21日 (木) - 最終確認・ストア提出・納品
+================================================================================
+目標: 本番環境での最終確認、ストア提出、納品
+
+午前 (4時間)
+------------
+[ ] タスク 13.1: 本番環境での最終動作確認
+    確認項目:
+
+    1. 環境確認
+       - 本番APIエンドポイントへの接続確認
+       - Cognito本番User Poolへの接続確認
+       - S3本番バケットへの接続確認
+
+    2. iOS実機での動作確認（本番環境）
+       - 全主要機能の動作
+       - カメラ機能（写真・動画）
+       - ライブ配信
+       - おすすめ機能（全種類）
+       - AI機能（回数制限、プロンプト）
+       - IAP機能（購入、リストア）
+       - エラーハンドリング
+
+    3. Android実機での動作確認（本番環境）
+       - 全主要機能の動作
+       - カメラ機能（写真・動画）
+       - ライブ配信
+       - おすすめ機能（全種類）
+       - AI機能（回数制限、プロンプト）
+       - IAP機能（購入、リストア）
+       - エラーハンドリング
+
+    4. パフォーマンス確認
+       - API レスポンスタイム
+       - 画像読み込み速度
+       - リスト描画速度
+       - メモリ使用量
+
+    所要時間: 2時間
+
+[ ] タスク 13.2: App Store 提出
+    実施内容:
+
+    1. App Store Connect 設定
+       - アプリ作成
+       - ビルドアップロード（本番ビルド）
+       - スクリーンショット準備
+         - フィード画面（おすすめ含む）
+         - AI機能
+         - カメラ機能
+         - ライブ配信
+         - プレミアム機能
+         - ショップ画面
+
+    2. アプリ情報入力
+       - アプリ説明文
+         - AI着せ替え機能を強調
+         - おすすめ機能を強調
+         - ライブ配信機能を強調
+         - プレミアムプランの説明
+       - キーワード設定
+       - カテゴリ選択
+       - 年齢制限設定
+       - プライバシーポリシーURL
+       - 利用規約URL
+
+    3. In-App Purchase 設定
+       - premium_monthly 審査提出
+       - premium_yearly 審査提出
+
+    4. 審査への提出
+       - テスト情報の入力
+       - 審査ノートの記入
+       - 提出
+
+    所要時間: 1時間
+
+[ ] タスク 13.3: Google Play 提出
+    実施内容:
+
+    1. Google Play Console 設定
+       - アプリ作成
+       - ビルドアップロード（本番ビルド）
+       - スクリーンショット準備
+
+    2. アプリ情報入力
+       - アプリ説明文
+       - カテゴリ・タグ設定
+       - コンテンツレーティング
+       - プライバシーポリシーURL
+       - 利用規約URL
+
+    3. In-App Billing 設定
+       - premium_monthly 設定確認
+       - premium_yearly 設定確認
+
+    4. 審査への提出
+       - テスト情報の入力
+       - 提出
+
+    所要時間: 1時間
+
+午後 (4時間)
+------------
+[ ] タスク 13.4: 本番環境ドキュメント作成
+    作成内容:
+
+    1. README.md 更新
+       - カメラ機能の説明追加
+       - おすすめアルゴリズムの説明追加
+       - AI機能の説明追加
+       - プレミアムプランの説明追加
+       - 本番環境の情報追加
+
+    2. 環境設定ドキュメント
+       ファイル: docs/ENVIRONMENT_SETUP.md
+       内容:
+       - Dev環境の情報
+       - Prod環境の情報
+       - 環境切り替え方法
+       - 環境変数一覧
+
+    3. デプロイ手順書
+       ファイル: docs/DEPLOYMENT.md
+       内容:
+       - バックエンドデプロイ手順
+       - フロントエンドビルド手順
+       - 環境切り替え手順
+       - ロールバック手順
+
+    4. API統合完了リスト
+       - 全81エンドポイントの統合状況
+       - おすすめAPIの統合状況
+       - テスト結果
+
+    5. 本番環境情報シート
+       内容:
+       - API URL (prod)
+       - Cognito User Pool ID (prod)
+       - Cognito Client ID (prod)
+       - S3 Bucket Name (prod)
+       - IAP Product IDs
+       - Gemini API Key
+       - Mux API Key
+
+    6. 既知の問題リスト
+
+    7. 今後の改善計画
+
+    所要時間: 2時間
+
+[ ] タスク 13.5: バックアップ・納品準備
+    実施内容:
+
+    1. ソースコードのバックアップ
+       - Git リポジトリの最終commit
+       - タグ付け（v1.0.0）
+       - バックアップアーカイブ作成
+
+    2. ビルドファイルのバックアップ
+       - iOS IPA ファイル保存
+       - Android APK/AAB ファイル保存
+
+    3. 環境変数の文書化
+       - .env.development
+       - .env.production
+       - backend/.env.production
+       - 全環境変数の安全な保管
+
+    4. AWS本番環境情報の保管
+       - CloudFormation Stack 情報
+       - Lambda関数リスト
+       - DynamoDBテーブルリスト
+       - API Gateway設定
+
+    5. 納品物の整理
+       - ソースコード
+       - ドキュメント
+       - ビルドファイル
+       - 環境設定情報
+       - アクセス情報（暗号化）
+
+    所要時間: 1時間
+
+[ ] タスク 13.6: 納品完了確認
+    確認内容:
+
+    1. 本番環境の動作確認
+       - 全機能が正常動作
+       - エラーがないことを確認
+       - パフォーマンスが許容範囲内
+
+    2. ストア提出完了確認
+       - App Store提出完了
+       - Google Play提出完了
+       - 審査状況の確認
+
+    3. ドキュメント完成確認
+       - README.md
+       - ENVIRONMENT_SETUP.md
+       - DEPLOYMENT.md
+       - API統合リスト
+       - 本番環境情報シート
+
+    4. 納品物の最終チェック
+       - 全ファイルの存在確認
+       - 機密情報の適切な管理確認
+       - バックアップの完全性確認
+
+    所要時間: 1時間
+
+Day 13 完了条件:
+- 本番環境で全機能が稼働
+- App Store/Google Play に提出完了
+- 全納品物が整理完了
+- ドキュメントが完成
+- プロジェクト完了
+
+================================================================================
+AWS本番環境移行の詳細手順
+================================================================================
+
+前提条件
+--------
+- バックエンドがCDKまたはServerless Frameworkで構築されている
+- インフラストラクチャがコード化されている
+- Dev環境が正常に動作している
+
+移行手順
+--------
+
+1. インフラストラクチャの確認
+   ディレクトリ: backend/infrastructure/
+   ファイル:
+   - CDKの場合: lib/stack.ts, bin/app.ts, cdk.json
+   - Serverlessの場合: serverless.yml
+
+2. 環境変数の設定
+   ファイル: backend/.env.production
+   ```
+   ENVIRONMENT=production
+   STAGE=prod
+   AWS_REGION=ap-northeast-1
+   COGNITO_USER_POOL_NAME=rork-production-users
+   S3_BUCKET_NAME=rork-production-media
+   DYNAMODB_TABLE_PREFIX=prod-
+   ```
+
+3. Cognito User Pool の作成（本番用）
+   方法1: 手動作成
+   - AWS Consoleで作成
+   - カスタム属性設定（custom:handle, custom:accountType, custom:accountId）
+   - App Client作成
+
+   方法2: 自動作成（CDK/Serverlessに含まれている場合）
+   - デプロイ時に自動作成される
+
+4. バックエンドのデプロイ
+   CDKの場合:
+   ```bash
+   cd backend/infrastructure
+   npm install
+   cdk bootstrap aws://ACCOUNT_ID/ap-northeast-1  # 初回のみ
+   cdk deploy --context environment=production
+   ```
+
+   Serverless Frameworkの場合:
+   ```bash
+   cd backend
+   npm install
+   serverless deploy --stage prod --region ap-northeast-1
+   ```
+
+5. デプロイ後の確認
+   - API Gateway エンドポイントURL取得
+   - Lambda関数の確認（全81個）
+   - DynamoDBテーブルの確認（全27個）
+   - Cognito User Pool ID/Client ID取得
+   - S3バケット確認
+
+6. フロントエンド環境変数の更新
+   ファイル: .env.production
+   ```
+   EXPO_PUBLIC_API_URL=https://xxxxxxxx.execute-api.ap-northeast-1.amazonaws.com/prod/
+   EXPO_PUBLIC_COGNITO_USER_POOL_ID=ap-northeast-1_XXXXXXX
+   EXPO_PUBLIC_COGNITO_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxx
+   EXPO_PUBLIC_COGNITO_REGION=ap-northeast-1
+   EXPO_PUBLIC_S3_BUCKET_NAME=rork-production-media
+   EXPO_PUBLIC_S3_REGION=ap-northeast-1
+   EXPO_PUBLIC_ENVIRONMENT=production
+   ```
+
+7. 本番ビルドの実行
+   ファイル: eas.json
+   ```json
+   {
+     "build": {
+       "production": {
+         "env": {
+           "EXPO_PUBLIC_API_URL": "本番URL",
+           "EXPO_PUBLIC_ENVIRONMENT": "production"
+         },
+         "ios": {
+           "bundleIdentifier": "app.rork.instagramfeeddesign"
+         },
+         "android": {
+           "package": "app.rork.instagramfeeddesign"
+         }
+       }
+     }
+   }
+   ```
+
+   ビルドコマンド:
+   ```bash
+   eas build --platform ios --profile production
+   eas build --platform android --profile production
+   ```
+
+8. 動作確認
+   - 認証テスト（サインアップ、ログイン）
+   - API接続テスト（全主要エンドポイント）
+   - データ保存テスト
+   - ファイルアップロードテスト（S3）
+
+9. データ移行（必要に応じて）
+   Dev環境からProd環境へのデータ移行が必要な場合:
+   - DynamoDB Export/Import
+   - S3バケット間コピー
+   - Cognito ユーザー移行
+
+10. DNS/エンドポイント設定（任意）
+    カスタムドメインを使用する場合:
+    - Route 53設定
+    - SSL証明書（ACM）
+    - API Gateway カスタムドメイン設定
+
+環境切り替えのベストプラクティス
+--------------------------------
+1. 環境変数ファイルの分離
+   - .env.development
+   - .env.staging（任意）
+   - .env.production
+
+2. app.config.js での環境判定
+   ```javascript
+   const environment = process.env.EXPO_PUBLIC_ENVIRONMENT || 'development';
+
+   module.exports = {
+     ...require('./app.json').expo,
+     extra: {
+       environment,
+       API_URL: process.env.EXPO_PUBLIC_API_URL,
+       // 環境に応じた設定
+     },
+   };
+   ```
+
+3. APIクライアントでの環境判定
+   ```typescript
+   const API_URL = Constants.expoConfig?.extra?.API_URL ||
+                   'https://dev-default-url.execute-api.ap-northeast-1.amazonaws.com/dev/';
+   ```
+
+4. ビルド時の環境指定
+   ```bash
+   # Dev環境ビルド
+   eas build --platform ios --profile development
+
+   # Prod環境ビルド
+   eas build --platform ios --profile production
+   ```
+
+Dev環境とProd環境の並行運用
+-----------------------------
+両環境を並行運用する場合:
+
+1. Dev環境
+   - 用途: 開発・テスト
+   - URL: https://xxx.execute-api.ap-northeast-1.amazonaws.com/dev/
+   - Cognito: dev-user-pool
+   - S3: rork-dev-media
+
+2. Prod環境
+   - 用途: 本番運用
+   - URL: https://xxx.execute-api.ap-northeast-1.amazonaws.com/prod/
+   - Cognito: prod-user-pool
+   - S3: rork-production-media
+
+3. 切り替え方法
+   - ビルド時にprofileを指定
+   - 環境変数ファイルを切り替え
+   - app.config.js で自動判定
+
+コスト管理
+----------
+本番環境移行後のコスト管理:
+
+1. Lambda
+   - 無料枠: 100万リクエスト/月
+   - 推定コスト: 月額 $5-20
+
+2. DynamoDB
+   - オンデマンド課金
+   - 推定コスト: 月額 $10-50
+
+3. API Gateway
+   - 無料枠: 100万リクエスト/月
+   - 推定コスト: 月額 $3-15
+
+4. S3
+   - ストレージ: $0.025/GB/月
+   - 推定コスト: 月額 $5-30
+
+5. Cognito
+   - MAU課金: 50,000 MAUまで無料
+   - 推定コスト: 無料 - $50
+
+合計推定コスト: 月額 $23-165（利用状況による）
+
+監視・アラート設定
+------------------
+本番環境では以下を設定推奨:
+
+1. CloudWatch Alarms
+   - Lambda エラー率
+   - API Gateway 4xx/5xx エラー
+   - DynamoDB スロットリング
+
+2. CloudWatch Logs
+   - Lambda関数ログ
+   - API Gateway アクセスログ
+
+3. X-Ray（任意）
+   - 分散トレーシング
+   - パフォーマンス分析
+
+================================================================================
+おすすめアルゴリズムの詳細仕様
+================================================================================
+
+1. アルゴリズムの基本方針
+-------------------------
+ハイブリッド推薦システム:
+  - コンテンツベースフィルタリング（60%）
+  - 協調フィルタリング（30%）
+  - 人気度ベース（10%）
+
+2. スコアリング要素と重み
+-------------------------
+タイムライン投稿推薦:
+  - ユーザーの興味カテゴリ一致: 35%
+  - フォロー中ユーザーの投稿: 25%
+  - 人気度（いいね・コメント数）: 15%
+  - 新鮮度（投稿時間）: 15%
+  - 過去の類似投稿への反応: 10%
+
+Room推薦:
+  - ユーザーの参加履歴カテゴリ: 40%
+  - アクティブメンバー数: 25%
+  - 投稿頻度: 15%
+  - フォロワーの参加状況: 10%
+  - 新規作成Room優先: 10%
+
+商品推薦:
+  - 閲覧・いいね履歴カテゴリ: 35%
+  - 価格帯の一致: 20%
+  - トレンド度: 20%
+  - 販売実績: 15%
+  - フォロワーの購入傾向: 10%
+
+ユーザー推薦:
+  - 共通フォロワー数: 30%
+  - 興味カテゴリの類似度: 25%
+  - アクティビティレベル: 20%
+  - 相互フォロー確率: 15%
+  - 投稿内容の類似度: 10%
+
+ハッシュタグ推薦:
+  - ユーザーの使用履歴: 35%
+  - トレンド度: 30%
+  - 関連ハッシュタグ: 20%
+  - フォロワーの使用頻度: 15%
+
+3. 実装関数一覧
+---------------
+lib/recommendation/engine.ts:
+  - calculateContentScore()
+  - calculatePopularityScore()
+  - calculateFreshnessScore()
+  - calculateSimilarityScore()
+  - combineScores()
+  - normalizeScores()
+  - filterByCategory()
+  - deduplicateItems()
+  - shuffleWithinBuckets()
+
+backend/src/handlers/recommendation/:
+  - getTimelineRecommendations.ts
+  - getRoomRecommendations.ts
+  - getProductRecommendations.ts
+  - getUserRecommendations.ts
+  - getHashtagRecommendations.ts
+  - trackBehavior.ts
+
+4. データベーステーブル
+-----------------------
+USER_BEHAVIOR:
+  - account_id (PK)
+  - behavior_id (SK) - timestamp + type
+  - behavior_type (いいね、コメント、閲覧、フォロー等)
+  - target_id (投稿ID、商品ID、ユーザーID等)
+  - target_type (post, product, user, room, hashtag)
+  - timestamp
+  - weight (重み付け: 1-10)
+  - ttl (30日)
+
+RECOMMENDATION_CACHE:
+  - account_id (PK)
+  - recommendation_type (SK) (timeline, room, product, user, hashtag)
+  - recommended_items (JSON配列)
+  - scores (JSON配列)
+  - updated_at
+  - expires_at (TTL: 1時間)
+
+5. API エンドポイント
+---------------------
+GET /recommendation/timeline
+  - クエリパラメータ: limit, nextToken
+  - レスポンス: { items: Post[], scores: number[], nextToken: string }
+
+GET /recommendation/rooms
+  - クエリパラメータ: limit, nextToken
+  - レスポンス: { items: Room[], scores: number[], nextToken: string }
+
+GET /recommendation/products
+  - クエリパラメータ: limit, nextToken, category
+  - レスポンス: { items: Product[], scores: number[], nextToken: string }
+
+GET /recommendation/users
+  - クエリパラメータ: limit, nextToken
+  - レスポンス: { items: User[], scores: number[], nextToken: string }
+
+GET /recommendation/hashtags
+  - クエリパラメータ: limit
+  - レスポンス: { items: Hashtag[], scores: number[] }
+
+POST /recommendation/track-behavior
+  - ボディ: { behavior_type, target_id, target_type, weight }
+  - レスポンス: { success: boolean }
+
+================================================================================
+カメラ機能の詳細仕様
+================================================================================
+
+1. 使用パッケージ
+-----------------
+- expo-camera: カメラアクセス、写真・動画撮影
+- expo-image-picker: ギャラリーアクセス
+- expo-av: 動画再生
+- expo-file-system: ファイル管理
+- react-native-reanimated: アニメーション
+
+2. 機能詳細
+-----------
+写真撮影:
+  - 解像度: 最大4K
+  - フォーマット: JPEG
+  - フラッシュ: on/off/auto
+  - フロント/リアカメラ切替
+  - グリッド表示
+  - タイマー撮影（3秒/10秒）
+  - バースト撮影（連続10枚）
+  - EXIF情報保持
+
+動画撮影:
+  - 解像度: 最大1080p
+  - フォーマット: MP4
+  - 最大録画時間: 60秒
+  - 録画中のカウンター表示
+  - 一時停止/再開機能
+  - 音声録音on/off
+  - フロント/リアカメラ切替
+
+UI要素:
+  - シャッターボタン（長押しで動画）
+  - カメラ切替ボタン（左上）
+  - フラッシュボタン（右上）
+  - グリッド表示トグル
+  - タイマーアイコン
+  - ギャラリーサムネイル（左下）
+  - 撮影モード表示（写真/動画）
+  - 録画時間表示
+
+3. 統合先
+-----------
+- 投稿作成（PostCreationFlow）
+- プロフィール画像撮影
+- DMで画像送信
+- ライブ配信開始画面
+
+================================================================================
+進捗管理チェックリスト
+================================================================================
+
+基盤構築 + おすすめ
+-------------------
+[ ] Day 1: 基盤構築 + おすすめアルゴリズム設計 完了
+[ ] Day 2: コアストア + おすすめバックエンド実装 完了
+
+カメラ + P0機能
+---------------
+[ ] Day 3: カメラ機能実装 + フィード・いいね統合 完了
+[ ] Day 4: フォロー・コメント・投稿作成統合 完了
+
+P1機能 + IAP
+------------
+[ ] Day 5: 商品統合 + IAP基盤実装 完了
+[ ] Day 6: 通知・プロフィール + IAP UI実装 完了
+
+P2機能 + おすすめ統合
+---------------------
+[ ] Day 7: DM統合 + おすすめユーザー統合 完了
+[ ] Day 8: ライブ配信・WebSocket + おすすめRoom統合 完了
+
+P3機能 + AI強化
+---------------
+[ ] Day 9: 検索・Room・AI機能強化 + おすすめハッシュタグ統合 完了
+
+品質保証
+--------
+[ ] Day 10: IMPLEMENTATION_TODO対応 + テスト実装 完了
+[ ] Day 11: 手動テスト + バグフィックス 完了
+
+本番移行・納品準備
+------------------
+[ ] Day 12: AWS本番環境移行 + ストア提出準備 完了
+    [ ] AWS本番環境準備
+    [ ] バックエンドデプロイ（prod）
+    [ ] フロントエンド環境変数更新
+    [ ] 本番環境動作確認
+    [ ] iOS/Android本番ビルド
+    [ ] ストア情報準備
+
+納品
+----
+[ ] Day 13: 本番環境最終確認・提出・納品 完了
+    [ ] 本番環境最終動作確認
+    [ ] App Store提出
+    [ ] Google Play提出
+    [ ] ドキュメント作成
+    [ ] バックアップ
+    [ ] 納品完了
+
+================================================================================
+重要な注意事項
+================================================================================
+
+AWS本番環境移行について
+------------------------
+1. Dev環境は残す
+   - 開発・テスト用として継続使用
+   - 本番環境への影響を避けるため
+
+2. データ移行の判断
+   - Dev環境のテストデータは本番に移行しない（推奨）
+   - 必要に応じて選択的に移行
+
+3. コスト管理
+   - 両環境の並行運用でコストが2倍になる
+   - CloudWatch でコスト監視
+   - 不要なリソースは削除
+
+4. セキュリティ
+   - 本番環境のIAMロールは最小権限
+   - 環境変数の適切な管理
+   - シークレット情報の暗号化
+
+5. バックアップ
+   - DynamoDB Point-in-Time Recovery有効化
+   - S3 Versioning有効化
+   - Lambda関数のバージョニング
+
+6. ロールバック計画
+   - 問題発生時の切り戻し手順を準備
+   - Dev環境への一時切り替え手順
+
+================================================================================
+計画書終了
+作成日: 2025年11月9日
+対象期間: 2025年11月9日 - 11月21日
+追加項目: おすすめアルゴリズム、カメラ機能優先実装、AI機能強化、IAP、
+         AWS本番環境移行
+================================================================================
