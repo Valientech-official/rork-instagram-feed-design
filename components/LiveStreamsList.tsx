@@ -1,12 +1,13 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { ChevronRight } from 'lucide-react-native';
+import { ChevronRight, Plus } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { LiveStream } from '@/mocks/liveStreams';
 import LiveStreamItem from './LiveStreamItem';
 import Colors from '@/constants/colors';
 import { Image } from 'expo-image';
 import { useThemeStore } from '@/store/themeStore';
+import { users } from '@/mocks/users';
 
 interface LiveStreamsListProps {
   streams: LiveStream[];
@@ -59,6 +60,7 @@ export default function LiveStreamsList({
   }
 
   const displayedStreams = streams.slice(0, displayCount);
+  const currentUser = users[0]; // 現在のユーザー（janedoe）
 
   return (
     <View style={styles.container}>
@@ -73,26 +75,26 @@ export default function LiveStreamsList({
           )}
         </View>
       )}
-      
+
       <View style={styles.contentRow}>
-        {/* Entrance room image */}
-        <View style={styles.doorColumn}>
+        {/* 自分のアカウント */}
+        <TouchableOpacity style={styles.doorColumn} onPress={() => router.push('/profile')}>
           <View style={styles.doorImageContainer}>
             <Image
-              source={{ uri: "https://images.unsplash.com/photo-1505686994434-e3cc5abf1330?w=400" }}
+              source={{ uri: currentUser.avatar }}
               style={styles.doorImage}
               contentFit="cover"
             />
-            <View style={styles.doorOverlay}>
-              <Text style={styles.doorText}>Room</Text>
+            <View style={styles.addWaveButton}>
+              <Plus size={20} color="white" />
             </View>
           </View>
           {!!doorSubtitle && (
             <Text style={styles.doorSubtitle}>{doorSubtitle}</Text>
           )}
-        </View>
-        
-        {/* Live Streams */}
+        </TouchableOpacity>
+
+        {/* ウェーブリスト */}
         <FlatList
           data={displayedStreams}
           keyExtractor={(item) => item.id}
@@ -155,21 +157,20 @@ const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   doorImage: {
     width: '100%',
     height: '100%',
+    borderRadius: 12,
   },
-  doorOverlay: {
+  addWaveButton: {
     position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    padding: 8,
+    bottom: 8,
+    right: 8,
+    backgroundColor: colors.primary,
+    borderRadius: 20,
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
     alignItems: 'center',
-  },
-  doorText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: '600',
-    textAlign: 'center',
+    borderWidth: 2,
+    borderColor: colors.background,
   },
   doorSubtitle: {
     color: colors.text,

@@ -50,7 +50,7 @@ export default function LiveStreamItem({ stream, size = 'large', fullScreen = fa
         
         <View style={styles.liveIndicator}>
           <View style={styles.liveIndicatorDot} />
-          <Text style={styles.liveText}>{stream.id === "live1" ? "ウェーブ" : "Live"}</Text>
+          <Text style={styles.liveText}>ウェーブ</Text>
         </View>
         
         <View style={styles.viewersContainer}>

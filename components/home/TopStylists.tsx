@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Image } from 'expo-image';
-import { ArrowUpRight } from 'lucide-react-native';
+import { ArrowUpRight, Palette, Dumbbell, Users, Sparkles } from 'lucide-react-native';
 import { useThemeStore } from '@/store/themeStore';
 import Colors from '@/constants/colors';
 
@@ -62,6 +62,23 @@ const formatFollowerGain = (count: number) => {
   return `${count}`;
 };
 
+const getCategoryIcon = (category: string) => {
+  const categoryLower = category.toLowerCase();
+  if (categoryLower.includes('モード') || categoryLower.includes('シティ')) {
+    return Palette;
+  }
+  if (categoryLower.includes('アクティブ')) {
+    return Dumbbell;
+  }
+  if (categoryLower.includes('ストリート')) {
+    return Users;
+  }
+  if (categoryLower.includes('ミニマル')) {
+    return Sparkles;
+  }
+  return Sparkles; // Default icon
+};
+
 export default function TopStylists() {
   const { theme } = useThemeStore();
   const colors = Colors[theme];
@@ -82,36 +99,42 @@ export default function TopStylists() {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {TRENDING_CREATORS.map((creator) => (
-          <View key={creator.id} style={styles.card}>
-            <View style={styles.avatarWrapper}>
-              <Image
-                source={{ uri: creator.avatar }}
-                style={styles.avatar}
-                contentFit="cover"
-              />
-              <View style={styles.gainBadge}>
-                <Text style={styles.gainValue}>+{formatFollowerGain(creator.weeklyGain)}</Text>
-                <Text style={styles.gainLabel}>今週</Text>
+        {TRENDING_CREATORS.map((creator) => {
+          const CategoryIcon = getCategoryIcon(creator.category);
+          return (
+            <View key={creator.id} style={styles.card}>
+              <View style={styles.avatarWrapper}>
+                <Image
+                  source={{ uri: creator.avatar }}
+                  style={styles.avatar}
+                  contentFit="cover"
+                />
+                <View style={styles.gainBadge}>
+                  <Text style={styles.gainValue}>+{formatFollowerGain(creator.weeklyGain)}</Text>
+                  <Text style={styles.gainLabel}>今週</Text>
+                </View>
               </View>
+
+              <Text style={styles.name} numberOfLines={1}>{creator.name}</Text>
+              <Text style={styles.username} numberOfLines={1}>{creator.username}</Text>
+
+              <View style={styles.categoryIconWrapper}>
+                <CategoryIcon size={16} color={colors.secondaryText} />
+              </View>
+
+              <View style={styles.growthRow}>
+                <Text style={[styles.growthPercent, { color: colors.success }]}>
+                  +{creator.growthPercent}%
+                </Text>
+                <Text style={styles.growthCaption}>フォロワー増</Text>
+              </View>
+
+              <TouchableOpacity style={[styles.followButton, { backgroundColor: colors.primary }]}>
+                <Text style={styles.followButtonText}>フォローする</Text>
+              </TouchableOpacity>
             </View>
-
-            <Text style={styles.name} numberOfLines={1}>{creator.name}</Text>
-            <Text style={styles.username} numberOfLines={1}>{creator.username}</Text>
-            <Text style={styles.category} numberOfLines={1}>{creator.category}</Text>
-
-            <View style={styles.growthRow}>
-              <Text style={[styles.growthPercent, { color: colors.success }]}>
-                +{creator.growthPercent}%
-              </Text>
-              <Text style={styles.growthCaption}>フォロワー増</Text>
-            </View>
-
-            <TouchableOpacity style={[styles.followButton, { backgroundColor: colors.primary }]}>
-              <Text style={styles.followButtonText}>フォローする</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
+          );
+        })}
       </ScrollView>
     </View>
   );
@@ -193,10 +216,10 @@ const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
     color: colors.secondaryText,
     textAlign: 'center',
   },
-  category: {
-    fontSize: 11,
-    color: colors.secondaryText,
-    textAlign: 'center',
+  categoryIconWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 4,
   },
   growthRow: {
     flexDirection: 'column',
