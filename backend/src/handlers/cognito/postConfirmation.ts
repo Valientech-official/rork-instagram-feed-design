@@ -95,8 +95,8 @@ export const handler: PostConfirmationTriggerHandler = async (event) => {
       }
     }
 
-    // アカウントIDを生成
-    const accountId = generateULID();
+    // アカウントIDを生成（Cognito subを使用）
+    const accountId = event.request.userAttributes.sub;
     const now = getCurrentTimestamp();
 
     // アカウントアイテムを作成
