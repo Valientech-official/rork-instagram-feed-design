@@ -86,6 +86,9 @@
     "experiments": {
       "typedRoutes": true
     },
+    "updates": {
+      "url": "https://u.expo.dev/63d1c443-8792-4af9-9aac-90ad103ef2f0"
+    },
     "extra": {
       "router": {
         "origin": "https://rork.com/"
