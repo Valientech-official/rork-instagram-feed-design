@@ -866,7 +866,50 @@ export class DynamoDBStack extends cdk.Stack {
     });
 
     // =====================================================
-    // 全28テーブル作成完了
+    // 29. USER_BEHAVIOR テーブル (GSI: 1, TTL: 30日)
+    // =====================================================
+    // ユーザー行動履歴（推薦アルゴリズム用）
+    // いいね、コメント、閲覧、フォロー、商品クリック等を記録
+    this.tables.userBehavior = new dynamodb.TableV2(this, 'UserBehaviorTable', {
+      tableName: `USER_BEHAVIOR${tableSuffix}`,
+
+      // PK: account_id
+      // SK: behavior_id (timestamp + type)
+      partitionKey: { name: 'account_id', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'behavior_id', type: dynamodb.AttributeType.STRING },
+
+      ...commonTableProps,
+      timeToLiveAttribute: 'ttl', // 30日後に自動削除
+
+      globalSecondaryIndexes: [
+        {
+          // GSI1: 特定コンテンツへの反応を取得
+          // target_id (PK) + timestamp (SK)
+          indexName: 'GSI1_TargetBehaviors',
+          partitionKey: { name: 'target_id', type: dynamodb.AttributeType.STRING },
+          sortKey: { name: 'timestamp', type: dynamodb.AttributeType.NUMBER },
+        },
+      ],
+    });
+
+    // =====================================================
+    // 30. RECOMMENDATION_CACHE テーブル (TTL: 1時間)
+    // =====================================================
+    // 推薦結果のキャッシュ（パフォーマンス最適化）
+    this.tables.recommendationCache = new dynamodb.TableV2(this, 'RecommendationCacheTable', {
+      tableName: `RECOMMENDATION_CACHE${tableSuffix}`,
+
+      // PK: account_id
+      // SK: recommendation_type (timeline, room, product, user, hashtag)
+      partitionKey: { name: 'account_id', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'recommendation_type', type: dynamodb.AttributeType.STRING },
+
+      ...commonTableProps,
+      timeToLiveAttribute: 'expires_at', // 1時間後に自動削除
+    });
+
+    // =====================================================
+    // 全30テーブル作成完了
     // =====================================================
 
     // =====================================================

@@ -440,3 +440,29 @@ export interface ConnectionItem {
   last_ping_at: Timestamp;
   ttl: number; // 24時間後削除
 }
+
+// =====================================================
+// USER_BEHAVIOR テーブル
+// =====================================================
+export interface UserBehaviorItem {
+  account_id: string;
+  behavior_id: string; // timestamp + type
+  behavior_type: 'like' | 'comment' | 'view' | 'follow' | 'repost' | 'product_click' | 'room_join' | 'hashtag_use';
+  target_id: string; // 対象のID
+  target_type: 'post' | 'product' | 'user' | 'room' | 'hashtag';
+  timestamp: Timestamp;
+  weight: number; // 1-10
+  ttl: number; // 30日後削除
+}
+
+// =====================================================
+// RECOMMENDATION_CACHE テーブル
+// =====================================================
+export interface RecommendationCacheItem {
+  account_id: string;
+  recommendation_type: 'timeline' | 'room' | 'product' | 'user' | 'hashtag';
+  recommended_items: string[]; // アイテムIDのリスト
+  scores?: number[]; // 各アイテムのスコア（オプション）
+  updated_at: Timestamp;
+  expires_at: number; // TTL - 1時間後
+}

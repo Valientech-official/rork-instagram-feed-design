@@ -68,4 +68,6 @@ export const TableNames = {
   ANALYTICS: getTableName('ANALYTICS'),
   CONNECTIONS: getTableName('CONNECTIONS'),
   SUPPORT: getTableName('SUPPORT'),
+  USER_BEHAVIOR: getTableName('USER_BEHAVIOR'),
+  RECOMMENDATION_CACHE: getTableName('RECOMMENDATION_CACHE'),
 } as const;
