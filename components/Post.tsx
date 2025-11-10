@@ -2,12 +2,13 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { Image } from 'expo-image';
 import { Heart, MessageCircle } from 'lucide-react-native';
-import { Post as PostType } from '@/mocks/posts';
+import { Post as PostType } from '@/types/api';
 import ImageCarousel from './ImageCarousel';
 import DoubleTapLike from './DoubleTapLike';
 import PostDetailModal from './PostDetailModal';
 import Colors from '@/constants/colors';
 import { useThemeStore } from '@/store/themeStore';
+import { usePostsStore } from '@/store/postsStore';
 
 const { width: screenWidth } = Dimensions.get('window');
 const CARD_WIDTH = screenWidth;
@@ -106,8 +107,6 @@ const CAPTION_PREVIEW_LENGTH = 120;
 const POST_IMAGE_ASPECT_RATIO: '4:5' = '4:5';
 
 export default function Post({ post }: PostProps) {
-  const [liked, setLiked] = useState(post.liked);
-  const [likes, setLikes] = useState(post.likes);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showLikeAnimation, setShowLikeAnimation] = useState(false);
   const [showFullCaption, setShowFullCaption] = useState(false);
@@ -115,16 +114,33 @@ export default function Post({ post }: PostProps) {
   const colors = Colors[theme];
   const styles = createStyles(colors);
 
-  const handleLike = () => {
-    setLiked(!liked);
-    setLikes(prev => liked ? prev - 1 : prev + 1);
+  // Posts store for like/unlike actions
+  const { likePost, unlikePost } = usePostsStore();
+
+  // Use post data from store
+  const liked = post.is_liked ?? false;
+  const likes = post.like_count ?? 0;
+
+  const handleLike = async () => {
+    try {
+      if (liked) {
+        await unlikePost(post.post_id);
+      } else {
+        await likePost(post.post_id);
+      }
+    } catch (error) {
+      console.error('[Post] handleLike error:', error);
+    }
   };
 
-  const handleDoubleTap = () => {
+  const handleDoubleTap = async () => {
     if (!liked) {
-      setLiked(true);
-      setLikes(prev => prev + 1);
       setShowLikeAnimation(true);
+      try {
+        await likePost(post.post_id);
+      } catch (error) {
+        console.error('[Post] handleDoubleTap error:', error);
+      }
     }
   };
 
@@ -137,14 +153,15 @@ export default function Post({ post }: PostProps) {
   };
 
   const { captionToDisplay, isLongCaption } = useMemo(() => {
-    const isLong = post.caption.length > CAPTION_PREVIEW_LENGTH;
+    const content = post.content || '';
+    const isLong = content.length > CAPTION_PREVIEW_LENGTH;
     return {
       captionToDisplay: showFullCaption || !isLong
-        ? post.caption
-        : `${post.caption.substring(0, CAPTION_PREVIEW_LENGTH)}…`,
+        ? content
+        : `${content.substring(0, CAPTION_PREVIEW_LENGTH)}…`,
       isLongCaption: isLong,
     };
-  }, [post.caption, showFullCaption]);
+  }, [post.content, showFullCaption]);
 
   return (
     <>
@@ -154,15 +171,12 @@ export default function Post({ post }: PostProps) {
           <View style={styles.topLine}>
             <View style={styles.userInfo}>
               <Image
-                source={{ uri: post.user.avatar }}
+                source={{ uri: post.author.profile_image }}
                 style={styles.avatar}
                 contentFit="cover"
               />
               <View style={styles.userTextContainer}>
-                <Text style={styles.username}>{post.user.username}</Text>
-                {post.location && (
-                  <Text style={styles.location}>{post.location}</Text>
-                )}
+                <Text style={styles.username}>{post.author.username}</Text>
               </View>
             </View>
 
@@ -178,7 +192,7 @@ export default function Post({ post }: PostProps) {
 
               <TouchableOpacity style={styles.statItem} onPress={handleImagePress}>
                 <MessageCircle size={20} color={colors.icon} />
-                <Text style={styles.statText}>{post.comments}</Text>
+                <Text style={styles.statText}>{post.comment_count}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -198,7 +212,7 @@ export default function Post({ post }: PostProps) {
         {/* Row 2: Image */}
         <View style={styles.imageWrapper}>
           <ImageCarousel
-            images={post.images}
+            images={post.media_urls || []}
             onDoubleTap={handleDoubleTap}
             onPress={handleImagePress}
             width={CARD_WIDTH}
@@ -213,13 +227,13 @@ export default function Post({ post }: PostProps) {
 
         {/* Footer: Timestamp */}
         <View style={styles.footer}>
-          <Text style={styles.timestamp}>{post.timestamp}</Text>
+          <Text style={styles.timestamp}>{post.created_at}</Text>
         </View>
       </View>
 
       <PostDetailModal
         visible={showDetailModal}
-        post={{ ...post, liked, likes }}
+        post={post}
         onClose={() => setShowDetailModal(false)}
       />
     </>
