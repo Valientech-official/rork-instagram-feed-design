@@ -357,7 +357,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = PieceApp/PieceApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L5D44K46T2;
+				DEVELOPMENT_TEAM = S3PG2DZC4D;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -376,7 +376,7 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = app.piece.mobile;
+				PRODUCT_BUNDLE_IDENTIFIER = ogawa.app.piece.mobile;
 				PRODUCT_NAME = PieceApp;
 				SWIFT_OBJC_BRIDGING_HEADER = "PieceApp/PieceApp-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -394,7 +394,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = PieceApp/PieceApp.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L5D44K46T2;
+				DEVELOPMENT_TEAM = S3PG2DZC4D;
 				INFOPLIST_FILE = PieceApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -408,7 +408,7 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = app.piece.mobile;
+				PRODUCT_BUNDLE_IDENTIFIER = ogawa.app.piece.mobile;
 				PRODUCT_NAME = PieceApp;
 				SWIFT_OBJC_BRIDGING_HEADER = "PieceApp/PieceApp-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
