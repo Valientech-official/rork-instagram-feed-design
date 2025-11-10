@@ -107,6 +107,16 @@ export default function DressUpScreen() {
         {/* Header Buttons */}
         <View style={styles.headerButtonsContainer}>
           <TouchableOpacity
+            style={[styles.headerButton, styles.favoriteHeaderButton]}
+            onPress={() => {
+              console.log('お気に入り一覧');
+            }}
+          >
+            <Heart size={18} color={Colors.light.like} fill={Colors.light.like} />
+            <Text style={styles.headerButtonText}>お気に入り</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
             style={[styles.headerButton, styles.aiHeaderButton]}
             onPress={() => setShowAIDressUpModal(true)}
           >
