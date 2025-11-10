@@ -24,15 +24,15 @@ import { TableNames, query, getItem } from '../../lib/dynamodb';
  */
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
-    // TODO: JWTトークンから account_id を取得
-    // const accountId = event.requestContext.authorizer?.claims?.sub;
+    // Cognito AuthorizerからuserIdを取得
+    const userId = event.requestContext.authorizer?.claims?.sub;
 
-    // 現在はヘッダーから取得（開発用）
-    const accountId = event.headers['x-account-id'];
-
-    if (!accountId) {
-      return unauthorizedResponse('アカウントIDが取得できません');
+    if (!userId) {
+      return unauthorizedResponse('認証情報が取得できません');
     }
+
+    // 注: 現在の実装では公開投稿を全件取得しているため、userIdは使用していない
+    // 将来的にフォロー機能を実装する際に、userIdを使ってフォロー中のアカウントの投稿を取得する
 
     // クエリパラメータを取得
     const limit = event.queryStringParameters?.limit
