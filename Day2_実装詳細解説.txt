@@ -1,0 +1,922 @@
+================================================================================
+Day 2 実装詳細解説 - Piece ファッションSNSアプリ
+================================================================================
+作成日: 2025-11-10
+実装範囲: フロントエンドストア実装 + バックエンド推薦機能実装
+
+================================================================================
+1. 実装概要
+================================================================================
+
+Day 2では、アプリの状態管理とレコメンデーション機能の基盤を実装しました。
+
+■ 実装内容:
+  - Task 2.0: DynamoDBテーブル追加（USER_BEHAVIOR, RECOMMENDATION_CACHE）
+  - Task 2.1-2.6: フロントエンドZustandストア6つ（合計1,510行）
+  - Task 2.7-2.11: バックエンド推薦ハンドラー5つ（合計589行）
+
+■ 総行数: 2,099行（型定義・テーブル定義を含む）
+
+================================================================================
+2. 実装ファイル一覧
+================================================================================
+
+【DynamoDBインフラ】
+  backend/infrastructure/lib/dynamodb-stack.ts
+    - USER_BEHAVIOR テーブル追加（行動履歴、TTL: 30日）
+    - RECOMMENDATION_CACHE テーブル追加（推薦キャッシュ、TTL: 1時間）
+
+  backend/src/types/dynamodb.ts
+    - UserBehaviorItem 型定義
+    - RecommendationCacheItem 型定義
+
+  backend/src/lib/dynamodb/client.ts
+    - TableNames 定数追加
+
+【フロントエンドストア】
+  store/postsStore.ts (337行)
+    - タイムライン投稿管理
+    - おすすめ投稿管理
+    - いいね/削除機能
+
+  store/usersStore.ts (349行)
+    - ユーザープロフィールキャッシュ
+    - フォロー/アンフォロー機能
+    - おすすめユーザー管理
+
+  store/notificationsStore.ts (154行)
+    - 通知一覧管理
+    - 未読カウント管理
+    - 既読処理
+
+  store/productsStore.ts (201行)
+    - 商品一覧管理
+    - おすすめ商品管理
+    - クリックトラッキング
+
+  store/aiStore.ts (229行)
+    - AI画像生成履歴
+    - 月次使用制限管理
+    - Zustand persist使用
+
+  store/iapStore.ts (240行)
+    - サブスクリプション状態管理
+    - 購入履歴管理
+    - リストア機能
+    - Zustand persist使用
+
+【バックエンドハンドラー】
+  backend/src/handlers/recommendation/trackBehavior.ts (119行)
+    - ユーザー行動トラッキング
+    - USER_BEHAVIORテーブルへの記録
+
+  backend/src/handlers/recommendation/getTimelineRecommendations.ts (249行)
+    - タイムライン推薦
+    - キャッシング機能
+    - スコアリングアルゴリズム
+
+  backend/src/handlers/recommendation/getRoomRecommendations.ts (58行)
+    - Room推薦（簡略版）
+
+  backend/src/handlers/recommendation/getProductRecommendations.ts (61行)
+    - 商品推薦
+    - カテゴリフィルタリング
+
+  backend/src/handlers/recommendation/getUserRecommendations.ts (102行)
+    - ユーザー推薦
+    - 共通フォロワーベース
+
+================================================================================
+3. アーキテクチャ全体像
+================================================================================
+
+【3層構造】
+
+[フロントエンド層]
+  React Native + Expo Router v6
+  |
+  +-- Zustandストア (状態管理)
+      |-- postsStore: 投稿データ
+      |-- usersStore: ユーザーデータ
+      |-- notificationsStore: 通知データ
+      |-- productsStore: 商品データ
+      |-- aiStore: AI機能データ
+      |-- iapStore: 購入データ
+      |
+      +-- apiClient (Day 1で実装)
+          - エラーハンドリング
+          - リトライロジック
+          - 認証ヘッダー付与
+
+[バックエンド層]
+  AWS Lambda + API Gateway
+  |
+  +-- 推薦ハンドラー
+      |-- trackBehavior: 行動記録
+      |-- getTimelineRecommendations: タイムライン推薦
+      |-- getRoomRecommendations: Room推薦
+      |-- getProductRecommendations: 商品推薦
+      |-- getUserRecommendations: ユーザー推薦
+
+[データ層]
+  Amazon DynamoDB
+  |
+  +-- 既存テーブル
+  |   |-- ACCOUNT: アカウント情報
+  |   |-- POST: 投稿情報
+  |   |-- FOLLOW: フォロー関係
+  |   |-- PRODUCT: 商品情報
+  |   |-- ROOM: Room情報
+  |
+  +-- 新規テーブル (Day 2で追加)
+      |-- USER_BEHAVIOR: 行動履歴
+      |   - PK: account_id
+      |   - SK: behavior_id (timestamp + type)
+      |   - GSI1: target_id + timestamp
+      |   - TTL: 30日後自動削除
+      |
+      |-- RECOMMENDATION_CACHE: 推薦キャッシュ
+          - PK: account_id
+          - SK: recommendation_type
+          - TTL: 1時間後自動削除
+
+================================================================================
+4. 各ストアの詳細解説
+================================================================================
+
+【4.1 postsStore.ts - 投稿管理ストア】
+
+■ 責務:
+  - タイムライン投稿の取得・管理
+  - おすすめ投稿の取得・管理
+  - いいね/いいね解除
+  - 投稿削除
+  - ユーザー別投稿一覧
+
+■ 主要機能:
+
+  1) fetchTimeline(refresh?: boolean)
+     - /post/timeline エンドポイントを呼び出し
+     - refresh=true の場合は先頭から再取得
+     - refresh=false の場合は nextToken を使って追加読み込み
+     - 無限スクロール対応
+
+  2) fetchRecommendedPosts(limit?: number)
+     - /recommendation/timeline エンドポイントを呼び出し
+     - スコア付き投稿を取得
+     - おすすめタブで使用
+
+  3) likePost(postId: string)
+     - /post/:postId/like エンドポイントを呼び出し
+     - 楽観的UI更新: 即座にローカル状態を更新
+     - APIエラー時はロールバック可能（実装は今後）
+
+  4) deletePost(postId: string)
+     - /post/:postId DELETE エンドポイントを呼び出し
+     - 削除後、ローカルの投稿リストからも削除
+
+■ 状態管理:
+  - timelinePosts: タイムライン投稿配列
+  - timelineNextToken: ページネーショントークン
+  - timelineLoading: ローディング状態
+  - timelineError: エラーメッセージ
+  - recommendedPosts: おすすめ投稿配列（スコア付き）
+  - userPosts: ユーザーID別の投稿マップ
+
+■ エラーハンドリング:
+  - handleError関数でエラーを処理
+  - 日本語エラーメッセージをセット
+  - ユーザー向けトースト表示に使用
+
+■ 使用例:
+  ```typescript
+  const { timelinePosts, fetchTimeline, likePost } = usePostsStore();
+
+  // コンポーネントマウント時
+  useEffect(() => {
+    fetchTimeline(true);
+  }, []);
+
+  // いいねボタンタップ時
+  const handleLike = async (postId: string) => {
+    await likePost(postId);
+  };
+  ```
+
+【4.2 usersStore.ts - ユーザー管理ストア】
+
+■ 責務:
+  - ユーザープロフィールのキャッシング
+  - フォロー/アンフォロー処理
+  - おすすめユーザー取得
+  - フォロー一覧・フォロワー一覧取得
+
+■ 主要機能:
+
+  1) getUserProfile(accountId: string, forceRefresh?: boolean)
+     - メモリキャッシュ戦略採用
+     - キャッシュがある場合は即座に返却
+     - forceRefresh=true でキャッシュを無視
+     - /account/:accountId/profile エンドポイント使用
+
+  2) followUser(accountId: string)
+     - /account/:accountId/follow エンドポイント呼び出し
+     - フォロー状態をローカルで即座に更新
+     - フォロー一覧にも追加
+
+  3) unfollowUser(accountId: string)
+     - /account/:accountId/unfollow エンドポイント呼び出し
+     - アンフォロー後、ローカル状態から削除
+
+  4) fetchRecommendedUsers(limit?: number)
+     - /recommendation/users エンドポイント使用
+     - 共通フォロワーベースの推薦
+
+■ キャッシュ戦略:
+  - profileCache: Record<accountId, AccountProfile>
+  - 一度取得したプロフィールはメモリに保持
+  - セッション中は有効（アプリ再起動でクリア）
+  - 明示的なリフレッシュで更新可能
+
+■ 使用例:
+  ```typescript
+  const { getUserProfile, followUser } = useUsersStore();
+
+  // プロフィール画面でユーザー情報取得
+  const profile = await getUserProfile(accountId);
+
+  // フォローボタンタップ
+  const handleFollow = async () => {
+    await followUser(accountId);
+  };
+  ```
+
+【4.3 notificationsStore.ts - 通知管理ストア】
+
+■ 責務:
+  - 通知一覧の取得・管理
+  - 未読バッジカウント管理
+  - 既読処理
+
+■ 主要機能:
+
+  1) fetchNotifications(refresh?: boolean)
+     - /notification エンドポイント使用
+     - 無限スクロール対応
+     - 未読カウントを自動計算
+
+  2) markAsRead(notificationId: string)
+     - /notification/:notificationId/read エンドポイント
+     - ローカルの通知を既読に更新
+     - unreadCount をデクリメント
+
+  3) markAllAsRead()
+     - /notification/read-all エンドポイント
+     - 全通知を既読に更新
+     - unreadCount を0にリセット
+
+■ 未読カウント管理:
+  - 通知取得時に自動計算
+  - 既読処理時に自動デクリメント
+  - タブバーのバッジ表示に使用
+
+■ 使用例:
+  ```typescript
+  const { notifications, unreadCount, markAsRead } = useNotificationsStore();
+
+  // タブバーでバッジ表示
+  <TabBarIcon badge={unreadCount} />
+
+  // 通知タップ時
+  const handleNotificationPress = async (notifId: string) => {
+    await markAsRead(notifId);
+    // 詳細画面へ遷移
+  };
+  ```
+
+【4.4 productsStore.ts - 商品管理ストア】
+
+■ 責務:
+  - 商品一覧取得
+  - おすすめ商品取得
+  - カテゴリフィルタリング
+  - クリックトラッキング
+
+■ 主要機能:
+
+  1) fetchProducts(category?: string, refresh?: boolean)
+     - /product エンドポイント使用
+     - カテゴリパラメータでフィルタリング
+     - 無限スクロール対応
+
+  2) fetchRecommendedProducts(category?: string, limit?: number)
+     - /recommendation/products エンドポイント使用
+     - ユーザーの閲覧履歴に基づく推薦
+     - カテゴリ指定可能
+
+  3) trackProductClick(productId: string)
+     - /product/:productId/click エンドポイント
+     - クリック追跡（推薦アルゴリズム改善用）
+     - エラーが発生してもUXに影響しない
+
+■ カテゴリ管理:
+  - selectedCategory で現在のフィルタを保持
+  - カテゴリ変更時は自動的に再取得
+
+■ 使用例:
+  ```typescript
+  const { products, fetchProducts, trackProductClick } = useProductsStore();
+
+  // カテゴリ選択時
+  const handleCategoryChange = (category: string) => {
+    fetchProducts(category, true);
+  };
+
+  // 商品タップ時
+  const handleProductPress = async (productId: string) => {
+    await trackProductClick(productId);
+    // 商品詳細画面へ遷移
+  };
+  ```
+
+【4.5 aiStore.ts - AI機能管理ストア】
+
+■ 責務:
+  - AI画像生成履歴管理
+  - 月次使用制限管理
+  - 生成パラメータ管理
+
+■ 主要機能:
+
+  1) generateImage(type, prompt, avatarImage, itemImage, options)
+     - /ai/generate-image エンドポイント使用
+     - 使用制限チェック
+     - 生成履歴に自動追加
+     - usageCount を自動インクリメント
+
+  2) checkUsageLimit(isPremium: boolean)
+     - 無料プラン: 月5回まで
+     - プレミアムプラン: 月100回まで
+     - 月が変わると自動リセット
+
+  3) resetUsageCount()
+     - 月次リセット処理
+     - usageLastReset を現在時刻に更新
+
+■ 永続化:
+  - Zustand persist middleware 使用
+  - AsyncStorage に保存
+  - usageCount と usageLastReset のみ永続化
+  - generationHistory は揮発（API から再取得）
+
+■ 使用例:
+  ```typescript
+  const { generateImage, checkUsageLimit, usageCount } = useAIStore();
+
+  // 生成前に制限チェック
+  const canGenerate = checkUsageLimit(isPremium);
+  if (!canGenerate) {
+    Alert.alert('制限超過', '今月の生成回数上限に達しました');
+    return;
+  }
+
+  // AI画像生成
+  const result = await generateImage(
+    'outfit',
+    'カジュアルな春コーデ',
+    avatarImageUrl,
+    null,
+    { aspect_ratio: '9:16' }
+  );
+  ```
+
+【4.6 iapStore.ts - アプリ内課金管理ストア】
+
+■ 責務:
+  - サブスクリプション状態管理
+  - 購入処理
+  - 購入履歴管理
+  - リストア機能
+
+■ 主要機能:
+
+  1) purchaseProduct(productId, platform, receiptData)
+     - /iap/verify-purchase エンドポイント使用
+     - レシート検証
+     - サブスクリプション状態更新
+     - 購入履歴を自動取得
+
+  2) restorePurchases(platform: 'ios' | 'android')
+     - /iap/restore-purchases エンドポイント使用
+     - 過去の購入を復元
+     - isPremium 状態を更新
+
+  3) fetchPurchaseHistory()
+     - /iap/purchase-history エンドポイント使用
+     - 購入履歴一覧を取得
+
+  4) checkSubscriptionStatus()
+     - /iap/subscription-status エンドポイント使用
+     - サブスクリプションの有効性確認
+     - 期限切れチェック
+
+■ 永続化:
+  - Zustand persist middleware 使用
+  - AsyncStorage に保存
+  - isPremium, currentPlan, subscriptionStatus を永続化
+  - アプリ再起動後も状態を保持
+
+■ 使用例:
+  ```typescript
+  const { isPremium, purchaseProduct, restorePurchases } = useIAPStore();
+
+  // プレミアムプラン購入
+  const handlePurchase = async () => {
+    const receipt = await InAppPurchase.purchaseProduct('premium_monthly');
+    await purchaseProduct('premium_monthly', Platform.OS, receipt);
+  };
+
+  // リストアボタン
+  const handleRestore = async () => {
+    await restorePurchases(Platform.OS);
+  };
+
+  // プレミアム機能の表示制御
+  {isPremium ? (
+    <PremiumFeature />
+  ) : (
+    <UpgradePrompt />
+  )}
+  ```
+
+================================================================================
+5. バックエンドハンドラーの詳細解説
+================================================================================
+
+【5.1 trackBehavior.ts - 行動トラッキングハンドラー】
+
+■ 目的:
+  ユーザーの行動（いいね、閲覧、フォロー等）をUSER_BEHAVIORテーブルに記録し、
+  推薦アルゴリズムの学習データとして使用。
+
+■ リクエスト:
+  POST /recommendation/track-behavior
+  Body: {
+    behavior_type: 'like' | 'comment' | 'view' | 'follow' | 'repost' | 'product_click' | 'room_join' | 'hashtag_use',
+    target_id: string,
+    target_type: 'post' | 'product' | 'user' | 'room' | 'hashtag',
+    weight?: number (1-10, デフォルト: 5)
+  }
+
+■ 処理フロー:
+  1. account_id をヘッダーから取得
+  2. リクエストボディをバリデーション
+  3. behavior_id を生成（timestamp + type）
+  4. UserBehaviorItem を作成
+  5. USER_BEHAVIOR テーブルに putItem
+  6. TTL を30日後に設定（自動削除）
+
+■ データ例:
+  {
+    account_id: "user123",
+    behavior_id: "1699564800_like",
+    behavior_type: "like",
+    target_id: "post456",
+    target_type: "post",
+    timestamp: 1699564800,
+    weight: 8,
+    ttl: 1702243200
+  }
+
+■ 使用シーン:
+  - いいねボタンタップ時
+  - 投稿閲覧時（ビューカウント）
+  - フォローボタンタップ時
+  - 商品クリック時
+  - Room参加時
+
+【5.2 getTimelineRecommendations.ts - タイムライン推薦ハンドラー】
+
+■ 目的:
+  ユーザーの行動履歴に基づいて、おすすめ投稿をスコアリングして返す。
+
+■ リクエスト:
+  GET /recommendation/timeline?limit=20
+
+■ 処理フロー:
+  1. キャッシュチェック
+     - RECOMMENDATION_CACHE テーブルから取得
+     - expires_at が現在時刻より大きければ使用
+
+  2. キャッシュがない場合:
+     a. USER_BEHAVIOR テーブルからユーザー行動履歴を取得（最近100件）
+     b. POST テーブルから公開投稿を取得（最新100件）
+     c. 各投稿をスコアリング
+     d. スコア順にソート
+     e. RECOMMENDATION_CACHE に保存（1時間有効）
+
+  3. 投稿者情報を ACCOUNT テーブルから取得
+
+  4. レスポンス返却
+
+■ スコアリングアルゴリズム:
+  - freshnessScore（新鮮度スコア）
+    = exp(-hoursElapsed / 24)
+    最近の投稿ほど高スコア、24時間で約37%に減衰
+
+  - popularityScore（人気度スコア）
+    = log10(likeCount + 1) / 5
+    いいね数が多いほど高スコア、対数スケール
+
+  - totalScore（総合スコア）
+    = freshnessScore * 0.5 + popularityScore * 0.5
+    新鮮度と人気度を50%ずつ加重
+
+■ キャッシュ戦略:
+  - 有効期限: 1時間
+  - 自動削除: TTL機能
+  - キャッシュキー: (account_id, recommendation_type)
+  - 保存内容: recommended_items（投稿ID配列）、scores（スコア配列）
+
+■ レスポンス例:
+  {
+    success: true,
+    data: {
+      items: [
+        {
+          post_id: "post123",
+          author: { account_id: "user456", username: "Fashionista", ... },
+          images: [...],
+          caption: "春の新作コーデ",
+          like_count: 1234,
+          score: 0.87
+        },
+        ...
+      ],
+      nextToken: undefined
+    }
+  }
+
+【5.3 getUserRecommendations.ts - ユーザー推薦ハンドラー】
+
+■ 目的:
+  共通フォロワー（共通の友人）に基づいておすすめユーザーを返す。
+
+■ アルゴリズム:
+  1. 自分のフォロー中ユーザー一覧を取得
+  2. フォロー中ユーザーのフォロワーを取得
+  3. 自分自身と既にフォロー済みのユーザーを除外
+  4. 残ったユーザーをおすすめとして返す
+
+■ 簡略版の実装:
+  - 現在は最初のフォロー対象のフォロワーのみ取得
+  - 本番では全フォロー対象のフォロワーを集計し、共通フォロワー数でスコアリング
+
+■ 処理フロー:
+  1. FOLLOW テーブル (GSI1) から following_id を取得
+  2. FOLLOW テーブル (GSI2) から follower_id を取得
+  3. 自分とフォロー済みを除外
+  4. ACCOUNT テーブルからアカウント情報を取得
+  5. レスポンス返却
+
+【5.4 getProductRecommendations.ts - 商品推薦ハンドラー】
+
+■ 目的:
+  ユーザーの閲覧・いいね履歴に基づいておすすめ商品を返す。
+
+■ 簡略版の実装:
+  - カテゴリ別商品を取得（新しい順）
+  - カテゴリ指定がない場合は全アクティブ商品
+
+■ リクエスト:
+  GET /recommendation/products?category=tops&limit=20
+
+■ 処理フロー:
+  1. category パラメータの有無を確認
+  2. PRODUCT テーブルから商品を取得
+     - カテゴリ指定あり: GSI_category_products を使用
+     - カテゴリ指定なし: GSI_status_products を使用
+  3. ScanIndexForward: false（新しい順）
+  4. レスポンス返却
+
+■ 今後の改善:
+  - USER_BEHAVIOR から商品クリック履歴を分析
+  - 閲覧履歴からカテゴリ傾向を算出
+  - 協調フィルタリング（類似ユーザーの購買履歴）
+
+【5.5 getRoomRecommendations.ts - Room推薦ハンドラー】
+
+■ 目的:
+  ユーザーの参加履歴に基づいておすすめRoomを返す。
+
+■ 簡略版の実装:
+  - アクティブなRoomを member_count が多い順に取得
+  - デフォルトカテゴリ: 'fashion'
+
+■ リクエスト:
+  GET /recommendation/rooms?limit=20
+
+■ 処理フロー:
+  1. ROOM テーブル (GSI1) から category='fashion' のRoomを取得
+  2. ScanIndexForward: false（member_count 降順）
+  3. レスポンス返却
+
+■ 今後の改善:
+  - USER_BEHAVIOR から Room 参加履歴を分析
+  - 参加したRoomのカテゴリから興味を推定
+  - アクティブ度（最近のメッセージ数）でスコアリング
+
+================================================================================
+6. データフロー例
+================================================================================
+
+【例1: タイムラインおすすめ投稿の表示】
+
+1. ユーザーが「おすすめ」タブをタップ
+   |
+2. RecommendedPostsScreen コンポーネントがマウント
+   |
+3. usePostsStore の fetchRecommendedPosts() を呼び出し
+   |
+4. apiClient が GET /recommendation/timeline を実行
+   |
+5. Lambda関数 getTimelineRecommendations が実行
+   |
+6. RECOMMENDATION_CACHE をチェック
+   - キャッシュあり -> 7へ
+   - キャッシュなし -> USER_BEHAVIOR と POST を取得してスコアリング
+   |
+7. おすすめ投稿一覧を返却
+   |
+8. postsStore の recommendedPosts が更新
+   |
+9. FlatList が再レンダリングされ、おすすめ投稿を表示
+
+【例2: いいねボタンタップ時の行動トラッキング】
+
+1. ユーザーが投稿のいいねボタンをタップ
+   |
+2. postsStore の likePost(postId) を呼び出し
+   |
+3. 楽観的UI更新: ローカル状態を即座に更新（いいね済みに変更）
+   |
+4. apiClient が POST /post/:postId/like を実行
+   |
+5. Lambda関数 likePost が実行
+   - LIKE テーブルに記録
+   - POST テーブルの like_count をインクリメント
+   |
+6. 同時に trackBehavior が実行される（別のLambda）
+   |
+7. USER_BEHAVIOR テーブルに行動履歴を記録
+   {
+     behavior_type: "like",
+     target_id: postId,
+     target_type: "post",
+     weight: 8
+   }
+   |
+8. この行動履歴は次回の推薦計算に使用される
+
+【例3: AI画像生成時の使用制限チェック】
+
+1. ユーザーが「AI画像生成」ボタンをタップ
+   |
+2. aiStore の checkUsageLimit(isPremium) を呼び出し
+   |
+3. AsyncStorage から usageCount と usageLastReset を読み込み
+   |
+4. 月が変わっていないかチェック
+   - 月が変わっている -> resetUsageCount() を実行
+   - 月が変わっていない -> 現在のカウントを使用
+   |
+5. 使用制限チェック
+   - 無料プラン: usageCount < 5
+   - プレミアムプラン: usageCount < 100
+   |
+6. 制限内の場合:
+   - generateImage() を実行
+   - usageCount をインクリメント
+   - AsyncStorage に保存
+   |
+7. 制限超過の場合:
+   - エラーメッセージを表示
+   - プレミアムプランへのアップグレードを促す
+
+================================================================================
+7. 設計のポイント
+================================================================================
+
+【7.1 キャッシュ戦略】
+
+■ 3種類のキャッシュを使い分け:
+
+  1. メモリキャッシュ（usersStore の profileCache）
+     - 利点: 最速のアクセス
+     - 欠点: アプリ再起動で消える
+     - 用途: 頻繁にアクセスするがサイズが小さいデータ
+
+  2. DynamoDBキャッシュ（RECOMMENDATION_CACHE）
+     - 利点: 複数デバイスで共有可能、TTL自動削除
+     - 欠点: ネットワークアクセスが必要
+     - 用途: 計算コストが高い推薦結果
+
+  3. 永続キャッシュ（aiStore, iapStore の persist）
+     - 利点: アプリ再起動後も保持
+     - 欠点: ストレージ容量を消費
+     - 用途: ユーザー設定、使用制限カウント
+
+【7.2 楽観的UI更新】
+
+■ いいねボタンの例:
+  - ユーザーがタップした瞬間にUIを更新（即座にハートが赤くなる）
+  - バックグラウンドでAPI呼び出し
+  - API成功: そのまま維持
+  - APIエラー: ロールバック（今後実装）
+
+■ メリット:
+  - レスポンシブな操作感
+  - ネットワーク遅延を感じさせない
+  - ユーザー体験の向上
+
+【7.3 エラーハンドリング】
+
+■ 段階的なエラー処理:
+
+  1. API層（apiClient）
+     - ネットワークエラー
+     - リトライ処理
+     - 認証エラー
+
+  2. ストア層
+     - handleError でエラーをキャッチ
+     - 日本語エラーメッセージに変換
+     - ストアの error 状態にセット
+
+  3. UI層
+     - error 状態を監視
+     - トーストやアラートで表示
+     - リトライボタンを提供
+
+【7.4 ページネーション】
+
+■ 無限スクロール実装:
+  - nextToken を使ったカーソルベースページネーション
+  - FlatList の onEndReached でトリガー
+  - loading 状態で重複リクエストを防止
+
+■ リフレッシュ処理:
+  - refresh=true で先頭から再取得
+  - Pull-to-refresh で実装
+  - 既存データをクリアしてから新規データをセット
+
+【7.5 TTL（Time To Live）による自動削除】
+
+■ USER_BEHAVIOR テーブル:
+  - TTL: 30日
+  - 理由: 古い行動履歴は推薦精度に寄与しない
+  - コスト削減: 古いデータを自動削除
+
+■ RECOMMENDATION_CACHE テーブル:
+  - TTL: 1時間
+  - 理由: 推薦結果は時間とともに陳腐化
+  - リソース効率: キャッシュの肥大化を防止
+
+================================================================================
+8. パフォーマンス最適化
+================================================================================
+
+【8.1 並列処理】
+
+■ Promise.all の活用:
+  - 投稿一覧とアカウント情報を並列取得
+  - レイテンシを最小化
+  - 例: getTimelineRecommendations.ts の accountPromises
+
+【8.2 DynamoDB GSI の活用】
+
+■ 効率的なクエリ:
+  - USER_BEHAVIOR: GSI1 で target_id から行動履歴を逆引き
+  - FOLLOW: GSI1 で follower_id、GSI2 で following_id
+  - POST: GSI2 で visibility から公開投稿を取得
+
+【8.3 Zustand の最適化】
+
+■ 部分的な状態更新:
+  - set() で必要な部分だけ更新
+  - 不要な再レンダリングを防止
+
+■ セレクタの使用:
+  ```typescript
+  const timelinePosts = usePostsStore(state => state.timelinePosts);
+  const fetchTimeline = usePostsStore(state => state.fetchTimeline);
+  ```
+  timelinePosts が変わった時のみ再レンダリング
+
+【8.4 キャッシュの有効活用】
+
+■ usersStore の profileCache:
+  - 同じユーザー情報を何度もAPIから取得しない
+  - 投稿一覧で同じ投稿者が複数回表示される場合に有効
+
+================================================================================
+9. 今後の改善点
+================================================================================
+
+【9.1 推薦アルゴリズムの高度化】
+
+■ コンテンツベースフィルタリング:
+  - 投稿のハッシュタグ、カテゴリから類似度を計算
+  - ユーザーの興味プロフィールを構築
+
+■ 協調フィルタリング:
+  - 類似ユーザーの行動から推薦
+  - Item-to-Item 推薦（類似投稿）
+
+■ ハイブリッド推薦:
+  - コンテンツベースと協調フィルタリングを組み合わせ
+  - ディープラーニングモデルの導入（Amazon Personalize など）
+
+【9.2 リアルタイム推薦】
+
+■ DynamoDB Streams + Lambda:
+  - USER_BEHAVIOR テーブルの変更をトリガー
+  - リアルタイムで推薦を更新
+
+■ WebSocket 通知:
+  - 新しいおすすめが追加されたらプッシュ通知
+
+【9.3 A/Bテスト基盤】
+
+■ 推薦アルゴリズムの効果測定:
+  - 複数のアルゴリズムを比較
+  - クリック率、滞在時間、エンゲージメント率を計測
+
+【9.4 オフライン対応】
+
+■ ローカルキャッシュの拡張:
+  - 最近の投稿をローカルDBに保存
+  - オフライン時もタイムライン閲覧可能
+
+【9.5 パーソナライゼーションの深化】
+
+■ ユーザープロフィールの自動構築:
+  - 興味カテゴリ
+  - お気に入りブランド
+  - スタイル傾向
+
+■ 時間帯別推薦:
+  - 朝: 通勤コーデ
+  - 夜: パーティードレス
+
+【9.6 エラーハンドリングの改善】
+
+■ 楽観的更新のロールバック:
+  - API失敗時に元の状態に戻す
+  - ユーザーにエラーを通知
+
+■ オフライン検知:
+  - ネットワーク状態を監視
+  - オフライン時は適切なメッセージを表示
+
+【9.7 セキュリティ強化】
+
+■ JWT認証の実装:
+  - 現在は x-account-id ヘッダー（開発用）
+  - 本番ではJWTトークンを使用
+
+■ レート制限:
+  - API呼び出し回数の制限
+  - DDoS攻撃対策
+
+================================================================================
+10. まとめ
+================================================================================
+
+Day 2では、フロントエンドの状態管理とバックエンドの推薦機能の基盤を構築しました。
+
+■ 達成したこと:
+  - Zustandストア6つの実装（1,510行）
+  - 推薦ハンドラー5つの実装（589行）
+  - DynamoDBテーブル2つの追加
+  - キャッシュ戦略の確立
+  - 行動トラッキング基盤の構築
+
+■ 技術的ハイライト:
+  - 楽観的UI更新によるレスポンシブな操作感
+  - 3種類のキャッシュ戦略の使い分け
+  - TTL自動削除によるコスト最適化
+  - スコアリングアルゴリズムによる推薦
+  - Zustand persist による永続化
+
+■ 次のステップ（Day 3以降）:
+  - UIコンポーネントの実装
+  - スクリーン間のナビゲーション
+  - 画像アップロード機能
+  - プッシュ通知
+  - 決済機能
+
+Day 2の実装により、アプリの状態管理と推薦機能の土台が整いました。
+今後はこの基盤の上にUIを構築し、ユーザー体験を磨き上げていきます。
+
+================================================================================
