@@ -76,6 +76,16 @@ export function validationErrorResponse(message: string, details?: any): APIGate
 }
 
 /**
+ * Bad Requestエラーレスポンス
+ * @param message - エラーメッセージ
+ * @param details - エラー詳細
+ * @returns APIGatewayProxyResult
+ */
+export function badRequestResponse(message: string, details?: any): APIGatewayProxyResult {
+  return errorResponse(ErrorCode.VALIDATION_ERROR, message, 400, details);
+}
+
+/**
  * 認証エラーレスポンス
  * @param message - エラーメッセージ
  * @returns APIGatewayProxyResult
