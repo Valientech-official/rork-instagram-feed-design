@@ -89,9 +89,6 @@
     "extra": {
       "router": {
         "origin": "https://rork.com/"
-      },
-      "eas": {
-        "projectId": "f8d58e9a-5f5b-4b6b-a089-282df3eef5bd"
       }
     },
     "runtimeVersion": "1.0.0"
