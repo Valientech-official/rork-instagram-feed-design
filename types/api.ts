@@ -98,28 +98,33 @@ export interface UpdateProfileRequest {
 // =====================================================
 
 export interface Post {
-  post_id: ULID;
-  account_id: string;
+  postId: ULID;
+  accountId: string;
   author: AccountSummary;
   content: string;
-  media_urls?: string[];
-  media_type?: 'image' | 'video' | 'mixed';
-  thumbnail_url?: string;
+  mediaUrls?: string[];
+  mediaType?: 'image' | 'video' | 'mixed';
+  thumbnailUrl?: string;
   visibility: PostVisibility;
-  like_count: number;
-  comment_count: number;
-  share_count: number;
-  repost_count: number;
+  likeCount: number;
+  commentCount: number;
+  shareCount: number;
+  repostCount: number;
   hashtags?: string[];
-  created_at: Timestamp;
-  updated_at?: Timestamp;
-  is_edited: boolean;
+  createdAt: Timestamp;
+  updatedAt?: Timestamp;
+  isEdited: boolean;
   post_type: PostType;
-  wave_video_url?: string;
-  wave_duration?: number;
-  room_id?: string;
-  is_liked?: boolean; // フロントエンド用
-  is_reposted?: boolean; // フロントエンド用
+  waveVideoUrl?: string;
+  waveDuration?: number;
+  roomId?: string;
+  isLiked?: boolean; // フロントエンド用
+  isReposted?: boolean; // フロントエンド用
+  location?: string; // 位置情報
+  allowRepost?: boolean; // リポスト許可
+  allowWaveDuet?: boolean; // ウェーブデュエット許可
+  editCount?: number; // 編集回数
+  isDeleted?: boolean; // 削除フラグ
 }
 
 export interface CreatePostRequest {
@@ -152,6 +157,7 @@ export interface Comment {
   reply_count: number;
   created_at: Timestamp;
   is_liked?: boolean; // フロントエンド用
+  replies?: Comment[]; // ネストされた返信（フロントエンド用）
 }
 
 export interface CreateCommentRequest {

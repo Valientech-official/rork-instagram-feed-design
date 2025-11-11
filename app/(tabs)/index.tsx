@@ -262,8 +262,8 @@ export default function FeedScreen() {
 
       <FlatList<PostType>
         data={timelinePosts}
-        renderItem={({ item }) => <Post key={item.post_id} post={item} />}
-        keyExtractor={(item) => item.post_id}
+        renderItem={({ item }) => <Post post={item} />}
+        keyExtractor={(item) => item.postId}
         contentContainerStyle={[
           styles.listContent,
           { paddingTop: Math.max(insets.top + 8, 16) + 48 } // Header height + safe area

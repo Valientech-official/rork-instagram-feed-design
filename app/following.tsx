@@ -1,36 +1,62 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
-import { Stack, useRouter } from 'expo-router';
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { Stack, useRouter, useLocalSearchParams } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
 import Colors from '@/constants/colors';
-import { users } from '@/mocks/users';
-import { User } from '@/mocks/users';
+import { AccountSummary } from '@/types/api';
+import { useUsersStore } from '@/store/usersStore';
+import { useAuthStore } from '@/store/authStore';
+import FollowButton from '@/components/FollowButton';
 
 export default function FollowingScreen() {
   const router = useRouter();
-  
+  const params = useLocalSearchParams();
+  const { user } = useAuthStore();
+  const { followingList, followingLoading, fetchFollowing } = useUsersStore();
+
+  // accountId取得（デフォルトは自分）
+  const accountId = (params.id as string) || user?.sub || 'me';
+  const following = followingList[accountId] || [];
+  const loading = followingLoading[accountId] || false;
+
+  useEffect(() => {
+    fetchFollowing(accountId);
+  }, [accountId]);
+
   const handleBack = () => {
     router.back();
   };
 
-  const renderFollowing = ({ item }: { item: User }) => (
+  const renderFollowing = ({ item }: { item: AccountSummary }) => (
     <View style={styles.followingItem}>
-      <Image source={{ uri: item.avatar }} style={styles.avatar} />
-      <View style={styles.followingInfo}>
-        <Text style={styles.username}>{item.username}</Text>
-        <Text style={styles.userStatus}>{item.verified ? 'Verified' : 'User'}</Text>
-      </View>
-      <TouchableOpacity style={styles.followingButton}>
-        <Text style={styles.followingButtonText}>Following</Text>
+      <TouchableOpacity
+        style={styles.userInfo}
+        onPress={() => router.push(`/profile/${item.account_id}`)}
+      >
+        <Image
+          source={{ uri: item.profile_image || 'https://via.placeholder.com/50' }}
+          style={styles.avatar}
+        />
+        <View style={styles.followingInfo}>
+          <Text style={styles.username}>{item.username}</Text>
+          <Text style={styles.userHandle}>@{item.handle}</Text>
+        </View>
       </TouchableOpacity>
+      {item.account_id !== user?.sub && (
+        <FollowButton
+          accountId={item.account_id}
+          initialIsFollowing={true}
+          size="small"
+        />
+      )}
     </View>
   );
 
   return (
     <>
-      <Stack.Screen 
+      <Stack.Screen
         options={{
-          headerTitle: "Following",
+          headerTitle: 'フォロー中',
           headerLeft: () => (
             <TouchableOpacity onPress={handleBack} style={styles.backButton}>
               <ChevronLeft size={24} color={Colors.light.text} />
@@ -38,20 +64,28 @@ export default function FollowingScreen() {
           ),
         }}
       />
-      
+
       <View style={styles.container}>
-        <FlatList
-          data={users}
-          keyExtractor={(item) => item.id}
-          renderItem={renderFollowing}
-          contentContainerStyle={styles.listContent}
-          ListEmptyComponent={
-            <View style={styles.emptyState}>
-              <Text style={styles.emptyStateTitle}>Not following anyone</Text>
-              <Text style={styles.emptyStateText}>When you follow people, they'll appear here.</Text>
-            </View>
-          }
-        />
+        {loading && following.length === 0 ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={Colors.light.primary} />
+          </View>
+        ) : (
+          <FlatList
+            data={following}
+            keyExtractor={(item) => item.account_id}
+            renderItem={renderFollowing}
+            contentContainerStyle={styles.listContent}
+            ListEmptyComponent={
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyStateTitle}>フォロー中のユーザーがいません</Text>
+                <Text style={styles.emptyStateText}>
+                  誰かをフォローすると、ここに表示されます
+                </Text>
+              </View>
+            }
+          />
+        )}
       </View>
     </>
   );
@@ -65,6 +99,11 @@ const styles = StyleSheet.create({
   backButton: {
     padding: 8,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   listContent: {
     padding: 16,
   },
@@ -74,6 +113,11 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: Colors.light.border,
+  },
+  userInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   avatar: {
     width: 50,
@@ -89,19 +133,9 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: Colors.light.text,
   },
-  userStatus: {
+  userHandle: {
     fontSize: 14,
     color: Colors.light.secondaryText,
-  },
-  followingButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 4,
-    backgroundColor: Colors.light.border,
-  },
-  followingButtonText: {
-    color: Colors.light.text,
-    fontWeight: '500',
   },
   emptyState: {
     padding: 32,

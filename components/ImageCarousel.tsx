@@ -96,16 +96,31 @@ export default function ImageCarousel({
         showsHorizontalScrollIndicator={false}
         keyExtractor={(_, index) => index.toString()}
         viewabilityConfigCallbackPairs={viewabilityConfigCallbackPairs}
-        renderItem={({ item }) => (
-          <TouchableWithoutFeedback onPress={handleImagePress}>
-            <Image
-              source={{ uri: item }}
-              style={dynamicStyles.image}
-              contentFit="cover"
-              transition={300}
-            />
-          </TouchableWithoutFeedback>
-        )}
+        renderItem={({ item }) => {
+          // デバッグ: 画像URLを確認
+          if (__DEV__) {
+            console.log('[ImageCarousel] Loading image:', item);
+          }
+
+          return (
+            <TouchableWithoutFeedback onPress={handleImagePress}>
+              <Image
+                source={{ uri: item }}
+                style={dynamicStyles.image}
+                contentFit="cover"
+                transition={300}
+                onError={(error) => {
+                  console.error('[ImageCarousel] Image load error:', item, error);
+                }}
+                onLoad={() => {
+                  if (__DEV__) {
+                    console.log('[ImageCarousel] Image loaded successfully:', item.substring(0, 50));
+                  }
+                }}
+              />
+            </TouchableWithoutFeedback>
+          );
+        }}
       />
       
       {images.length > 1 && (

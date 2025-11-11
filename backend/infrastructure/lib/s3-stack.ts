@@ -40,9 +40,14 @@ export class S3Stack extends cdk.Stack {
         },
       ],
 
-      // パブリックアクセス設定
-      publicReadAccess: false, // セキュリティのためfalse
-      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      // パブリックアクセス設定（メディアファイルは公開読み取り可能）
+      publicReadAccess: true, // メディアファイルの公開読み取りを許可
+      blockPublicAccess: new s3.BlockPublicAccess({
+        blockPublicAcls: false,
+        blockPublicPolicy: false,
+        ignorePublicAcls: false,
+        restrictPublicBuckets: false,
+      }),
 
       // ライフサイクルルール（30日後削除）
       lifecycleRules: [

@@ -127,6 +127,9 @@ interface ApiGatewayStackProps extends cdk.StackProps {
     addModerator: lambda.Function;
     banUserFromLive: lambda.Function;
     muxWebhook: lambda.Function;
+
+    // Media
+    getUploadUrl: lambda.Function;
   };
   userPool: cognito.UserPool;
 }
@@ -1326,6 +1329,20 @@ export class ApiGatewayStack extends cdk.Stack {
       .addResource('mux')
       .addMethod('POST', new apigateway.LambdaIntegration(lambdaFunctions.muxWebhook, { proxy: true }), {
         authorizationType: apigateway.AuthorizationType.NONE,
+        requestValidator,
+      });
+
+    // =====================================================
+    // Media Upload
+    // =====================================================
+
+    // POST /media/upload-url - Presigned URL取得
+    const mediaResource = this.api.root.addResource('media');
+    mediaResource
+      .addResource('upload-url')
+      .addMethod('POST', new apigateway.LambdaIntegration(lambdaFunctions.getUploadUrl, { proxy: true }), {
+        authorizer: this.authorizer,
+        authorizationType: apigateway.AuthorizationType.COGNITO,
         requestValidator,
       });
 

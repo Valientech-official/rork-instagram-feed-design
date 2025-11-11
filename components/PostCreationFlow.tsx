@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Dimensions, ActivityIndicator, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { Camera, Image as ImageIcon, Video, Sparkles, ChevronRight, MapPin, Hash, AtSign, Globe, BarChart3 } from 'lucide-react-native';
@@ -7,6 +7,10 @@ import Colors from '@/constants/colors';
 import AIDressUpModal from './AIDressUpModal';
 import { CameraView } from './CameraView';
 import { dressUpModes } from '@/mocks/dressUpItems';
+import { createPost } from '@/lib/api/posts';
+import { uploadFile } from '@/lib/api/media';
+import { handleError } from '@/lib/utils/errorHandler';
+import { usePostsStore } from '@/store/postsStore';
 
 const { width } = Dimensions.get('window');
 
@@ -26,6 +30,10 @@ export default function PostCreationFlow({ onClose }: PostCreationFlowProps) {
   const [selectedMedia, setSelectedMedia] = useState<SelectedMedia | null>(null);
   const [showAIModal, setShowAIModal] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
+  const [publishing, setPublishing] = useState(false);
+
+  // Posts store
+  const { fetchTimeline } = usePostsStore();
 
   // 編集状態
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
@@ -98,6 +106,58 @@ export default function PostCreationFlow({ onClose }: PostCreationFlowProps) {
 
   const handleRemoveHashtag = (tag: string) => {
     setHashtags(hashtags.filter(t => t !== tag));
+  };
+
+  const handlePublish = async () => {
+    if (!selectedMedia || publishing) return;
+
+    setPublishing(true);
+    try {
+      // S3に画像/動画をアップロード
+      const fileType = selectedMedia.type === 'video'
+        ? 'video/mp4'
+        : 'image/jpeg'; // 実際のMIMEタイプは拡張子から判定すべき
+
+      const uploadedUrl = await uploadFile(selectedMedia.uri, fileType);
+      const mediaUrls = [uploadedUrl];
+
+      // 投稿データを作成
+      const postData: any = {
+        content: caption,
+        media_urls: mediaUrls,
+        media_type: selectedMedia.type === 'video' ? 'video' : 'image',
+        visibility: 'public',
+        hashtags: hashtags.map(tag => tag.replace('#', '')),
+        post_type: 'normal',
+      };
+
+      // room_idが存在する場合のみ追加（undefinedを避ける）
+      if (selectedRoom) {
+        postData.room_id = selectedRoom;
+      }
+
+      const response = await createPost(postData);
+
+      if (response.success) {
+        Alert.alert('成功', '投稿が作成されました', [
+          {
+            text: 'OK',
+            onPress: () => {
+              // タイムラインを更新
+              fetchTimeline(true);
+              onClose?.();
+            },
+          },
+        ]);
+      } else {
+        throw new Error(response.error?.message || '投稿に失敗しました');
+      }
+    } catch (error: any) {
+      const { message } = handleError(error, 'createPost');
+      Alert.alert('エラー', message);
+    } finally {
+      setPublishing(false);
+    }
   };
 
   // ステップ1: 撮影・選択画面
@@ -335,8 +395,16 @@ export default function PostCreationFlow({ onClose }: PostCreationFlowProps) {
         <ChevronRight size={20} color={Colors.light.secondaryText} />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.publishButton}>
-        <Text style={styles.publishButtonText}>投稿する</Text>
+      <TouchableOpacity
+        style={[styles.publishButton, publishing && styles.publishButtonDisabled]}
+        onPress={handlePublish}
+        disabled={publishing || !selectedMedia}
+      >
+        {publishing ? (
+          <ActivityIndicator size="small" color="white" />
+        ) : (
+          <Text style={styles.publishButtonText}>投稿する</Text>
+        )}
       </TouchableOpacity>
     </ScrollView>
   );
@@ -631,6 +699,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 20,
     marginBottom: 40,
+  },
+  publishButtonDisabled: {
+    opacity: 0.5,
   },
   publishButtonText: {
     fontSize: 16,

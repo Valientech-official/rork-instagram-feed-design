@@ -29,13 +29,11 @@ import { TableNames, putItem, getItemRequired, incrementCounter, batchWrite } fr
  */
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
-    // TODO: JWTトークンから account_id を取得
-    // const accountId = event.requestContext.authorizer?.claims?.sub;
-
-    // 現在はヘッダーから取得（開発用）
-    const accountId = event.headers['x-account-id'];
+    // Cognito Authorizerから account_id (sub) を取得
+    const accountId = event.requestContext.authorizer?.claims?.sub;
 
     if (!accountId) {
+      console.error('[createPost] No account_id found in authorizer claims:', event.requestContext.authorizer);
       return unauthorizedResponse('アカウントIDが取得できません');
     }
 
@@ -76,7 +74,8 @@ export const handler: APIGatewayProxyHandler = async (event) => {
     const now = getCurrentTimestamp();
 
     // ハッシュタグをSetに変換（重複除去）
-    const hashtagSet = request.hashtags
+    // DynamoDBは空のSetを許可しないため、配列の長さもチェック
+    const hashtagSet = request.hashtags && request.hashtags.length > 0
       ? new Set(request.hashtags.map((tag) => tag.startsWith('#') ? tag.slice(1) : tag))
       : undefined;
 

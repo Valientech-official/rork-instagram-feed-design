@@ -44,14 +44,16 @@ const devSecretsManagerStack = new SecretsManagerStack(app, 'PieceApp-SecretsMan
   description: 'AWS Secrets Manager for Mux credentials (Development)',
 });
 
-// 4. Lambda Stack（DynamoDB + SecretsManagerに依存）
+// 4. Lambda Stack（DynamoDB + SecretsManager + S3に依存）
 const devLambdaStack = new LambdaStack(app, 'PieceApp-Lambda-Dev', {
   env: devEnv,
   environment: 'dev',
-  description: '84 Lambda functions (83 API handlers + 1 Cognito Trigger) (Development)',
+  mediaBucket: devS3Stack.mediaBucket,
+  description: '85 Lambda functions (84 API handlers + 1 Cognito Trigger) (Development)',
 });
 devLambdaStack.addDependency(devDynamoDBStack);
 devLambdaStack.addDependency(devSecretsManagerStack);
+devLambdaStack.addDependency(devS3Stack);
 
 // 5. WebSocket Stack（DynamoDBに依存）
 const devWebSocketStack = new WebSocketStack(app, 'PieceApp-WebSocket-Dev', {
@@ -159,6 +161,8 @@ const devApiGatewayStack = new ApiGatewayStack(app, 'PieceApp-ApiGateway-Dev', {
     addModerator: devLambdaStack.addModerator,
     banUserFromLive: devLambdaStack.banUserFromLive,
     muxWebhook: devLambdaStack.muxWebhook,
+    // Media
+    getUploadUrl: devLambdaStack.getUploadUrl,
   },
   userPool: devCognitoStack.userPool,
   description: 'REST API Gateway with Cognito authorizer (Development)',

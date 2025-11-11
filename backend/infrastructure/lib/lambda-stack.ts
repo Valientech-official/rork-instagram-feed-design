@@ -7,11 +7,13 @@ import * as cdk from 'aws-cdk-lib';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as logs from 'aws-cdk-lib/aws-logs';
+import * as s3 from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 import * as path from 'path';
 
 interface LambdaStackProps extends cdk.StackProps {
   environment: 'dev' | 'prod';
+  mediaBucket?: s3.IBucket;
 }
 
 export class LambdaStack extends cdk.Stack {
@@ -124,6 +126,9 @@ export class LambdaStack extends cdk.Stack {
   public readonly wsConnect: lambda.Function;
   public readonly wsDisconnect: lambda.Function;
   public readonly wsMessage: lambda.Function;
+
+  // Media
+  public readonly getUploadUrl: lambda.Function;
 
   // Cognito Triggers
   public readonly postConfirmation: lambda.Function;
@@ -833,6 +838,25 @@ export class LambdaStack extends cdk.Stack {
 
     this.wsConnect.addToRolePolicy(apiGatewayManagementPolicy);
     this.wsMessage.addToRolePolicy(apiGatewayManagementPolicy);
+
+    // =====================================================
+    // Media Upload
+    // =====================================================
+
+    // Get Upload URL (Presigned URL for S3)
+    this.getUploadUrl = createLambdaFunction(
+      'GetUploadUrlFunction',
+      'get-upload-url',
+      'dist/handlers/media/getUploadUrl.handler',
+      'Get presigned URL for media upload to S3'
+    );
+
+    // S3バケット名を環境変数として追加
+    if (props.mediaBucket) {
+      this.getUploadUrl.addEnvironment('MEDIA_BUCKET_NAME', props.mediaBucket.bucketName);
+      // S3への書き込み権限を付与
+      props.mediaBucket.grantPut(this.getUploadUrl);
+    }
 
     // =====================================================
     // Cognito Triggers

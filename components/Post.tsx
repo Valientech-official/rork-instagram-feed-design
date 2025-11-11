@@ -6,6 +6,7 @@ import { Post as PostType } from '@/types/api';
 import ImageCarousel from './ImageCarousel';
 import DoubleTapLike from './DoubleTapLike';
 import PostDetailModal from './PostDetailModal';
+import CommentModal from './CommentModal';
 import Colors from '@/constants/colors';
 import { useThemeStore } from '@/store/themeStore';
 import { usePostsStore } from '@/store/postsStore';
@@ -108,6 +109,7 @@ const POST_IMAGE_ASPECT_RATIO: '4:5' = '4:5';
 
 export default function Post({ post }: PostProps) {
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showCommentModal, setShowCommentModal] = useState(false);
   const [showLikeAnimation, setShowLikeAnimation] = useState(false);
   const [showFullCaption, setShowFullCaption] = useState(false);
   const { theme } = useThemeStore();
@@ -117,16 +119,32 @@ export default function Post({ post }: PostProps) {
   // Posts store for like/unlike actions
   const { likePost, unlikePost } = usePostsStore();
 
+  // デバッグ: 投稿データを確認
+  if (__DEV__) {
+    console.log('[Post] Rendering post:', {
+      postId: post.postId,
+      author: post.author?.username,
+      mediaUrls_count: post.mediaUrls?.length || 0,
+      first_media_url: post.mediaUrls?.[0]?.substring(0, 50),
+    });
+  }
+
+  // postIdがない場合は表示しない
+  if (!post.postId) {
+    console.error('[Post] postId is missing:', post);
+    return null;
+  }
+
   // Use post data from store
-  const liked = post.is_liked ?? false;
-  const likes = post.like_count ?? 0;
+  const liked = post.isLiked ?? false;
+  const likes = post.likeCount ?? 0;
 
   const handleLike = async () => {
     try {
       if (liked) {
-        await unlikePost(post.post_id);
+        await unlikePost(post.postId);
       } else {
-        await likePost(post.post_id);
+        await likePost(post.postId);
       }
     } catch (error) {
       console.error('[Post] handleLike error:', error);
@@ -137,7 +155,7 @@ export default function Post({ post }: PostProps) {
     if (!liked) {
       setShowLikeAnimation(true);
       try {
-        await likePost(post.post_id);
+        await likePost(post.postId);
       } catch (error) {
         console.error('[Post] handleDoubleTap error:', error);
       }
@@ -150,6 +168,10 @@ export default function Post({ post }: PostProps) {
 
   const handleImagePress = () => {
     setShowDetailModal(true);
+  };
+
+  const handleCommentPress = () => {
+    setShowCommentModal(true);
   };
 
   const { captionToDisplay, isLongCaption } = useMemo(() => {
@@ -190,9 +212,9 @@ export default function Post({ post }: PostProps) {
                 <Text style={styles.statText}>{likes}</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.statItem} onPress={handleImagePress}>
+              <TouchableOpacity style={styles.statItem} onPress={handleCommentPress}>
                 <MessageCircle size={20} color={colors.icon} />
-                <Text style={styles.statText}>{post.comment_count}</Text>
+                <Text style={styles.statText}>{post.commentCount}</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -212,7 +234,7 @@ export default function Post({ post }: PostProps) {
         {/* Row 2: Image */}
         <View style={styles.imageWrapper}>
           <ImageCarousel
-            images={post.media_urls || []}
+            images={post.mediaUrls || []}
             onDoubleTap={handleDoubleTap}
             onPress={handleImagePress}
             width={CARD_WIDTH}
@@ -227,7 +249,7 @@ export default function Post({ post }: PostProps) {
 
         {/* Footer: Timestamp */}
         <View style={styles.footer}>
-          <Text style={styles.timestamp}>{post.created_at}</Text>
+          <Text style={styles.timestamp}>{post.createdAt}</Text>
         </View>
       </View>
 
@@ -235,6 +257,13 @@ export default function Post({ post }: PostProps) {
         visible={showDetailModal}
         post={post}
         onClose={() => setShowDetailModal(false)}
+      />
+
+      <CommentModal
+        visible={showCommentModal}
+        postId={post.postId}
+        onClose={() => setShowCommentModal(false)}
+        initialCommentCount={post.commentCount}
       />
     </>
   );

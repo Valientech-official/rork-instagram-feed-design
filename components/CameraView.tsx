@@ -58,12 +58,9 @@ export const CameraView: React.FC<CameraViewProps> = ({
     cameraManager.current.setFlashMode(flashMode);
   }, [cameraType, flashMode]);
 
+  // maxVideoDuration変更時の処理
   useEffect(() => {
-    if (cameraRef.current) {
-      cameraManager.current.setCameraRef(cameraRef.current);
-      videoManager.current.setCameraRef(cameraRef.current);
-      videoManager.current.setMaxDuration(maxVideoDuration);
-    }
+    videoManager.current.setMaxDuration(maxVideoDuration);
   }, [maxVideoDuration]);
 
   // 録画時間カウンター
@@ -198,7 +195,13 @@ export const CameraView: React.FC<CameraViewProps> = ({
     <Modal visible animationType="slide" statusBarTranslucent>
       <View style={styles.container}>
         <ExpoCameraView
-          ref={cameraRef}
+          ref={(ref) => {
+            cameraRef.current = ref;
+            if (ref) {
+              cameraManager.current.setCameraRef(ref);
+              videoManager.current.setCameraRef(ref);
+            }
+          }}
           style={styles.camera}
           facing={cameraType}
           flash={flashMode}

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Modal, ScrollView, TouchableOpacity, Dimensions, TextInput } from 'react-native';
 import { Image } from 'expo-image';
 import { X, Heart, MessageCircle, Send, Bookmark } from 'lucide-react-native';
-import { Post as PostType } from '@/mocks/posts';
+import { Post as PostType } from '@/types/api';
 import { profileComments } from '@/mocks/profileComments';
 import ImageCarousel from './ImageCarousel';
 import DoubleTapLike from './DoubleTapLike';
@@ -19,8 +19,8 @@ interface PostDetailModalProps {
 
 export default function PostDetailModal({ visible, post, onClose }: PostDetailModalProps) {
   const insets = useSafeAreaInsets();
-  const [liked, setLiked] = useState(post.liked);
-  const [likes, setLikes] = useState(post.likes);
+  const [liked, setLiked] = useState(post.isLiked || false);
+  const [likes, setLikes] = useState(post.likeCount || 0);
   const [showLikeAnimation, setShowLikeAnimation] = useState(false);
   const [commentText, setCommentText] = useState('');
 
@@ -72,14 +72,14 @@ export default function PostDetailModal({ visible, post, onClose }: PostDetailMo
           <View style={styles.breadcrumbContainer}>
             <Text style={styles.breadcrumbText}>ホーム</Text>
             <Text style={styles.breadcrumbSeparator}>›</Text>
-            <Text style={styles.breadcrumbText}>{post.user.username}</Text>
+            <Text style={styles.breadcrumbText}>{post.author.username}</Text>
             <Text style={styles.breadcrumbSeparator}>›</Text>
             <Text style={styles.breadcrumbCurrent}>投稿</Text>
           </View>
           {/* Image Carousel with Double Tap */}
           <View style={styles.imageContainer}>
             <ImageCarousel
-              images={post.images}
+              images={post.mediaUrls || []}
               onDoubleTap={handleDoubleTap}
               width={screenWidth}
               aspectRatio="4:5"
@@ -122,12 +122,12 @@ export default function PostDetailModal({ visible, post, onClose }: PostDetailMo
           <View style={styles.userSection}>
             <View style={styles.userInfo}>
               <Image
-                source={{ uri: post.user.avatar }}
+                source={{ uri: post.author.profile_image }}
                 style={styles.avatar}
                 contentFit="cover"
               />
               <View style={styles.userTextContainer}>
-                <Text style={styles.username}>{post.user.username}</Text>
+                <Text style={styles.username}>{post.author.username}</Text>
                 {post.location && (
                   <Text style={styles.location}>{post.location}</Text>
                 )}
@@ -138,18 +138,18 @@ export default function PostDetailModal({ visible, post, onClose }: PostDetailMo
             </View>
 
             <Text style={styles.caption}>
-              <Text style={styles.captionUsername}>{post.user.username}</Text>
+              <Text style={styles.captionUsername}>{post.author.username}</Text>
               {' '}
-              {post.caption}
+              {post.content}
             </Text>
 
-            <Text style={styles.timestamp}>{post.timestamp}</Text>
+            <Text style={styles.timestamp}>{post.createdAt}</Text>
           </View>
 
           {/* Comments Section */}
           <View style={styles.commentsSection}>
             <Text style={styles.commentsSectionTitle}>
-              コメント {post.comments}件
+              コメント {post.commentCount || 0}件
             </Text>
 
             {postComments.map((comment) => (
@@ -183,7 +183,7 @@ export default function PostDetailModal({ visible, post, onClose }: PostDetailMo
         {/* Comment Input */}
         <View style={[styles.commentInputContainer, { paddingBottom: insets.bottom || 12 }]}>
           <Image
-            source={{ uri: post.user.avatar }}
+            source={{ uri: post.author.profile_image }}
             style={styles.inputAvatar}
             contentFit="cover"
           />

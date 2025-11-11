@@ -48,9 +48,22 @@ export class BaseAPIClient {
     try {
       const session = await fetchAuthSession();
       const idToken = session.tokens?.idToken?.toString();
+
+      // デバッグ: トークン情報を確認
+      if (__DEV__) {
+        console.log('[API Client] Token exists:', !!idToken);
+        if (idToken) {
+          console.log('[API Client] Token preview:', idToken.substring(0, 20) + '...');
+          console.log('[API Client] Token length:', idToken.length);
+        }
+      }
+
+      if (!idToken) {
+        console.warn('[API Client] No auth token found. User may not be logged in.');
+      }
       return idToken || null;
     } catch (error) {
-      console.error('Failed to get auth token:', error);
+      console.error('[API Client] Failed to get auth token:', error);
       return null;
     }
   }
@@ -71,6 +84,9 @@ export class BaseAPIClient {
       const token = await this.getAuthToken();
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
+      } else {
+        // トークンがない場合はエラーをthrow
+        throw new Error('認証が必要です。ログインしてください。');
       }
     }
 
@@ -102,6 +118,12 @@ export class BaseAPIClient {
       if (options.body) {
         console.log('[API Request Body]', options.body);
       }
+      // ヘッダー確認（トークンは除外）
+      const headersForLog = { ...headers };
+      if (headersForLog.Authorization) {
+        headersForLog.Authorization = headersForLog.Authorization.substring(0, 20) + '...';
+      }
+      console.log('[API Request Headers]', headersForLog);
     }
 
     return { url: this.baseUrl + url, options: requestOptions };

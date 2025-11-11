@@ -73,6 +73,20 @@ export const usePostsStore = create<PostsState>((set, get) => ({
       if (response.success && response.data) {
         const { items, nextToken } = response.data;
 
+        // デバッグ: 取得した投稿データを確認
+        if (__DEV__) {
+          console.log('[postsStore] Timeline posts fetched:', items.length);
+          items.forEach((post, index) => {
+            console.log(`[postsStore] Post ${index}:`, {
+              post_id: post.post_id,
+              author_username: post.author?.username,
+              media_urls_count: post.media_urls?.length || 0,
+              media_urls: post.media_urls,
+              has_content: !!post.content,
+            });
+          });
+        }
+
         set({
           timelinePosts: refresh ? items : [...get().timelinePosts, ...items],
           timelineNextToken: nextToken,
@@ -179,6 +193,16 @@ export const usePostsStore = create<PostsState>((set, get) => ({
    */
   likePost: async (postId: string) => {
     try {
+      // デバッグ: postIdを確認
+      if (__DEV__) {
+        console.log('[postsStore] likePost called with postId:', postId);
+      }
+
+      if (!postId || postId === 'undefined') {
+        console.error('[postsStore] Invalid postId:', postId);
+        throw new Error('投稿IDが不正です');
+      }
+
       const response = await apiClient.post<{ liked: boolean; like_count: number }>(
         `/post/${postId}/like`
       );
@@ -189,13 +213,13 @@ export const usePostsStore = create<PostsState>((set, get) => ({
         // タイムライン投稿を更新
         set({
           timelinePosts: get().timelinePosts.map((post) =>
-            post.post_id === postId
-              ? { ...post, is_liked: true, like_count }
+            post.postId === postId
+              ? { ...post, isLiked: true, likeCount: like_count }
               : post
           ),
           recommendedPosts: get().recommendedPosts.map((post) =>
-            post.post_id === postId
-              ? { ...post, is_liked: true, like_count }
+            post.postId === postId
+              ? { ...post, isLiked: true, likeCount: like_count }
               : post
           ),
         });
@@ -227,13 +251,13 @@ export const usePostsStore = create<PostsState>((set, get) => ({
         // タイムライン投稿を更新
         set({
           timelinePosts: get().timelinePosts.map((post) =>
-            post.post_id === postId
-              ? { ...post, is_liked: false, like_count }
+            post.postId === postId
+              ? { ...post, isLiked: false, likeCount: like_count }
               : post
           ),
           recommendedPosts: get().recommendedPosts.map((post) =>
-            post.post_id === postId
-              ? { ...post, is_liked: false, like_count }
+            post.postId === postId
+              ? { ...post, isLiked: false, likeCount: like_count }
               : post
           ),
         });

@@ -7,6 +7,7 @@ import { create } from 'zustand';
 import { AccountSummary, AccountProfile } from '@/types/api';
 import { apiClient } from '@/lib/api/client';
 import { accountsApi, UpdateProfileParams } from '@/lib/api/accounts';
+import { followsApi } from '@/lib/api/follows';
 import { handleError } from '@/lib/utils/errorHandler';
 
 interface UsersState {
@@ -212,12 +213,10 @@ export const useUsersStore = create<UsersState>((set, get) => ({
    */
   followUser: async (accountId: string) => {
     try {
-      const response = await apiClient.post<{ following: boolean; follower_count: number }>(
-        `/account/${accountId}/follow`
-      );
+      const response = await followsApi.followUser(accountId);
 
       if (response.success && response.data) {
-        const { follower_count } = response.data;
+        const { followed, is_mutual } = response.data;
 
         // キャッシュされたプロフィールを更新
         const cachedProfile = get().profileCache[accountId];
@@ -227,8 +226,7 @@ export const useUsersStore = create<UsersState>((set, get) => ({
               ...get().profileCache,
               [accountId]: {
                 ...cachedProfile,
-                is_following: true,
-                follower_count,
+                followers_count: cachedProfile.followers_count + 1,
               },
             },
           });
@@ -242,6 +240,17 @@ export const useUsersStore = create<UsersState>((set, get) => ({
               : user
           ),
         });
+
+        // 自分のプロフィールのフォロー中数を更新
+        const myProfile = get().myProfile;
+        if (myProfile) {
+          set({
+            myProfile: {
+              ...myProfile,
+              following_count: myProfile.following_count + 1,
+            },
+          });
+        }
       } else {
         throw new Error(response.error?.message || 'フォローに失敗しました');
       }
@@ -260,13 +269,9 @@ export const useUsersStore = create<UsersState>((set, get) => ({
    */
   unfollowUser: async (accountId: string) => {
     try {
-      const response = await apiClient.delete<{ following: boolean; follower_count: number }>(
-        `/account/${accountId}/follow`
-      );
+      const response = await followsApi.unfollowUser(accountId);
 
-      if (response.success && response.data) {
-        const { follower_count } = response.data;
-
+      if (response.success) {
         // キャッシュされたプロフィールを更新
         const cachedProfile = get().profileCache[accountId];
         if (cachedProfile) {
@@ -275,8 +280,7 @@ export const useUsersStore = create<UsersState>((set, get) => ({
               ...get().profileCache,
               [accountId]: {
                 ...cachedProfile,
-                is_following: false,
-                follower_count,
+                followers_count: Math.max(0, cachedProfile.followers_count - 1),
               },
             },
           });
@@ -290,6 +294,17 @@ export const useUsersStore = create<UsersState>((set, get) => ({
               : user
           ),
         });
+
+        // 自分のプロフィールのフォロー中数を更新
+        const myProfile = get().myProfile;
+        if (myProfile) {
+          set({
+            myProfile: {
+              ...myProfile,
+              following_count: Math.max(0, myProfile.following_count - 1),
+            },
+          });
+        }
       } else {
         throw new Error(response.error?.message || 'フォロー解除に失敗しました');
       }
@@ -347,9 +362,7 @@ export const useUsersStore = create<UsersState>((set, get) => ({
         followingError: { ...get().followingError, [accountId]: null },
       });
 
-      const response = await apiClient.get<{ items: AccountSummary[] }>(
-        `/account/${accountId}/following`
-      );
+      const response = await followsApi.getFollowing(accountId);
 
       if (response.success && response.data) {
         const { items } = response.data;
@@ -387,9 +400,7 @@ export const useUsersStore = create<UsersState>((set, get) => ({
         followersError: { ...get().followersError, [accountId]: null },
       });
 
-      const response = await apiClient.get<{ items: AccountSummary[] }>(
-        `/account/${accountId}/followers`
-      );
+      const response = await followsApi.getFollowers(accountId);
 
       if (response.success && response.data) {
         const { items } = response.data;

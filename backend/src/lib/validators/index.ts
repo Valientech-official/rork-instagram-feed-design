@@ -217,6 +217,11 @@ export function validateMediaUrls(urls: string[]): void {
 
   urls.forEach((url) => {
     validateURL(url, 'メディアURL');
+
+    // HTTPS URLのみ許可（S3からのURL）
+    if (!url.startsWith('https://')) {
+      throw new ValidationError('メディアURLはHTTPSである必要があります');
+    }
   });
 }
 

@@ -15,7 +15,8 @@
       "Bash(aws.exe:*)",
       "Bash(npm uninstall:*)",
       "Bash(npx expo start:*)",
-      "Bash(npm cache clean:*)"
+      "Bash(npm cache clean:*)",
+      "Bash(npx cdk deploy:*)"
     ],
     "deny": [],
     "ask": []
