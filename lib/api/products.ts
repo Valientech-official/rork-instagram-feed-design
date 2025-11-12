@@ -45,14 +45,41 @@ export async function getProduct(productId: string) {
  * 商品作成
  */
 export async function createProduct(data: CreateProductRequest) {
-  return apiClient.post<Product>('/product/create', data);
+  // camelCaseからsnake_caseに変換（バックエンド互換性のため）
+  const requestData = {
+    name: data.name,
+    description: data.description,
+    price: data.price,
+    sale_price: data.salePrice,
+    currency: data.currency,
+    image_urls: data.imageUrls,
+    primary_image_url: data.primaryImageUrl,
+    external_url: data.externalUrl,
+    external_shop_name: data.externalShopName,
+    category: data.category,
+    tags: data.tags,
+  };
+  return apiClient.post<Product>('/product/create', requestData);
 }
 
 /**
  * 商品更新
  */
 export async function updateProduct(productId: string, data: Partial<CreateProductRequest>) {
-  return apiClient.put<Product>(`/product/${productId}`, data);
+  // camelCaseからsnake_caseに変換（バックエンド互換性のため）
+  const requestData: any = {};
+  if (data.name !== undefined) requestData.name = data.name;
+  if (data.description !== undefined) requestData.description = data.description;
+  if (data.price !== undefined) requestData.price = data.price;
+  if (data.salePrice !== undefined) requestData.sale_price = data.salePrice;
+  if (data.currency !== undefined) requestData.currency = data.currency;
+  if (data.imageUrls !== undefined) requestData.image_urls = data.imageUrls;
+  if (data.primaryImageUrl !== undefined) requestData.primary_image_url = data.primaryImageUrl;
+  if (data.externalUrl !== undefined) requestData.external_url = data.externalUrl;
+  if (data.externalShopName !== undefined) requestData.external_shop_name = data.externalShopName;
+  if (data.category !== undefined) requestData.category = data.category;
+  if (data.tags !== undefined) requestData.tags = data.tags;
+  return apiClient.put<Product>(`/product/${productId}`, requestData);
 }
 
 /**

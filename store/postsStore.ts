@@ -78,10 +78,10 @@ export const usePostsStore = create<PostsState>((set, get) => ({
           console.log('[postsStore] Timeline posts fetched:', items.length);
           items.forEach((post, index) => {
             console.log(`[postsStore] Post ${index}:`, {
-              post_id: post.post_id,
+              postId: post.postId,
               author_username: post.author?.username,
-              media_urls_count: post.media_urls?.length || 0,
-              media_urls: post.media_urls,
+              media_urls_count: post.mediaUrls?.length || 0,
+              media_urls: post.mediaUrls,
               has_content: !!post.content,
             });
           });
@@ -284,8 +284,8 @@ export const usePostsStore = create<PostsState>((set, get) => ({
       if (response.success) {
         // ローカルから削除
         set({
-          timelinePosts: get().timelinePosts.filter((post) => post.post_id !== postId),
-          recommendedPosts: get().recommendedPosts.filter((post) => post.post_id !== postId),
+          timelinePosts: get().timelinePosts.filter((post) => post.postId !== postId),
+          recommendedPosts: get().recommendedPosts.filter((post) => post.postId !== postId),
         });
       } else {
         throw new Error(response.error?.message || '投稿の削除に失敗しました');

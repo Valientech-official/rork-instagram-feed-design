@@ -245,12 +245,12 @@ export interface CreateProductRequest {
   name: string;
   description?: string;
   price: number;
-  sale_price?: number;
+  salePrice?: number;
   currency: string;
-  image_urls: string[];
-  primary_image_url: string;
-  external_url: string;
-  external_shop_name?: string;
+  imageUrls: string[];
+  primaryImageUrl: string;
+  externalUrl: string;
+  externalShopName?: string;
   category: ProductCategory;
   tags?: string[];
 }

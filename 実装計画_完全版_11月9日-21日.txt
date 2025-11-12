@@ -2321,3 +2321,209 @@ AWS本番環境移行について
 追加項目: おすすめアルゴリズム、カメラ機能優先実装、AI機能強化、IAP、
          AWS本番環境移行
 ================================================================================
+
+
+================================================================================
+Day 5 実装補足事項 (2025年11月12日追記)
+================================================================================
+
+【完了】午前タスク (5.1 - 5.3)
+--------------------------------
+✅ タスク 5.1: Product API クライアント作成 完了
+✅ タスク 5.2: ショップ画面の統合 完了
+✅ タスク 5.3: 商品詳細画面の実装 完了
+
+実装詳細:
+- Product型をsnake_caseからcamelCaseに変更
+- lib/api/products.ts でcamelCase→snake_case変換処理を追加
+- components/ProductCard.tsx, FeaturedProducts.tsx をAPI Product型に対応
+- 無限スクロール、Pull-to-Refresh、カテゴリフィルタリング実装済み
+
+【将来実装】Shop account typeフィルタリング
+------------------------------------------
+優先度: 中
+実装タイミング: Day 6以降
+
+目的:
+  Shopタブで account_type === 'shop' のアカウントが出品した商品のみを表示
+
+実装方法（推奨）:
+  1. バックエンド側でフィルタリング
+     - backend/src/handlers/product/getProducts.ts
+     - クエリパラメータ account_type=shop を追加
+     - DynamoDB QueryでGSIを使用してフィルタ
+  
+  2. フロントエンド側で呼び出し
+     - lib/api/products.ts の getProducts() に accountType パラメータ追加
+     - app/(tabs)/shop.tsx で accountType: 'shop' を指定
+
+  3. 代替案（フロントエンドのみ）
+     - app/(tabs)/shop.tsx で .filter() を使用
+     - product.seller?.account_type === 'shop' でフィルタリング
+     - パフォーマンスを考慮すると非推奨
+
+影響ファイル:
+  - app/(tabs)/shop.tsx
+  - lib/api/products.ts
+  - backend/src/handlers/product/getProducts.ts
+  - store/productsStore.ts
+
+現状:
+  - 全ての商品が表示される
+  - seller フィールドに AccountSummary が含まれる
+  - account_type フィールドは利用可能
+
+【既存実装確認】いいね機能
+--------------------------
+✅ 実装済み (Day 3 完了)
+
+実装ファイル:
+  - components/Post.tsx (142-163行目)
+  - store/postsStore.ts (likePost, unlikePost)
+  - backend/src/handlers/post/likePost.ts
+  - backend/src/handlers/post/unlikePost.ts
+
+機能:
+  - ハートボタンでいいね/アンいいね
+  - ダブルタップでいいね
+  - いいね数のリアルタイム更新
+  - 楽観的UI更新（即座にUIを更新、バックエンドは非同期）
+  - アニメーション表示
+
+実装詳細:
+  ```typescript
+  // components/Post.tsx
+  const handleLike = async () => {
+    try {
+      if (liked) {
+        await unlikePost(post.postId);
+      } else {
+        await likePost(post.postId);
+      }
+    } catch (error) {
+      console.error('[Post] handleLike error:', error);
+    }
+  };
+
+  const handleDoubleTap = async () => {
+    if (!liked) {
+      setShowLikeAnimation(true);
+      await likePost(post.postId);
+    }
+  };
+  ```
+
+================================================================================
+追記終了
+================================================================================
+
+================================================================================
+Day 5 実装補足事項の訂正 (2025年11月12日 修正)
+================================================================================
+
+【訂正】Shop account type権限制御
+------------------------------------------
+優先度: 高
+実装タイミング: Day 6以降（商品作成UI実装時）
+
+【誤】商品表示のフィルタリング
+【正】商品投稿（作成）の権限制御
+
+目的:
+  account_type === 'shop' のユーザーのみが商品を投稿（作成）可能にする
+
+実装方法:
+  
+  1. フロントエンド側の権限チェック
+     場所: app/product/create.tsx（商品作成画面）
+     
+     実装例:
+     ```typescript
+     import { useAuthStore } from '@/store/authStore';
+     
+     export default function CreateProductScreen() {
+       const { user } = useAuthStore();
+       
+       // account_typeがshopでない場合はアクセス拒否
+       if (user?.account_type !== 'shop') {
+         return (
+           <View style={styles.errorContainer}>
+             <Text style={styles.errorText}>
+               この機能はショップアカウント専用です
+             </Text>
+           </View>
+         );
+       }
+       
+       // 商品作成フォーム
+       return <ProductCreationForm />;
+     }
+     ```
+  
+  2. バックエンド側の権限検証（必須）
+     場所: backend/src/handlers/product/createProduct.ts
+     
+     実装例:
+     ```typescript
+     export const handler = async (event: APIGatewayProxyEvent) => {
+       const accountId = event.requestContext.authorizer?.claims.sub;
+       
+       // アカウント情報を取得
+       const account = await getAccount(accountId);
+       
+       // account_typeがshopでない場合はエラー
+       if (account.account_type !== 'shop') {
+         return {
+           statusCode: 403,
+           body: JSON.stringify({
+             error: 'この機能はショップアカウント専用です'
+           })
+         };
+       }
+       
+       // 商品作成処理を続行
+       // ...
+     };
+     ```
+  
+  3. UI表示/非表示の制御
+     - 商品作成ボタン: account_type === 'shop' のときのみ表示
+     - プロフィール画面の「商品を作成」ボタンの表示条件
+     
+     実装例:
+     ```typescript
+     {user?.account_type === 'shop' && (
+       <TouchableOpacity 
+         style={styles.createButton}
+         onPress={() => router.push('/product/create')}
+       >
+         <Text>商品を作成</Text>
+       </TouchableOpacity>
+     )}
+     ```
+
+  4. ナビゲーションガード（オプション）
+     - Expo Routerのミドルウェアで権限チェック
+     - アクセス不可の場合は自動的にリダイレクト
+
+影響ファイル:
+  - app/product/create.tsx (商品作成画面)
+  - backend/src/handlers/product/createProduct.ts (バックエンド検証)
+  - backend/src/handlers/product/updateProduct.ts (更新も同様に検証)
+  - components/profile/* (ボタン表示制御)
+  - store/authStore.ts (ユーザー情報の account_type)
+
+セキュリティ上の注意:
+  - フロントエンドの制御は補助的なもの
+  - バックエンド側で必ず権限検証を行う
+  - JWTトークンのclaimsにaccount_typeを含める
+  - 不正なリクエストはログに記録
+
+現状:
+  - authStoreにaccount_type情報が含まれている
+  - バックエンドの認証基盤は実装済み
+  - 商品作成UI未実装（Day 6以降の予定）
+
+================================================================================
+訂正追記終了
+================================================================================

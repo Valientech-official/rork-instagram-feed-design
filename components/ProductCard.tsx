@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-nati
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Heart } from 'lucide-react-native';
-import { Product } from '@/mocks/products';
+import { Product } from '@/types/api';
 import { useFavoritesStore } from '@/store/favoritesStore';
 import Colors from '@/constants/colors';
 
@@ -18,17 +18,17 @@ interface ProductCardProps {
 export default function ProductCard({ product, index }: ProductCardProps) {
   const router = useRouter();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavoritesStore();
-  const isProductFavorite = isFavorite(product.id);
+  const isProductFavorite = isFavorite(product.productId);
 
   const handlePress = () => {
-    router.push(`/product/${product.id}`);
+    router.push(`/product/${product.productId}`);
   };
 
   const handleFavoritePress = () => {
     if (isProductFavorite) {
-      removeFromFavorites(product.id);
+      removeFromFavorites(product.productId);
     } else {
-      addToFavorites(product);
+      addToFavorites(product as any);
     }
   };
 
@@ -42,18 +42,18 @@ export default function ProductCard({ product, index }: ProductCardProps) {
     >
       <View style={styles.imageContainer}>
         <Image
-          source={{ uri: product.images[0] }}
+          source={{ uri: product.primaryImageUrl }}
           style={styles.image}
           contentFit="cover"
           transition={200}
         />
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.favoriteButton}
           onPress={handleFavoritePress}
           activeOpacity={0.7}
         >
-          <Heart 
-            size={18} 
+          <Heart
+            size={18}
             color={isProductFavorite ? Colors.light.shopSale : Colors.light.secondaryText}
             fill={isProductFavorite ? Colors.light.shopSale : 'transparent'}
           />
@@ -63,25 +63,22 @@ export default function ProductCard({ product, index }: ProductCardProps) {
             <Text style={styles.saleText}>SALE</Text>
           </View>
         )}
-        {product.featured && (
-          <View style={styles.featuredTag}>
-            <Text style={styles.featuredText}>Featured</Text>
-          </View>
-        )}
       </View>
-      
+
       <View style={styles.infoContainer}>
         <Text style={styles.name} numberOfLines={1}>{product.name}</Text>
-        
-        <View style={styles.sellerContainer}>
-          <Image
-            source={{ uri: product.seller.avatar }}
-            style={styles.sellerAvatar}
-            contentFit="cover"
-          />
-          <Text style={styles.sellerName} numberOfLines={1}>{product.seller.username}</Text>
-        </View>
-        
+
+        {product.seller && product.seller.profile_image && (
+          <View style={styles.sellerContainer}>
+            <Image
+              source={{ uri: product.seller.profile_image }}
+              style={styles.sellerAvatar}
+              contentFit="cover"
+            />
+            <Text style={styles.sellerName} numberOfLines={1}>{product.seller.username}</Text>
+          </View>
+        )}
+
         <View style={styles.priceContainer}>
           {isOnSale ? (
             <>
@@ -91,11 +88,6 @@ export default function ProductCard({ product, index }: ProductCardProps) {
           ) : (
             <Text style={styles.price}>${product.price.toFixed(2)}</Text>
           )}
-        </View>
-        
-        <View style={styles.ratingContainer}>
-          <Text style={styles.rating}>★ {product.rating}</Text>
-          <Text style={styles.reviews}>({product.reviews})</Text>
         </View>
       </View>
     </TouchableOpacity>

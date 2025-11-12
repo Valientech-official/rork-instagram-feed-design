@@ -93,7 +93,7 @@ export function calculateContentScore(
 
   // 価格帯マッチング（商品の場合）
   if ('price' in item && userProfile.price_range) {
-    const price = (item as Product).sale_price || (item as Product).price;
+    const price = (item as Product).salePrice || (item as Product).price;
     if (price >= userProfile.price_range.min && price <= userProfile.price_range.max) {
       score += 0.2;
       matchCount++;
@@ -119,18 +119,18 @@ export function calculatePopularityScore(
   let engagementScore = 0;
 
   // 投稿の場合
-  if ('like_count' in item && 'comment_count' in item) {
+  if ('likeCount' in item && 'commentCount' in item) {
     const post = item as Post;
-    const totalEngagement = post.like_count + (post.comment_count * 2) + (post.repost_count || 0);
+    const totalEngagement = post.likeCount + (post.commentCount * 2) + (post.repostCount || 0);
 
     // 対数スケールで正規化（大きな数値を扱うため）
     engagementScore = Math.log10(totalEngagement + 1) / 5; // log10(100000) ≈ 5
   }
 
   // 商品の場合
-  if ('click_count' in item) {
+  if ('clickCount' in item) {
     const product = item as Product;
-    engagementScore = Math.log10(product.click_count + 1) / 4;
+    engagementScore = Math.log10(product.clickCount + 1) / 4;
   }
 
   // Roomの場合
@@ -152,7 +152,8 @@ export function calculateFreshnessScore(
   item: Post | Product | Room
 ): number {
   const now = Date.now() / 1000; // Unix秒
-  const createdAt = item.created_at;
+  // Room型はcreated_at、Post/Product型はcreatedAtを使用
+  const createdAt = 'createdAt' in item ? item.createdAt : (item as any).created_at;
 
   // 経過時間（時間単位）
   const hoursElapsed = (now - createdAt) / 3600;
@@ -265,14 +266,14 @@ export function filterByCategory<T extends { category?: string }>(
 /**
  * 8. 重複アイテムを除去
  */
-export function deduplicateItems<T extends { post_id?: string; product_id?: string; room_id?: string }>(
+export function deduplicateItems<T extends { postId?: string; productId?: string; room_id?: string }>(
   items: T[]
 ): T[] {
   const seen = new Set<string>();
   const result: T[] = [];
 
   for (const item of items) {
-    const id = item.post_id || item.product_id || item.room_id;
+    const id = item.postId || item.productId || item.room_id;
     if (id && !seen.has(id)) {
       seen.add(id);
       result.push(item);
@@ -341,8 +342,8 @@ export function scoreItem(
     weights
   );
 
-  const itemId = ('post_id' in item ? item.post_id :
-                  'product_id' in item ? item.product_id :
+  const itemId = ('postId' in item ? item.postId :
+                  'productId' in item ? item.productId :
                   'room_id' in item ? item.room_id : '');
 
   return {

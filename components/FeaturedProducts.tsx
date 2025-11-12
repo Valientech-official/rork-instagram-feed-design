@@ -3,18 +3,17 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { ChevronRight } from 'lucide-react-native';
-import { Product } from '@/mocks/products';
+import { Product } from '@/types/api';
 import Colors from '@/constants/colors';
 
 interface FeaturedProductsProps {
-  products: Product[];
+  products: (Product & { score?: number })[];
 }
 
 export default function FeaturedProducts({ products }: FeaturedProductsProps) {
   const router = useRouter();
-  const featuredProducts = products.filter(product => product.featured);
 
-  if (featuredProducts.length === 0) {
+  if (products.length === 0) {
     return null;
   }
 
@@ -41,16 +40,16 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {featuredProducts.map((product) => (
+        {products.map((product) => (
           <TouchableOpacity
-            key={product.id}
+            key={product.productId}
             style={styles.productCard}
-            onPress={() => handleProductPress(product.id)}
+            onPress={() => handleProductPress(product.productId)}
             activeOpacity={0.8}
           >
             <View style={styles.imageContainer}>
               <Image
-                source={{ uri: product.images[0] }}
+                source={{ uri: product.primaryImageUrl }}
                 style={styles.productImage}
                 contentFit="cover"
                 transition={200}
