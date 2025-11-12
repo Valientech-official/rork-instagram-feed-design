@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Linking } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Linking, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { Image } from 'expo-image';
 import { ChevronLeft, Heart, Share2, Star, ShoppingBag, Plus, Minus, ExternalLink } from 'lucide-react-native';
-import { products } from '@/mocks/products';
 import { useCartStore } from '@/store/cartStore';
+import { getProduct, clickProduct } from '@/lib/api/products';
+import { Product } from '@/types/api';
 import Colors from '@/constants/colors';
 import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native';
@@ -12,18 +13,51 @@ import { Platform } from 'react-native';
 const { width } = Dimensions.get('window');
 
 export default function ProductDetailScreen() {
-  const { id } = useLocalSearchParams();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const product = products.find(p => p.id === id);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [liked, setLiked] = useState(false);
   const addToCart = useCartStore(state => state.addItem);
 
+  // 商品詳細を取得
+  useEffect(() => {
+    if (id) {
+      fetchProduct(id as string);
+    }
+  }, [id]);
+
+  const fetchProduct = async (productId: string) => {
+    try {
+      setLoading(true);
+      const response = await getProduct(productId);
+
+      if (response.success && response.data) {
+        setProduct(response.data);
+        // 商品クリック追跡
+        await clickProduct(productId);
+      }
+    } catch (error) {
+      console.error('[ProductDetail] Failed to fetch product:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Colors.light.shopAccent} />
+      </View>
+    );
+  }
+
   if (!product) {
     return (
       <View style={styles.notFound}>
-        <Text>Product not found</Text>
+        <Text style={styles.notFoundText}>商品が見つかりませんでした</Text>
       </View>
     );
   }
@@ -278,10 +312,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.light.background,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.light.background,
+  },
   notFound: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  notFoundText: {
+    fontSize: 16,
+    color: Colors.light.secondaryText,
   },
   backButton: {
     padding: 8,

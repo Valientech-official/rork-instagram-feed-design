@@ -222,22 +222,22 @@ export interface GetNotificationsResponse extends PaginatedResponse<Notification
 // =====================================================
 
 export interface Product {
-  product_id: string;
-  account_id: string;
+  productId: string;
+  accountId: string;
   name: string;
   description?: string;
   price: number;
-  sale_price?: number;
+  salePrice?: number;
   currency: string;
-  image_urls: string[];
-  primary_image_url: string;
-  external_url: string;
-  external_shop_name?: string;
+  imageUrls: string[];
+  primaryImageUrl: string;
+  externalUrl: string;
+  externalShopName?: string;
   category: ProductCategory;
   tags?: string[];
-  click_count: number;
+  clickCount: number;
   status: string;
-  created_at: Timestamp;
+  createdAt: Timestamp;
   seller?: AccountSummary; // フロントエンド用
 }
 

@@ -1,64 +1,96 @@
-import React, { useState, useCallback } from 'react';
-import { View, StyleSheet, FlatList, RefreshControl } from 'react-native';
-import { products } from '@/mocks/products';
+import React, { useState, useCallback, useEffect } from 'react';
+import { View, StyleSheet, FlatList, RefreshControl, ActivityIndicator, Text } from 'react-native';
 import ProductCard from '@/components/ProductCard';
 import ShopHeader from '@/components/ShopHeader';
 import CategoryScroll from '@/components/CategoryScroll';
 import FeaturedProducts from '@/components/FeaturedProducts';
 import Colors from '@/constants/colors';
+import { useProductsStore } from '@/store/productsStore';
 
 export default function ShopScreen() {
-  const [refreshing, setRefreshing] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [filteredProducts, setFilteredProducts] = useState(products);
+  const [selectedCategory, setSelectedCategory] = useState<string>();
+
+  // Products store
+  const {
+    products,
+    loading,
+    recommendedProducts,
+    fetchProducts,
+    fetchRecommendedProducts,
+    loadMore,
+    clear,
+  } = useProductsStore();
+
+  // 初回読み込み
+  useEffect(() => {
+    fetchProducts(undefined, true);
+    fetchRecommendedProducts();
+  }, []);
 
   const handleCategorySelect = useCallback((category: string) => {
-    setSelectedCategory(category);
-    
-    if (category === 'all') {
-      setFilteredProducts(products);
-    } else if (category === 'featured') {
-      setFilteredProducts(products.filter(product => product.featured));
-    } else {
-      // Convert category ID to proper format (e.g., 'home-decor' to 'Home Decor')
-      const formattedCategory = category
-        .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ');
-      
-      setFilteredProducts(products.filter(product => 
-        product.category === formattedCategory
-      ));
-    }
-  }, []);
+    // 'all'または'featured'の場合はundefinedに変換
+    const categoryFilter = category === 'all' || category === 'featured' ? undefined : category;
+    setSelectedCategory(categoryFilter);
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    // Simulate a refresh
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1000);
-  }, []);
+    // カテゴリ変更時は商品リストをクリアして再取得
+    clear();
+    fetchProducts(categoryFilter, true);
+  }, [fetchProducts, clear]);
+
+  const onRefresh = useCallback(async () => {
+    await fetchProducts(selectedCategory, true);
+    await fetchRecommendedProducts(selectedCategory);
+  }, [fetchProducts, fetchRecommendedProducts, selectedCategory]);
+
+  const handleLoadMore = useCallback(() => {
+    if (!loading) {
+      loadMore();
+    }
+  }, [loading, loadMore]);
 
   return (
     <View style={styles.container}>
       <ShopHeader />
-      
+
       <FlatList
-        data={filteredProducts}
-        keyExtractor={(item) => item.id}
+        data={products}
+        keyExtractor={(item) => item.productId}
         numColumns={2}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl refreshing={loading} onRefresh={onRefresh} />
         }
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
         ListHeaderComponent={() => (
           <>
             <CategoryScroll onSelectCategory={handleCategorySelect} />
-            {selectedCategory === 'all' && <FeaturedProducts products={products} />}
+            {!selectedCategory && recommendedProducts.length > 0 && (
+              <FeaturedProducts products={recommendedProducts} />
+            )}
           </>
         )}
+        ListFooterComponent={() => {
+          if (loading && products.length > 0) {
+            return (
+              <View style={styles.loadingFooter}>
+                <ActivityIndicator size="large" color={Colors.light.shopAccent} />
+              </View>
+            );
+          }
+          return null;
+        }}
+        ListEmptyComponent={() => {
+          if (!loading) {
+            return (
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>商品がありません</Text>
+              </View>
+            );
+          }
+          return null;
+        }}
         renderItem={({ item, index }) => (
           <ProductCard product={item} index={index} />
         )}
@@ -74,5 +106,20 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingBottom: 20,
+  },
+  loadingFooter: {
+    paddingVertical: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: Colors.light.secondaryText,
   },
 });

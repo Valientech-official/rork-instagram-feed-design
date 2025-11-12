@@ -1219,6 +1219,41 @@ Day 9: 11月17日 (日) - P3機能統合 + AI機能強化 + おすすめRoom
 
     所要時間: 1.5時間
 
+[ ] タスク 9.11: Amazon Rekognition 画像モデレーション機能実装 🆕 追加タスク
+    ファイル: backend/src/handlers/post/moderateImage.ts, backend/src/handlers/post/createPost.ts
+    実装内容:
+    1. Rekognitionクライアント設定:
+       - @aws-sdk/client-rekognition パッケージ追加
+       - RekognitionClient初期化（ap-northeast-1リージョン）
+       - IAM権限設定（Lambda実行ロールにrekognition:DetectModerationLabels追加）
+
+    2. 画像モデレーション関数作成 (moderateImage.ts):
+       - DetectModerationLabelsCommandを使用
+       - S3バケット内の画像を分析
+       - 不適切コンテンツ検出（アダルト、暴力、薬物、ヘイトシンボル等）
+       - MinConfidence: 75%以上で検出
+       - 検出されたラベル（ModerationLabels）を返却
+
+    3. createPost.ts への統合:
+       - 投稿作成前にmedia_urls内の全画像をチェック
+       - 不適切コンテンツ検出時はValidationErrorを返す
+       - エラーメッセージに検出されたカテゴリを含める
+       - ログに検出詳細を記録（監査用）
+
+    4. エラーハンドリング:
+       - Rekognition APIエラー時は警告ログ出力（投稿は許可）
+       - タイムアウト設定（5秒）
+       - リトライロジック（最大2回）
+
+    利点:
+    - 法的リスク回避（違法コンテンツ自動ブロック）
+    - App Store/Google Play審査対策
+    - ユーザー体験向上（クリーンなプラットフォーム）
+    - 低コスト（月5,000画像まで無料、以降$1/1,000画像）
+    - 完全自動化（人手による審査不要）
+
+    所要時間: 2.5時間
+
 Day 9 完了条件:
 - 検索機能が動作
 - おすすめハッシュタグが表示
@@ -1229,6 +1264,7 @@ Day 9 完了条件:
 - roomsStoreが作成済み 🆕
 - Room詳細画面（qa, fullbody, pairlook等）が統合済み 🆕
 - AI機能が強化（プロンプト管理、回数制限）
+- Amazon Rekognition画像モデレーション機能が実装済み 🆕
 - 分析トラッキングが有効
 
 ================================================================================
