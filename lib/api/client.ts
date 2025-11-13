@@ -18,7 +18,7 @@ const getApiUrl = (): string => {
   }
 
   // デフォルトのdev環境URL
-  return 'https://b6om6sz99f.execute-api.ap-northeast-1.amazonaws.com/dev/';
+  return 'https://1k88cwk5zk.execute-api.ap-northeast-1.amazonaws.com/dev/';
 };
 
 // リクエストオプション
@@ -53,8 +53,36 @@ export class BaseAPIClient {
       if (__DEV__) {
         console.log('[API Client] Token exists:', !!idToken);
         if (idToken) {
-          console.log('[API Client] Token preview:', idToken.substring(0, 20) + '...');
+          // 完全なトークンを出力（デバッグ用）
+          console.log('[API Client] Full Token:', idToken);
           console.log('[API Client] Token length:', idToken.length);
+
+          // トークンのペイロードをデコード
+          try {
+            const parts = idToken.split('.');
+            if (parts.length === 3) {
+              const payload = JSON.parse(atob(parts[1]));
+              console.log('[API Client] Token Payload:', {
+                iss: payload.iss,
+                aud: payload.aud,
+                client_id: payload.client_id,
+                token_use: payload.token_use,
+                exp: payload.exp,
+                exp_date: new Date(payload.exp * 1000).toISOString(),
+                sub: payload.sub,
+              });
+
+              // 有効期限チェック
+              const now = Math.floor(Date.now() / 1000);
+              const isExpired = payload.exp < now;
+              console.log('[API Client] Token expired:', isExpired);
+              if (isExpired) {
+                console.warn('[API Client] Token is expired! Exp:', payload.exp, 'Now:', now);
+              }
+            }
+          } catch (e) {
+            console.warn('[API Client] Failed to decode token:', e);
+          }
         }
       }
 

@@ -19,14 +19,24 @@ import { TableNames, putItemIfNotExists, getItemRequired, incrementCounter } fro
  */
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
-    // TODO: JWTトークンから account_id を取得
-    // const accountId = event.requestContext.authorizer?.claims?.sub;
+    // デバッグ情報を収集
+    const authorizer = event.requestContext.authorizer as any;
+    const debugInfo = {
+      authorizerExists: !!authorizer,
+      authorizerKeys: authorizer ? Object.keys(authorizer) : [],
+      hasClaims: !!authorizer?.claims,
+      claimsKeys: authorizer?.claims ? Object.keys(authorizer.claims) : [],
+      claimsSub: authorizer?.claims?.sub,
+      authorizerSub: authorizer?.sub,
+      principalId: authorizer?.principalId,
+    };
 
-    // 現在はヘッダーから取得（開発用）
-    const accountId = event.headers['x-account-id'];
+    // Cognito Authorizerからアカウント IDを取得
+    const accountId = authorizer?.claims?.sub || authorizer?.sub || authorizer?.principalId;
 
     if (!accountId) {
-      return unauthorizedResponse('アカウントIDが取得できません');
+      // デバッグ情報をエラーメッセージに含める
+      return unauthorizedResponse(`アカウントIDが取得できません。Debug: ${JSON.stringify(debugInfo)}`);
     }
 
     // パスパラメータから投稿IDを取得

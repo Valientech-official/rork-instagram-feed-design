@@ -25,7 +25,7 @@ export const likePost = async (
   postId: string
 ): Promise<ApiResponse<LikeResponse>> => {
   return apiClient.post<LikeResponse>(
-    `/post/${postId}/like`,
+    `/posts/${postId}/like`,
     {}
   );
 };
@@ -40,7 +40,7 @@ export const unlikePost = async (
   postId: string
 ): Promise<ApiResponse<LikeResponse>> => {
   return apiClient.delete<LikeResponse>(
-    `/post/${postId}/like`
+    `/posts/${postId}/like`
   );
 };
 

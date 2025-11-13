@@ -204,7 +204,7 @@ export const usePostsStore = create<PostsState>((set, get) => ({
       }
 
       const response = await apiClient.post<{ liked: boolean; like_count: number }>(
-        `/post/${postId}/like`
+        `/posts/${postId}/like`
       );
 
       if (response.success && response.data) {
@@ -242,7 +242,7 @@ export const usePostsStore = create<PostsState>((set, get) => ({
   unlikePost: async (postId: string) => {
     try {
       const response = await apiClient.delete<{ liked: boolean; like_count: number }>(
-        `/post/${postId}/like`
+        `/posts/${postId}/like`
       );
 
       if (response.success && response.data) {

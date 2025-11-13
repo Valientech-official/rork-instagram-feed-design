@@ -19,11 +19,8 @@ import { TableNames, getItem, deleteItem, decrementCounter } from '../../lib/dyn
  */
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
-    // TODO: JWTトークンから account_id を取得
-    // const accountId = event.requestContext.authorizer?.claims?.sub;
-
-    // 現在はヘッダーから取得（開発用）
-    const accountId = event.headers['x-account-id'];
+    // Cognito Authorizerからアカウント IDを取得
+    const accountId = event.requestContext.authorizer?.claims?.sub;
 
     if (!accountId) {
       return unauthorizedResponse('アカウントIDが取得できません');

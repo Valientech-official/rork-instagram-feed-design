@@ -4,7 +4,7 @@
 
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import { GetTimelineResponse, AccountSummary } from '../../types/api';
-import { PostItem, AccountItem } from '../../types/dynamodb';
+import { PostItem, AccountItem, LikeItem } from '../../types/dynamodb';
 import {
   successResponse,
   internalErrorResponse,
@@ -80,6 +80,26 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       }
     });
 
+    // 各投稿のいいね状態を取得
+    const likePromises = result.items.map((post) =>
+      getItem<LikeItem>({
+        TableName: TableNames.LIKE,
+        Key: {
+          post_id: post.postId,
+          account_id: userId,
+        },
+      })
+    );
+
+    const likes = await Promise.all(likePromises);
+    const likedPostIds = new Set<string>();
+
+    likes.forEach((like, index) => {
+      if (like) {
+        likedPostIds.add(result.items[index].postId);
+      }
+    });
+
     // 投稿にアカウント情報を付与
     const postsWithAuthor = result.items.map((post) => {
       const account = accountMap.get(post.accountId);
@@ -100,6 +120,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       return {
         ...post,
         author: accountSummary,
+        isLiked: likedPostIds.has(post.postId),
       };
     }).filter((item): item is NonNullable<typeof item> => item !== null);
 

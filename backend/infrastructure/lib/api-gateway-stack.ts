@@ -219,11 +219,6 @@ export class ApiGatewayStack extends cdk.Stack {
 
       // CloudWatch設定
       cloudWatchRole: true,
-
-      // 失敗時のレスポンス
-      defaultMethodOptions: {
-        authorizationType: apigateway.AuthorizationType.COGNITO,
-      },
     });
 
     // =====================================================
