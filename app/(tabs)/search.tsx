@@ -4,8 +4,8 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { ShoppingBag, ArrowLeft } from 'lucide-react-native';
 import SearchBar from '@/components/SearchBar';
-import StyleCategories from '@/components/StyleCategories';
-import ClothingItems from '@/components/ClothingItems';
+import ItemCategoriesAccordion from '@/components/ItemCategoriesAccordion';
+import StyleGenres from '@/components/StyleGenres';
 import ResearchButton from '@/components/ResearchButton';
 import TrendingItemsSection from '@/components/TrendingItemsSection';
 import FavoritesGrid from '@/components/FavoritesGrid';
@@ -15,6 +15,8 @@ import Colors from '@/constants/colors';
 import { posts } from '@/mocks/posts';
 import { products, Product } from '@/mocks/products';
 import { users } from '@/mocks/users';
+import { itemCategories } from '@/mocks/itemCategories';
+import { styleGenres } from '@/mocks/styleGenres';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type SearchResult = {
@@ -44,45 +46,13 @@ export default function SearchScreen() {
   const [showFavorites, setShowFavorites] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showPhotoGallery, setShowPhotoGallery] = useState(false);
-  const [selectedClothingItems, setSelectedClothingItems] = useState<string[]>([]);
-  const [selectedStyleCategories, setSelectedStyleCategories] = useState<string[]>([]);
+  const [selectedItemCategories, setSelectedItemCategories] = useState<string[]>([]);
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [showResearchResults, setShowResearchResults] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const insets = useSafeAreaInsets();
 
   const genderOptions: GenderType[] = ['メンズ', 'レディース', 'ユニセックス', 'キッズ'];
-
-  // Clothing items mapping for filtering
-  const clothingItemsMap: { [key: string]: string[] } = {
-    '1': ['tops', 't-shirt', 'shirt', 'blouse'],
-    '2': ['tops', 'shirt', 'blouse'],
-    '3': ['bottoms', 'pants', 'trousers'],
-    '4': ['bottoms', 'jeans', 'denim'],
-    '5': ['dresses', 'dress'],
-    '6': ['bottoms', 'skirts', 'skirt'],
-    '7': ['outerwear', 'jacket'],
-    '8': ['outerwear', 'coat'],
-    '9': ['tops', 'sweater', 'knitwear'],
-    '10': ['shoes', 'footwear', 'sneakers', 'boots'],
-    '11': ['bags', 'handbags', 'backpack', 'purse'],
-    '12': ['hats', 'caps', 'headwear', 'beanie'],
-  };
-
-  // Style categories mapping for filtering
-  const styleCategoriesMap: { [key: string]: string[] } = {
-    '1': ['casual'],
-    '2': ['formal', 'elegant'],
-    '3': ['streetwear', 'urban'],
-    '4': ['minimalist', 'simple'],
-    '5': ['vintage', 'retro'],
-    '6': ['bohemian', 'boho'],
-    '7': ['preppy', 'classic'],
-    '8': ['sporty', 'athletic'],
-    '9': ['punk', 'edgy'],
-    '10': ['gothic', 'dark'],
-    '11': ['romantic', 'feminine'],
-    '12': ['artsy', 'creative'],
-  };
 
   const handleSearch = (text: string) => {
     setSearchText(text);
@@ -158,16 +128,25 @@ export default function SearchScreen() {
     let filtered = [...products];
 
     // Filter by gender
-    filtered = filtered.filter(product => 
+    filtered = filtered.filter(product =>
       product.gender === selectedGender || product.gender === 'ユニセックス'
     );
 
-    // Filter by clothing items
-    if (selectedClothingItems.length > 0) {
+    // Filter by item categories
+    if (selectedItemCategories.length > 0) {
       filtered = filtered.filter(product => {
-        return selectedClothingItems.some(itemId => {
-          const keywords = clothingItemsMap[itemId] || [];
-          return keywords.some(keyword => 
+        return selectedItemCategories.some(itemId => {
+          // Find the subcategory in our master data
+          let keywords: string[] = [];
+          for (const category of itemCategories) {
+            const subCategory = category.subCategories.find(sub => sub.id === itemId);
+            if (subCategory) {
+              keywords = subCategory.keywords;
+              break;
+            }
+          }
+
+          return keywords.some(keyword =>
             product.category.toLowerCase().includes(keyword) ||
             product.tags.some(tag => tag.toLowerCase().includes(keyword)) ||
             product.name.toLowerCase().includes(keyword)
@@ -176,12 +155,14 @@ export default function SearchScreen() {
       });
     }
 
-    // Filter by style categories
-    if (selectedStyleCategories.length > 0) {
+    // Filter by style genres
+    if (selectedGenres.length > 0) {
       filtered = filtered.filter(product => {
-        return selectedStyleCategories.some(categoryId => {
-          const keywords = styleCategoriesMap[categoryId] || [];
-          return keywords.some(keyword => 
+        return selectedGenres.some(genreId => {
+          const genre = styleGenres.find(g => g.id === genreId);
+          const keywords = genre?.keywords || [];
+
+          return keywords.some(keyword =>
             product.tags.some(tag => tag.toLowerCase().includes(keyword)) ||
             product.description.toLowerCase().includes(keyword)
           );
@@ -205,9 +186,9 @@ export default function SearchScreen() {
     console.log('Research button pressed');
     console.log('Selected gender:', selectedGender);
     console.log('Selected budget:', selectedBudget);
-    console.log('Selected clothing items:', selectedClothingItems);
-    console.log('Selected style categories:', selectedStyleCategories);
-    
+    console.log('Selected item categories:', selectedItemCategories);
+    console.log('Selected genres:', selectedGenres);
+
     const filtered = filterProducts();
     setFilteredProducts(filtered);
     setShowResearchResults(true);
@@ -251,8 +232,8 @@ export default function SearchScreen() {
     console.log('Gender selected:', gender);
   };
 
-  const handleClothingItemSelect = (itemId: string) => {
-    setSelectedClothingItems(prev => {
+  const handleItemCategorySelect = (itemId: string) => {
+    setSelectedItemCategories(prev => {
       if (prev.includes(itemId)) {
         return prev.filter(id => id !== itemId);
       } else {
@@ -261,12 +242,12 @@ export default function SearchScreen() {
     });
   };
 
-  const handleStyleCategorySelect = (categoryId: string) => {
-    setSelectedStyleCategories(prev => {
-      if (prev.includes(categoryId)) {
-        return prev.filter(id => id !== categoryId);
+  const handleGenreSelect = (genreId: string) => {
+    setSelectedGenres(prev => {
+      if (prev.includes(genreId)) {
+        return prev.filter(id => id !== genreId);
       } else {
-        return [...prev, categoryId];
+        return [...prev, genreId];
       }
     });
   };
@@ -431,27 +412,19 @@ export default function SearchScreen() {
             </View>
           </View>
 
-          {/* Items section without gender selection */}
+          {/* Item Categories Accordion section */}
           <View style={styles.sectionContainer}>
-            <View style={styles.itemsSection}>
-              <View style={styles.itemsHeader}>
-                <ShoppingBag size={14} color={Colors.light.text} />
-                <Text style={styles.itemsTitle}>アイテム</Text>
-              </View>
-            </View>
-            
-            {/* Add the clothing items grid */}
-            <ClothingItems 
-              selectedItems={selectedClothingItems}
-              onItemSelect={handleClothingItemSelect}
+            <ItemCategoriesAccordion
+              selectedItems={selectedItemCategories}
+              onItemSelect={handleItemCategorySelect}
             />
           </View>
-          
-          {/* Style categories section */}
+
+          {/* Style Genres section */}
           <View style={styles.sectionContainer}>
-            <StyleCategories 
-              selectedCategories={selectedStyleCategories}
-              onCategorySelect={handleStyleCategorySelect}
+            <StyleGenres
+              selectedGenres={selectedGenres}
+              onGenreSelect={handleGenreSelect}
             />
           </View>
           
