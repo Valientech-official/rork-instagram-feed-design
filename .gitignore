@@ -35,3 +35,16 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 .vercel
+
+# iOS / Xcode
+ios/Pods/
+ios/build/
+ios/*.xcworkspace/xcuserdata/
+ios/*.xcodeproj/xcuserdata/
+ios/*.xcodeproj/project.xcworkspace/xcuserdata/
+ios/DerivedData/
+ios/*.hmap
+ios/*.ipa
+ios/*.dSYM.zip
+ios/*.dSYM
+ios/.xcode.env.local
