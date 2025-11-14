@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView } from 'react-native';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { ShoppingBag, ArrowLeft } from 'lucide-react-native';
 import SearchBar from '@/components/SearchBar';
-import StyleCategories from '@/components/StyleCategories';
-import ClothingItems from '@/components/ClothingItems';
+import ItemCategoriesAccordion from '@/components/ItemCategoriesAccordion';
+import StyleGenres from '@/components/StyleGenres';
 import ResearchButton from '@/components/ResearchButton';
 import TrendingItemsSection from '@/components/TrendingItemsSection';
-import RecommendedSection from '@/components/RecommendedSection';
 import FavoritesGrid from '@/components/FavoritesGrid';
 import CartGrid from '@/components/CartGrid';
 import PhotoGallery from '@/components/PhotoGallery';
@@ -16,6 +15,8 @@ import Colors from '@/constants/colors';
 import { posts } from '@/mocks/posts';
 import { products, Product } from '@/mocks/products';
 import { users } from '@/mocks/users';
+import { itemCategories } from '@/mocks/itemCategories';
+import { styleGenres } from '@/mocks/styleGenres';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type SearchResult = {
@@ -27,7 +28,6 @@ type SearchResult = {
 };
 
 type GenderType = 'メンズ' | 'レディース' | 'ユニセックス' | 'キッズ';
-type SortType = 'popular' | 'price-low' | 'price-high' | 'newest';
 
 // Gender colors
 const genderColors = {
@@ -46,53 +46,13 @@ export default function SearchScreen() {
   const [showFavorites, setShowFavorites] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showPhotoGallery, setShowPhotoGallery] = useState(false);
-  const [selectedClothingItems, setSelectedClothingItems] = useState<string[]>([]);
-  const [selectedStyleCategories, setSelectedStyleCategories] = useState<string[]>([]);
+  const [selectedItemCategories, setSelectedItemCategories] = useState<string[]>([]);
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
   const [showResearchResults, setShowResearchResults] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [previewCount, setPreviewCount] = useState(0);
-  const [sortType, setSortType] = useState<SortType>('popular');
   const insets = useSafeAreaInsets();
 
   const genderOptions: GenderType[] = ['メンズ', 'レディース', 'ユニセックス', 'キッズ'];
-
-  // Update preview count when filters change
-  useEffect(() => {
-    const filtered = filterProducts();
-    setPreviewCount(filtered.length);
-  }, [selectedGender, selectedBudget, selectedClothingItems, selectedStyleCategories]);
-
-  // Clothing items mapping for filtering
-  const clothingItemsMap: { [key: string]: string[] } = {
-    '1': ['tops', 't-shirt', 'shirt', 'blouse'],
-    '2': ['tops', 'shirt', 'blouse'],
-    '3': ['bottoms', 'pants', 'trousers'],
-    '4': ['bottoms', 'jeans', 'denim'],
-    '5': ['dresses', 'dress'],
-    '6': ['bottoms', 'skirts', 'skirt'],
-    '7': ['outerwear', 'jacket'],
-    '8': ['outerwear', 'coat'],
-    '9': ['tops', 'sweater', 'knitwear'],
-    '10': ['shoes', 'footwear', 'sneakers', 'boots'],
-    '11': ['bags', 'handbags', 'backpack', 'purse'],
-    '12': ['hats', 'caps', 'headwear', 'beanie'],
-  };
-
-  // Style categories mapping for filtering
-  const styleCategoriesMap: { [key: string]: string[] } = {
-    '1': ['casual'],
-    '2': ['formal', 'elegant'],
-    '3': ['streetwear', 'urban'],
-    '4': ['minimalist', 'simple'],
-    '5': ['vintage', 'retro'],
-    '6': ['bohemian', 'boho'],
-    '7': ['preppy', 'classic'],
-    '8': ['sporty', 'athletic'],
-    '9': ['punk', 'edgy'],
-    '10': ['gothic', 'dark'],
-    '11': ['romantic', 'feminine'],
-    '12': ['artsy', 'creative'],
-  };
 
   const handleSearch = (text: string) => {
     setSearchText(text);
@@ -164,32 +124,6 @@ export default function SearchScreen() {
     }
   };
 
-  const sortProducts = (productsToSort: Product[]) => {
-    const sorted = [...productsToSort];
-
-    switch (sortType) {
-      case 'popular':
-        return sorted.sort((a, b) => b.rating - a.rating);
-      case 'price-low':
-        return sorted.sort((a, b) => {
-          const priceA = a.salePrice || a.price;
-          const priceB = b.salePrice || b.price;
-          return priceA - priceB;
-        });
-      case 'price-high':
-        return sorted.sort((a, b) => {
-          const priceA = a.salePrice || a.price;
-          const priceB = b.salePrice || b.price;
-          return priceB - priceA;
-        });
-      case 'newest':
-        // Since we don't have creation date, use product id as a proxy
-        return sorted.reverse();
-      default:
-        return sorted;
-    }
-  };
-
   const filterProducts = () => {
     let filtered = [...products];
 
@@ -198,11 +132,20 @@ export default function SearchScreen() {
       product.gender === selectedGender || product.gender === 'ユニセックス'
     );
 
-    // Filter by clothing items
-    if (selectedClothingItems.length > 0) {
+    // Filter by item categories
+    if (selectedItemCategories.length > 0) {
       filtered = filtered.filter(product => {
-        return selectedClothingItems.some(itemId => {
-          const keywords = clothingItemsMap[itemId] || [];
+        return selectedItemCategories.some(itemId => {
+          // Find the subcategory in our master data
+          let keywords: string[] = [];
+          for (const category of itemCategories) {
+            const subCategory = category.subCategories.find(sub => sub.id === itemId);
+            if (subCategory) {
+              keywords = subCategory.keywords;
+              break;
+            }
+          }
+
           return keywords.some(keyword =>
             product.category.toLowerCase().includes(keyword) ||
             product.tags.some(tag => tag.toLowerCase().includes(keyword)) ||
@@ -212,11 +155,13 @@ export default function SearchScreen() {
       });
     }
 
-    // Filter by style categories
-    if (selectedStyleCategories.length > 0) {
+    // Filter by style genres
+    if (selectedGenres.length > 0) {
       filtered = filtered.filter(product => {
-        return selectedStyleCategories.some(categoryId => {
-          const keywords = styleCategoriesMap[categoryId] || [];
+        return selectedGenres.some(genreId => {
+          const genre = styleGenres.find(g => g.id === genreId);
+          const keywords = genre?.keywords || [];
+
           return keywords.some(keyword =>
             product.tags.some(tag => tag.toLowerCase().includes(keyword)) ||
             product.description.toLowerCase().includes(keyword)
@@ -241,19 +186,12 @@ export default function SearchScreen() {
     console.log('Research button pressed');
     console.log('Selected gender:', selectedGender);
     console.log('Selected budget:', selectedBudget);
-    console.log('Selected clothing items:', selectedClothingItems);
-    console.log('Selected style categories:', selectedStyleCategories);
+    console.log('Selected item categories:', selectedItemCategories);
+    console.log('Selected genres:', selectedGenres);
 
     const filtered = filterProducts();
-    const sorted = sortProducts(filtered);
-    setFilteredProducts(sorted);
+    setFilteredProducts(filtered);
     setShowResearchResults(true);
-  };
-
-  const handleSortChange = (newSortType: SortType) => {
-    setSortType(newSortType);
-    const sorted = sortProducts(filteredProducts);
-    setFilteredProducts(sorted);
   };
 
   const handleBudgetSelect = (budget: string) => {
@@ -294,8 +232,8 @@ export default function SearchScreen() {
     console.log('Gender selected:', gender);
   };
 
-  const handleClothingItemSelect = (itemId: string) => {
-    setSelectedClothingItems(prev => {
+  const handleItemCategorySelect = (itemId: string) => {
+    setSelectedItemCategories(prev => {
       if (prev.includes(itemId)) {
         return prev.filter(id => id !== itemId);
       } else {
@@ -304,12 +242,12 @@ export default function SearchScreen() {
     });
   };
 
-  const handleStyleCategorySelect = (categoryId: string) => {
-    setSelectedStyleCategories(prev => {
-      if (prev.includes(categoryId)) {
-        return prev.filter(id => id !== categoryId);
+  const handleGenreSelect = (genreId: string) => {
+    setSelectedGenres(prev => {
+      if (prev.includes(genreId)) {
+        return prev.filter(id => id !== genreId);
       } else {
-        return [...prev, categoryId];
+        return [...prev, genreId];
       }
     });
   };
@@ -398,7 +336,7 @@ export default function SearchScreen() {
     return (
       <View style={[styles.container, { paddingTop: insets.top }]}>
         <View style={styles.researchHeader}>
-          <TouchableOpacity
+          <TouchableOpacity 
             style={styles.backButton}
             onPress={handleBackFromResearch}
           >
@@ -406,37 +344,7 @@ export default function SearchScreen() {
           </TouchableOpacity>
           <Text style={styles.researchTitle}>検索結果 ({filteredProducts.length}件)</Text>
         </View>
-
-        {/* Sort Options */}
-        <View style={styles.sortContainer}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.sortOptionsContainer}>
-            <TouchableOpacity
-              style={[styles.sortOption, sortType === 'popular' && styles.sortOptionActive]}
-              onPress={() => handleSortChange('popular')}
-            >
-              <Text style={[styles.sortOptionText, sortType === 'popular' && styles.sortOptionTextActive]}>人気順</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.sortOption, sortType === 'price-low' && styles.sortOptionActive]}
-              onPress={() => handleSortChange('price-low')}
-            >
-              <Text style={[styles.sortOptionText, sortType === 'price-low' && styles.sortOptionTextActive]}>価格: 安い順</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.sortOption, sortType === 'price-high' && styles.sortOptionActive]}
-              onPress={() => handleSortChange('price-high')}
-            >
-              <Text style={[styles.sortOptionText, sortType === 'price-high' && styles.sortOptionTextActive]}>価格: 高い順</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.sortOption, sortType === 'newest' && styles.sortOptionActive]}
-              onPress={() => handleSortChange('newest')}
-            >
-              <Text style={[styles.sortOptionText, sortType === 'newest' && styles.sortOptionTextActive]}>新着順</Text>
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
-
+        
         <FlatList
           data={filteredProducts}
           keyExtractor={(item) => item.id}
@@ -456,9 +364,12 @@ export default function SearchScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <SearchBar
-        onSearch={handleSearch}
+      <SearchBar 
+        onSearch={handleSearch} 
+        onFavoritesPress={handleFavoritesPress}
+        onCartPress={handleCartPress}
         onSearchPress={handleSearchPress}
+        onPhotoGalleryPress={handlePhotoGalleryPress}
         placeholder="ブランド&Shop"
       />
       
@@ -501,55 +412,31 @@ export default function SearchScreen() {
             </View>
           </View>
 
-          {/* Items section without gender selection */}
+          {/* Item Categories Accordion section */}
           <View style={styles.sectionContainer}>
-            <View style={styles.itemsSection}>
-              <View style={styles.itemsHeader}>
-                <ShoppingBag size={14} color={Colors.light.text} />
-                <Text style={styles.itemsTitle}>アイテム</Text>
-              </View>
-            </View>
-            
-            {/* Add the clothing items grid */}
-            <ClothingItems 
-              selectedItems={selectedClothingItems}
-              onItemSelect={handleClothingItemSelect}
+            <ItemCategoriesAccordion
+              selectedItems={selectedItemCategories}
+              onItemSelect={handleItemCategorySelect}
             />
           </View>
-          
-          {/* Style categories section */}
-          <View style={styles.sectionContainer}>
-            <StyleCategories 
-              selectedCategories={selectedStyleCategories}
-              onCategorySelect={handleStyleCategorySelect}
-            />
-          </View>
-          
-          {/* Preview count section */}
-          {(selectedClothingItems.length > 0 || selectedStyleCategories.length > 0 || selectedBudget) && (
-            <View style={styles.previewCountContainer}>
-              <Text style={styles.previewCountText}>
-                約 <Text style={styles.previewCountNumber}>{previewCount}</Text> 件の商品が見つかります
-              </Text>
-            </View>
-          )}
 
+          {/* Style Genres section */}
+          <View style={styles.sectionContainer}>
+            <StyleGenres
+              selectedGenres={selectedGenres}
+              onGenreSelect={handleGenreSelect}
+            />
+          </View>
+          
           {/* Research button section with border */}
           <View style={styles.researchSectionContainer}>
-            <ResearchButton
+            <ResearchButton 
               onPress={handleResearchPress}
               onBudgetSelect={handleBudgetSelect}
             />
           </View>
-
+          
           <TrendingItemsSection />
-
-          {/* Recommended Section */}
-          <RecommendedSection
-            selectedGender={selectedGender}
-            selectedClothingItems={selectedClothingItems}
-            selectedStyleCategories={selectedStyleCategories}
-          />
         </ScrollView>
       )}
     </View>
@@ -612,26 +499,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: Colors.light.border,
     paddingBottom: 8,
-  },
-  // Preview count section
-  previewCountContainer: {
-    backgroundColor: Colors.light.shopAccent + '10',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    marginHorizontal: 10,
-    marginTop: 8,
-    marginBottom: 8,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  previewCountText: {
-    fontSize: 14,
-    color: Colors.light.text,
-  },
-  previewCountNumber: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: Colors.light.shopAccent,
   },
   // Research section container with top border
   researchSectionContainer: {
@@ -696,36 +563,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: Colors.light.text,
-  },
-  // Sort options styles
-  sortContainer: {
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.light.border,
-    backgroundColor: Colors.light.background,
-  },
-  sortOptionsContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    gap: 8,
-  },
-  sortOption: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: Colors.light.shopBackground,
-    marginRight: 8,
-  },
-  sortOptionActive: {
-    backgroundColor: Colors.light.shopAccent,
-  },
-  sortOptionText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: Colors.light.text,
-  },
-  sortOptionTextActive: {
-    color: 'white',
-    fontWeight: '600',
   },
   productsGrid: {
     padding: 16,
