@@ -43,8 +43,8 @@ export default function SplashScreen() {
         } else {
           // オンボーディング未完了の場合、現在のステップに応じて遷移
           const onboardingRoutes = [
-            '/(onboarding)/welcome',    // step 0 or 1
-            '/(onboarding)/welcome',    // step 1
+            '/(onboarding)/welcome',    // step 0
+            '/(onboarding)/avatar',     // step 1 (サインアップ完了後: profileスキップ済み)
             '/(onboarding)/profile',    // step 2
             '/(onboarding)/avatar',     // step 3
             '/(onboarding)/styles',     // step 4

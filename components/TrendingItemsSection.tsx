@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-nati
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Play, ShoppingBag } from 'lucide-react-native';
+import { useThemeStore } from '@/store/themeStore';
 import Colors from '@/constants/colors';
 
 const { width } = Dimensions.get('window');
@@ -106,6 +107,9 @@ const trendingItems: TrendingItem[] = [
 
 export default function TrendingItemsSection() {
   const router = useRouter();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
+  const styles = createStyles(colors);
 
   const handleItemPress = (item: TrendingItem) => {
     switch (item.type) {
@@ -184,12 +188,12 @@ export default function TrendingItemsSection() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: Colors.light.background,
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -199,7 +203,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: Colors.light.text,
+    color: colors.text,
   },
   listContainer: {
     paddingBottom: 20,
@@ -237,13 +241,13 @@ const styles = StyleSheet.create({
   itemTitle: {
     fontSize: 12,
     fontWeight: '500',
-    color: Colors.light.text,
+    color: colors.text,
     marginTop: 6,
     lineHeight: 16,
   },
   itemLikes: {
     fontSize: 10,
-    color: Colors.light.secondaryText,
+    color: colors.secondaryText,
     marginTop: 2,
   },
 });

@@ -4,6 +4,7 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Sparkles } from 'lucide-react-native';
 import { products, Product } from '@/mocks/products';
+import { useThemeStore } from '@/store/themeStore';
 import Colors from '@/constants/colors';
 
 interface RecommendedSectionProps {
@@ -18,6 +19,9 @@ export default function RecommendedSection({
   selectedStyleCategories = []
 }: RecommendedSectionProps) {
   const router = useRouter();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
+  const styles = createStyles(colors);
 
   // Get personalized recommendations based on user selections
   const recommendedProducts = useMemo(() => {
@@ -109,7 +113,7 @@ export default function RecommendedSection({
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Sparkles size={20} color={Colors.light.shopAccent} />
+        <Sparkles size={20} color={colors.shopAccent} />
         <Text style={styles.title}>あなたにおすすめ</Text>
       </View>
       <FlatList
@@ -125,9 +129,9 @@ export default function RecommendedSection({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   container: {
-    backgroundColor: Colors.light.background,
+    backgroundColor: colors.background,
     paddingVertical: 16,
   },
   header: {
@@ -139,7 +143,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '700',
-    color: Colors.light.text,
+    color: colors.text,
     marginLeft: 8,
   },
   productsGrid: {
@@ -150,7 +154,7 @@ const styles = StyleSheet.create({
   },
   productItem: {
     width: '48%',
-    backgroundColor: Colors.light.shopCard,
+    backgroundColor: colors.shopCard,
     borderRadius: 12,
     marginBottom: 16,
     overflow: 'hidden',
@@ -165,12 +169,12 @@ const styles = StyleSheet.create({
   productName: {
     fontSize: 14,
     fontWeight: '500',
-    color: Colors.light.text,
+    color: colors.text,
     marginBottom: 4,
   },
   brandName: {
     fontSize: 12,
-    color: Colors.light.secondaryText,
+    color: colors.secondaryText,
     marginBottom: 8,
   },
   priceContainer: {
@@ -181,17 +185,17 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 16,
     fontWeight: '600',
-    color: Colors.light.shopPrice,
+    color: colors.shopPrice,
   },
   salePrice: {
     fontSize: 16,
     fontWeight: '600',
-    color: Colors.light.shopSale,
+    color: colors.shopSale,
     marginRight: 8,
   },
   originalPrice: {
     fontSize: 12,
-    color: Colors.light.secondaryText,
+    color: colors.secondaryText,
     textDecorationLine: 'line-through',
   },
   ratingContainer: {
@@ -200,6 +204,6 @@ const styles = StyleSheet.create({
   },
   rating: {
     fontSize: 12,
-    color: Colors.light.warning,
+    color: colors.warning,
   },
 });

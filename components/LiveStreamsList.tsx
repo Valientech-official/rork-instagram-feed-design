@@ -3,14 +3,20 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator }
 import { ChevronRight, Plus } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { LiveStream } from '@/mocks/liveStreams';
+import { Wave } from '@/mocks/waves';
 import LiveStreamItem from './LiveStreamItem';
 import Colors from '@/constants/colors';
 import { Image } from 'expo-image';
 import { useThemeStore } from '@/store/themeStore';
 import { users } from '@/mocks/users';
 
+// 将来的にライブとウェーブを混在表示するための型
+type ContentItem = (LiveStream & { type: 'live' }) | (Wave & { type: 'wave' });
+
 interface LiveStreamsListProps {
-  streams: LiveStream[];
+  streams?: LiveStream[]; // 後方互換性のため残す
+  waves?: Wave[]; // ウェーブデータ
+  items?: ContentItem[]; // 将来: ライブとウェーブを混在表示
   title?: string;
   showSeeAll?: boolean;
   showHeaderTitle?: boolean;
@@ -19,6 +25,8 @@ interface LiveStreamsListProps {
 
 export default function LiveStreamsList({
   streams,
+  waves,
+  items,
   title = "ウェーブス",
   showSeeAll = false,
   showHeaderTitle = true,
@@ -31,20 +39,29 @@ export default function LiveStreamsList({
   const [displayCount, setDisplayCount] = useState(10);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
+  // データソースの優先順位: items > waves > streams
+  // 将来: items でライブとウェーブを混在表示
+  // 現在: waves でウェーブのみ表示
+  const contentData = items ||
+    (waves ? waves.map(w => ({ ...w, type: 'wave' as const })) : []) ||
+    (streams ? streams.map(s => ({ ...s, type: 'live' as const })) : []);
+
   const handleSeeAllPress = () => {
-    router.push('/live');
+    // 将来: ウェーブとライブの混在ページ
+    // 現在: ウェーブタイムラインへ
+    router.push('/wave');
   };
 
   const handleLoadMore = useCallback(() => {
-    if (isLoadingMore || displayCount >= streams.length) return;
+    if (isLoadingMore || displayCount >= contentData.length) return;
 
     setIsLoadingMore(true);
     // Simulate loading delay
     setTimeout(() => {
-      setDisplayCount(prev => Math.min(prev + 10, streams.length));
+      setDisplayCount(prev => Math.min(prev + 10, contentData.length));
       setIsLoadingMore(false);
     }, 500);
-  }, [isLoadingMore, displayCount, streams.length]);
+  }, [isLoadingMore, displayCount, contentData.length]);
 
   const renderFooter = () => {
     if (!isLoadingMore) return null;
@@ -55,11 +72,11 @@ export default function LiveStreamsList({
     );
   };
 
-  if (streams.length === 0) {
+  if (contentData.length === 0) {
     return null;
   }
 
-  const displayedStreams = streams.slice(0, displayCount);
+  const displayedContent = contentData.slice(0, displayCount);
   const currentUser = users[0]; // 現在のユーザー（janedoe）
 
   return (
@@ -77,8 +94,8 @@ export default function LiveStreamsList({
       )}
 
       <View style={styles.contentRow}>
-        {/* 自分のアカウント */}
-        <TouchableOpacity style={styles.doorColumn} onPress={() => router.push('/profile')}>
+        {/* 自分のアカウント - ウェーブタイムラインへ */}
+        <TouchableOpacity style={styles.doorColumn} onPress={() => router.push('/wave')}>
           <View style={styles.doorImageContainer}>
             <Image
               source={{ uri: currentUser.avatar }}
@@ -94,15 +111,19 @@ export default function LiveStreamsList({
           )}
         </TouchableOpacity>
 
-        {/* ウェーブリスト */}
+        {/* コンテンツリスト (ウェーブ or ライブ or 混在) */}
         <FlatList
-          data={displayedStreams}
+          data={displayedContent}
           keyExtractor={(item) => item.id}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.listContent}
           renderItem={({ item }) => (
-            <LiveStreamItem stream={item} size="small" />
+            <LiveStreamItem
+              stream={'type' in item && item.type === 'live' ? item : undefined}
+              wave={'type' in item && item.type === 'wave' ? item : undefined}
+              size="small"
+            />
           )}
           onEndReached={handleLoadMore}
           onEndReachedThreshold={0.5}

@@ -3,97 +3,113 @@ import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-nati
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { LiveStream } from '@/mocks/liveStreams';
+import { Wave } from '@/mocks/waves';
 import { Eye, MessageCircle, Heart, Share2 } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { useThemeStore } from '@/store/themeStore';
 
 interface LiveStreamItemProps {
-  stream: LiveStream;
+  stream?: LiveStream; // ライブ配信データ
+  wave?: Wave; // ウェーブデータ
   size?: 'small' | 'large';
   fullScreen?: boolean;
 }
 
 const { width, height } = Dimensions.get('window');
 
-export default function LiveStreamItem({ stream, size = 'large', fullScreen = false }: LiveStreamItemProps) {
+export default function LiveStreamItem({ stream, wave, size = 'large', fullScreen = false }: LiveStreamItemProps) {
   const router = useRouter();
   const { theme } = useThemeStore();
   const colors = Colors[theme];
   const styles = createStyles(colors);
   const isSmall = size === 'small';
-  
-  const itemWidth = isSmall ? (width / 3) - 16 : width - 32; // Changed from width/2 to width/3
-  const imageHeight = fullScreen ? height * 0.6 : (isSmall ? 125 : 200); // Reduced height for small items
+
+  // ウェーブとライブの共通データ抽出
+  const item = wave || stream;
+  if (!item) return null;
+
+  const isWave = !!wave;
+  const thumbnail = isWave ? wave.thumbnailUrl : stream?.thumbnail;
+  const user = item.user;
+  const title = isWave ? wave.caption : stream?.title;
+  const viewCount = isWave ? wave.views : stream?.viewers;
+
+  const itemWidth = isSmall ? (width / 3) - 16 : width - 32;
+  const imageHeight = fullScreen ? height * 0.6 : (isSmall ? 125 : 200);
 
   const handlePress = () => {
-    router.push(`/live/${stream.id}`);
+    if (isWave) {
+      router.push(`/wave/${wave.id}`);
+    } else if (stream) {
+      router.push(`/live/${stream.id}`);
+    }
   };
 
   return (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={[
-        styles.container, 
+        styles.container,
         { width: fullScreen ? '100%' : itemWidth },
         isSmall && styles.smallContainer,
         fullScreen && styles.fullScreenContainer
-      ]} 
+      ]}
       onPress={handlePress}
       activeOpacity={0.9}
     >
       <View style={[styles.imageContainer, { height: imageHeight }]}>
         <Image
-          source={{ uri: stream.thumbnail }}
+          source={{ uri: thumbnail }}
           style={styles.thumbnail}
           contentFit="cover"
           transition={200}
         />
-        
+
         <View style={styles.liveIndicator}>
           <View style={styles.liveIndicatorDot} />
-          <Text style={styles.liveText}>ウェーブ</Text>
+          <Text style={styles.liveText}>{isWave ? 'ウェーブ' : 'LIVE'}</Text>
         </View>
-        
+
         <View style={styles.viewersContainer}>
           <Eye size={14} color="white" />
-          <Text style={styles.viewersText}>{stream.viewers.toLocaleString()}</Text>
+          <Text style={styles.viewersText}>{viewCount?.toLocaleString() || '0'}</Text>
         </View>
       </View>
-      
+
       <View style={styles.infoContainer}>
         <View style={styles.userInfo}>
           <Image
-            source={{ uri: stream.user.avatar }}
+            source={{ uri: user.avatar }}
             style={styles.avatar}
             contentFit="cover"
           />
           <View style={styles.textContainer}>
-            <Text style={styles.username} numberOfLines={1}>{stream.user.username}</Text>
-            <Text style={styles.title} numberOfLines={isSmall ? 1 : 2}>{stream.title}</Text>
+            <Text style={styles.username} numberOfLines={1}>{user.username}</Text>
+            <Text style={styles.title} numberOfLines={isSmall ? 1 : 2}>{title}</Text>
           </View>
         </View>
-        
+
         {!isSmall && (
           <View style={styles.tagsContainer}>
-            {stream.tags.map((tag, index) => (
+            {(isWave ? wave.hashtags : stream?.tags || []).map((tag, index) => (
               <View key={index} style={styles.tag}>
                 <Text style={styles.tagText}>#{tag}</Text>
               </View>
             ))}
           </View>
         )}
-        
+
       {fullScreen && (
         <View style={styles.actionButtons}>
           <TouchableOpacity style={styles.actionButton}>
             <Heart size={24} color={colors.text} />
             <Text style={styles.actionText}>{Math.floor(Math.random() * 500) + 100}</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity style={styles.actionButton}>
             <MessageCircle size={24} color={colors.text} />
             <Text style={styles.actionText}>{Math.floor(Math.random() * 200) + 50}</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity style={styles.actionButton}>
             <Share2 size={24} color={colors.text} />
             <Text style={styles.actionText}>Share</Text>
@@ -101,13 +117,19 @@ export default function LiveStreamItem({ stream, size = 'large', fullScreen = fa
         </View>
       )}
       </View>
-      
+
       {fullScreen && (
         <View style={styles.descriptionContainer}>
           <Text style={styles.descriptionText}>
-            {stream.title} - Join our {stream.tags.join(", ")} session!{stream.isActive ? " Currently streaming live!" : " Replay available now."}
+            {title}
+            {isWave
+              ? ` - ${wave.hashtags.join(", ")} `
+              : stream && ` - Join our ${stream.tags.join(", ")} session!${stream.isActive ? " Currently streaming live!" : " Replay available now."}`
+            }
           </Text>
-          <Text style={styles.timeText}>Started {stream.startedAt}</Text>
+          <Text style={styles.timeText}>
+            {isWave ? `投稿: ${wave.createdAt}` : stream && `Started ${stream.startedAt}`}
+          </Text>
         </View>
       )}
     </TouchableOpacity>

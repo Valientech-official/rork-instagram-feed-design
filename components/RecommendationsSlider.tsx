@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Video, ShoppingBag, DoorOpen } from 'lucide-react-native';
+import { useThemeStore } from '@/store/themeStore';
 import Colors from '@/constants/colors';
 
 const { width } = Dimensions.get('window');
@@ -11,6 +12,9 @@ const CARD_WIDTH = MAIN_CONTENT_WIDTH * 0.8;
 
 export default function RecommendationsSlider() {
   const router = useRouter();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
+  const styles = createStyles(colors);
   
   // Create recommendations array with random order
   const baseRecommendations = [
@@ -85,14 +89,14 @@ export default function RecommendationsSlider() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   container: {
     marginVertical: 16,
   },
   title: {
     fontSize: 18,
     fontWeight: '600',
-    color: Colors.light.text,
+    color: colors.text,
     marginBottom: 12,
     paddingHorizontal: 16,
   },
@@ -131,7 +135,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   button: {
-    backgroundColor: Colors.light.primary,
+    backgroundColor: colors.primary,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 20,

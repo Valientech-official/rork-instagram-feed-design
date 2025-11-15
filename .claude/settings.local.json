@@ -25,7 +25,11 @@
       "Bash(./scripts/fix_styles_scope.sh:*)",
       "Bash(grep:*)",
       "Bash(node scripts/convert-icon.js:*)",
-      "Bash(xcodebuild:*)"
+      "Bash(xcodebuild:*)",
+      "Bash(xcrun devicectl device info:*)",
+      "Bash(xcrun devicectl:*)",
+      "Bash(npx expo prebuild:*)",
+      "Read(//Users/kadotani/Downloads/**)"
     ],
     "deny": [],
     "ask": []

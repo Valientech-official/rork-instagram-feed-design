@@ -376,7 +376,7 @@ export default function AccountSettingsScreen() {
 
           <TouchableOpacity
             style={styles.settingItem}
-            onPress={() => router.push('/(onboarding)/profile')}
+            onPress={() => router.push('/settings/edit-profile')}
           >
             <View style={styles.settingLeft}>
               <View style={styles.iconContainer}>

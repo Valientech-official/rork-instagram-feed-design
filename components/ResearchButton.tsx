@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Hand, ChevronDown, ChevronUp } from 'lucide-react-native';
+import { useThemeStore } from '@/store/themeStore';
 import Colors from '@/constants/colors';
 
 interface ResearchButtonProps {
@@ -23,6 +24,9 @@ const budgetOptions = [
 ];
 
 export default function ResearchButton({ onPress, onBudgetSelect }: ResearchButtonProps) {
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
+  const styles = createStyles(colors);
   const [isBudgetOpen, setIsBudgetOpen] = useState(false);
   const [selectedBudget, setSelectedBudget] = useState<string | null>(null);
 
@@ -46,14 +50,14 @@ export default function ResearchButton({ onPress, onBudgetSelect }: ResearchButt
             {selectedBudget || '￥予算'}
           </Text>
           {isBudgetOpen ? (
-            <ChevronUp size={12} color={Colors.light.primary} />
+            <ChevronUp size={12} color={colors.primary} />
           ) : (
-            <ChevronDown size={12} color={Colors.light.primary} />
+            <ChevronDown size={12} color={colors.primary} />
           )}
         </TouchableOpacity>
-        
+
         <TouchableOpacity style={styles.researchButton} onPress={onPress}>
-          <Hand size={14} color={Colors.light.primary} />
+          <Hand size={14} color={colors.primary} />
           <Text style={styles.researchText}>Research</Text>
         </TouchableOpacity>
       </View>
@@ -89,11 +93,11 @@ export default function ResearchButton({ onPress, onBudgetSelect }: ResearchButt
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   container: {
     paddingHorizontal: 10,
     paddingVertical: 5,
-    backgroundColor: Colors.light.background,
+    backgroundColor: colors.background,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -108,14 +112,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 6,
     paddingHorizontal: 12,
-    backgroundColor: Colors.light.background,
+    backgroundColor: colors.background,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: Colors.light.border,
+    borderColor: colors.border,
   },
   budgetText: {
     fontSize: 12,
-    color: Colors.light.primary,
+    color: colors.primary,
     fontWeight: '500',
     marginRight: 4,
   },
@@ -124,23 +128,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 6,
     paddingHorizontal: 12,
-    backgroundColor: Colors.light.background,
+    backgroundColor: colors.background,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: Colors.light.border,
+    borderColor: colors.border,
   },
   researchText: {
     fontSize: 12,
-    color: Colors.light.primary,
+    color: colors.primary,
     fontWeight: '500',
     marginLeft: 4,
   },
   budgetDropdown: {
     marginTop: 8,
-    backgroundColor: Colors.light.background,
+    backgroundColor: colors.background,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: Colors.light.border,
+    borderColor: colors.border,
     paddingVertical: 8,
   },
   budgetScrollContent: {
@@ -149,23 +153,23 @@ const styles = StyleSheet.create({
   budgetOption: {
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: Colors.light.shopBackground,
+    backgroundColor: colors.shopBackground,
     borderRadius: 20,
     marginRight: 8,
     borderWidth: 1,
-    borderColor: Colors.light.border,
+    borderColor: colors.border,
   },
   selectedBudgetOption: {
-    backgroundColor: Colors.light.primary,
-    borderColor: Colors.light.primary,
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   budgetOptionText: {
     fontSize: 12,
-    color: Colors.light.text,
+    color: colors.text,
     fontWeight: '500',
     whiteSpace: 'nowrap',
   },
   selectedBudgetOptionText: {
-    color: Colors.light.background,
+    color: colors.background,
   },
 });

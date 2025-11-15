@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Tag } from 'lucide-react-native';
+import { useThemeStore } from '@/store/themeStore';
 import Colors from '@/constants/colors';
 import { styleGenres } from '@/mocks/styleGenres';
 
@@ -13,10 +14,14 @@ export default function StyleGenres({
   selectedGenres,
   onGenreSelect
 }: StyleGenresProps) {
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
+  const styles = createStyles(colors);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Tag size={14} color={Colors.light.text} />
+        <Tag size={14} color={colors.text} />
         <Text style={styles.headerTitle}>系統（ジャンル）</Text>
         {selectedGenres.length > 0 && (
           <Text style={styles.selectedCount}>
@@ -59,9 +64,9 @@ export default function StyleGenres({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   container: {
-    backgroundColor: Colors.light.background,
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -74,13 +79,13 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 12,
     fontWeight: '600',
-    color: Colors.light.text,
+    color: colors.text,
     flex: 1,
   },
   selectedCount: {
     fontSize: 11,
     fontWeight: '500',
-    color: Colors.light.shopPrice,
+    color: colors.shopPrice,
   },
   scrollView: {
     paddingBottom: 8,
@@ -93,9 +98,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: Colors.light.shopBackground,
+    backgroundColor: colors.shopBackground,
     borderWidth: 1,
-    borderColor: Colors.light.border,
+    borderColor: colors.border,
     marginRight: 8,
   },
   genreChipSelected: {
@@ -104,7 +109,7 @@ const styles = StyleSheet.create({
   genreText: {
     fontSize: 13,
     fontWeight: '500',
-    color: Colors.light.text,
+    color: colors.text,
   },
   genreTextSelected: {
     color: '#FFFFFF',

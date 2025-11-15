@@ -5,6 +5,7 @@ import { Heart, MessageCircle, X, Hand } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { RoomPost as RoomPostType } from '@/mocks/roomPosts';
 import { getFirstTwoCommentsForRoomPost, getCommentsForRoomPost, RoomComment } from '@/mocks/roomComments';
+import { useThemeStore } from '@/store/themeStore';
 
 const { width } = Dimensions.get('window');
 
@@ -14,6 +15,8 @@ interface RoomPostProps {
 }
 
 export default function RoomPost({ post, onPress }: RoomPostProps) {
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [peaceCount, setPeaceCount] = useState(post.likes); // 仮でlikesを使用
@@ -44,6 +47,8 @@ export default function RoomPost({ post, onPress }: RoomPostProps) {
 
   const imageHeight = (width - 32) * 3 / 5; // 5/3比率
   const userInfoHeight = (width - 32) * 2 / 5; // 5/2比率
+
+  const styles = createStyles(colors);
 
   return (
     <>
@@ -88,8 +93,8 @@ export default function RoomPost({ post, onPress }: RoomPostProps) {
             >
               <Hand
                 size={20}
-                color={isPeaced ? Colors.light.primary : Colors.light.text}
-                fill={isPeaced ? Colors.light.primary : "transparent"}
+                color={isPeaced ? colors.primary : colors.text}
+                fill={isPeaced ? colors.primary : "transparent"}
               />
               <Text style={[styles.actionText, isPeaced && styles.actionTextActive]}>
                 {peaceCount}
@@ -100,7 +105,7 @@ export default function RoomPost({ post, onPress }: RoomPostProps) {
               style={styles.actionItem}
               onPress={handleCommentPress}
             >
-              <MessageCircle size={20} color={Colors.light.text} />
+              <MessageCircle size={20} color={colors.text} />
               <Text style={styles.actionText}>{post.comments}</Text>
             </TouchableOpacity>
           </View>
@@ -135,7 +140,7 @@ export default function RoomPost({ post, onPress }: RoomPostProps) {
           <View style={styles.modalHeader}>
             <Text style={styles.modalTitle}>コメント</Text>
             <TouchableOpacity onPress={() => setShowCommentModal(false)}>
-              <X size={24} color={Colors.light.text} />
+              <X size={24} color={colors.text} />
             </TouchableOpacity>
           </View>
 
@@ -166,7 +171,7 @@ export default function RoomPost({ post, onPress }: RoomPostProps) {
                     <Text style={styles.commentTimestamp}>{comment.timestamp}</Text>
                     {comment.likes && (
                       <View style={styles.commentLikes}>
-                        <Heart size={12} color={Colors.light.like} fill={Colors.light.like} />
+                        <Heart size={12} color={colors.like} fill={colors.like} />
                         <Text style={styles.commentLikesText}>{comment.likes}</Text>
                       </View>
                     )}
@@ -207,12 +212,12 @@ export default function RoomPost({ post, onPress }: RoomPostProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   container: {
     marginBottom: 12,
     borderRadius: 12,
     overflow: 'hidden',
-    backgroundColor: 'white',
+    backgroundColor: colors.cardBackground,
   },
   image: {
     width: '100%',
@@ -221,7 +226,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     left: 10,
-    backgroundColor: Colors.light.primary,
+    backgroundColor: colors.primary,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 4,
@@ -234,7 +239,7 @@ const styles = StyleSheet.create({
   },
   userInfoArea: {
     padding: 12,
-    backgroundColor: 'white',
+    backgroundColor: colors.cardBackground,
   },
   userHeader: {
     flexDirection: 'row',
@@ -253,16 +258,16 @@ const styles = StyleSheet.create({
   username: {
     fontWeight: '600',
     fontSize: 14,
-    color: Colors.light.text,
+    color: colors.text,
   },
   timestamp: {
     fontSize: 12,
-    color: Colors.light.secondaryText,
+    color: colors.secondaryText,
     marginTop: 2,
   },
   caption: {
     fontSize: 14,
-    color: Colors.light.text,
+    color: colors.text,
     lineHeight: 20,
     marginBottom: 10,
   },
@@ -279,10 +284,10 @@ const styles = StyleSheet.create({
   actionText: {
     fontSize: 14,
     fontWeight: '500',
-    color: Colors.light.text,
+    color: colors.text,
   },
   actionTextActive: {
-    color: Colors.light.primary,
+    color: colors.primary,
   },
   commentsSection: {
     padding: 12,
@@ -293,16 +298,16 @@ const styles = StyleSheet.create({
   },
   commentText: {
     fontSize: 14,
-    color: Colors.light.text,
+    color: colors.text,
     lineHeight: 18,
   },
   commentUsername: {
     fontWeight: '600',
-    color: Colors.light.text,
+    color: colors.text,
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: colors.background,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -310,17 +315,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.light.border,
+    borderBottomColor: colors.border,
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: Colors.light.text,
+    color: colors.text,
   },
   miniImageContainer: {
     padding: 12,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.light.border,
+    borderBottomColor: colors.border,
   },
   miniImage: {
     width: width / 4,
@@ -347,12 +352,12 @@ const styles = StyleSheet.create({
   modalCommentUsername: {
     fontWeight: '600',
     fontSize: 14,
-    color: Colors.light.text,
+    color: colors.text,
     marginBottom: 2,
   },
   modalCommentText: {
     fontSize: 14,
-    color: Colors.light.text,
+    color: colors.text,
     lineHeight: 20,
     marginBottom: 6,
   },
@@ -363,7 +368,7 @@ const styles = StyleSheet.create({
   },
   commentTimestamp: {
     fontSize: 12,
-    color: Colors.light.tabIconDefault,
+    color: colors.secondaryText,
   },
   commentLikes: {
     flexDirection: 'row',
@@ -372,13 +377,13 @@ const styles = StyleSheet.create({
   },
   commentLikesText: {
     fontSize: 12,
-    color: Colors.light.like,
+    color: colors.like,
     fontWeight: '600',
   },
   inputContainer: {
     borderTopWidth: 1,
-    borderTopColor: Colors.light.border,
-    backgroundColor: 'white',
+    borderTopColor: colors.border,
+    backgroundColor: colors.cardBackground,
   },
   emojiContainer: {
     flexDirection: 'row',
@@ -402,16 +407,18 @@ const styles = StyleSheet.create({
   commentInput: {
     flex: 1,
     borderWidth: 1,
-    borderColor: Colors.light.border,
+    borderColor: colors.border,
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 8,
     marginRight: 8,
     maxHeight: 100,
     fontSize: 16,
+    color: colors.text,
+    backgroundColor: colors.background,
   },
   sendButton: {
-    backgroundColor: Colors.light.primary,
+    backgroundColor: colors.primary,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,

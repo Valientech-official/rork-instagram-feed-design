@@ -428,9 +428,9 @@ export default function RoomScreen() {
                     )}
                   </View>
                   <View style={styles.roomContent}>
-                    <DoorOpen 
-                      size={34} 
-                      color={room.name === 'コーデQ&A Room' ? '#9ACD32' : room.name === '全身コーデ Room' ? '#FF69B4' : room.name === 'ペアルック Room' ? '#87CEEB' : room.name === 'シチュエーション Room' ? '#FFD700' : room.name === 'オススメALL Room' ? '#DDA0DD' : room.name === 'Nextトレンド Room' ? '#D2B48C' : Colors.light.text} 
+                    <DoorOpen
+                      size={34}
+                      color={room.name === 'コーデQ&A Room' ? '#9ACD32' : room.name === '全身コーデ Room' ? '#FF69B4' : room.name === 'ペアルック Room' ? '#87CEEB' : room.name === 'シチュエーション Room' ? '#FFD700' : room.name === 'オススメALL Room' ? '#DDA0DD' : room.name === 'Nextトレンド Room' ? '#D2B48C' : colors.text}
                     />
                     <Text style={styles.membersText} numberOfLines={1}>
                       {room.members} members

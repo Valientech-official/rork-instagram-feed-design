@@ -17,6 +17,7 @@ import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { Minus, Plus, Trash2, Circle } from "lucide-react-native";
 import { liveStreams } from "@/mocks/liveStreams";
+import { waves } from "@/mocks/waves";
 import { users } from "@/mocks/users";
 import { usePostsStore } from "@/store/postsStore";
 import Post from "@/components/Post";
@@ -71,6 +72,9 @@ export default function FeedScreen() {
 
 
   const activeStreams = liveStreams.filter((stream) => stream.isActive);
+
+  // ウェーブデータ（最初の10件を表示）
+  const displayWaves = waves.slice(0, 10);
 
   // Fetch timeline on mount
   useEffect(() => {
@@ -288,11 +292,11 @@ export default function FeedScreen() {
         onEndReachedThreshold={0.5}
         ListHeaderComponent={
           <>
-            {/* Live Streams */}
-            {activeStreams.length > 0 && (
+            {/* Waves Section */}
+            {displayWaves.length > 0 && (
               <View style={styles.fullWidthLiveSection}>
                 <LiveStreamsList
-                  streams={activeStreams}
+                  waves={displayWaves}
                   showHeaderTitle={false}
                   doorSubtitle="ウェーブ"
                 />

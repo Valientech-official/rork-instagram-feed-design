@@ -10,12 +10,16 @@ interface SearchBarProps {
   onSearch?: (text: string) => void;
   onSearchPress?: () => void;
   placeholder?: string;
+  value?: string;
 }
 
-export default function SearchBar({ onSearch, onSearchPress, placeholder = "Search..." }: SearchBarProps) {
+export default function SearchBar({ onSearch, onSearchPress, placeholder = "Search...", value }: SearchBarProps) {
   const [searchText, setSearchText] = useState('');
   const { theme } = useThemeStore();
   const colors = Colors[theme];
+
+  // 外部から値が渡された場合は、それを使用
+  const displayValue = value !== undefined ? value : searchText;
 
   const handleClear = () => {
     setSearchText('');
@@ -209,12 +213,12 @@ export default function SearchBar({ onSearch, onSearchPress, placeholder = "Sear
           style={styles.input}
           placeholder={placeholder}
           placeholderTextColor={colors.secondaryText}
-          value={searchText}
+          value={displayValue}
           onChangeText={handleChangeText}
           editable={!onSearchPress}
           pointerEvents={onSearchPress ? 'none' : 'auto'}
         />
-        {searchText.length > 0 && !onSearchPress && (
+        {displayValue.length > 0 && !onSearchPress && (
           <TouchableOpacity onPress={handleClear} style={styles.clearButton}>
             <X size={18} color={colors.secondaryText} />
           </TouchableOpacity>

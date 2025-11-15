@@ -304,10 +304,18 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       const onboardingCompleted = await AsyncStorage.getItem(STORAGE_KEYS.ONBOARDING_COMPLETED);
       const onboardingStep = await AsyncStorage.getItem(STORAGE_KEYS.ONBOARDING_STEP);
 
+      // ステップ移行処理: ステップ1でメール確認済みの場合、ステップ3に更新
+      let finalStep = onboardingStep ? parseInt(onboardingStep, 10) : 0;
+      if (finalStep === 1 && onboardingCompleted !== 'true') {
+        console.log('🔧 SignIn: Migrating step 1 → 3 (profile already completed during signup)');
+        finalStep = 3;
+        await AsyncStorage.setItem(STORAGE_KEYS.ONBOARDING_STEP, '3');
+      }
+
       set({
         isAuthenticated: true,
         hasCompletedOnboarding: onboardingCompleted === 'true',
-        onboardingStep: onboardingStep ? parseInt(onboardingStep, 10) : 0,
+        onboardingStep: finalStep,
         isLoading: false
       });
     } catch (error: any) {

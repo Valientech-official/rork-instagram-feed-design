@@ -1,19 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { ChevronDown, ChevronUp } from 'lucide-react-native';
+import { useThemeStore } from '@/store/themeStore';
 import Colors from '@/constants/colors';
 import { itemCategories, ItemCategory } from '@/mocks/itemCategories';
 
 type ItemCategoriesAccordionProps = {
   selectedItems: string[];
   onItemSelect: (itemId: string) => void;
+  onChipPress?: (keyword: string) => void;
 };
+
+// ランダムな候補チップ
+const RANDOM_CHIPS = [
+  'Tシャツ', 'デニム', 'スニーカー', 'パーカー', 'ジャケット',
+  'ワンピース', 'スカート', 'ブーツ', 'キャップ', 'バッグ'
+];
 
 export default function ItemCategoriesAccordion({
   selectedItems,
-  onItemSelect
+  onItemSelect,
+  onChipPress
 }: ItemCategoriesAccordionProps) {
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
+  const styles = createStyles(colors);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+
+  // ランダムに3つのチップを選択（コンポーネントマウント時に固定）
+  const randomChips = useMemo(() => {
+    const shuffled = [...RANDOM_CHIPS].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, 3);
+  }, []);
 
   const toggleCategory = (categoryId: string) => {
     setExpandedCategories(prev => {
@@ -50,9 +68,9 @@ export default function ItemCategoriesAccordion({
             )}
           </View>
           {expanded ? (
-            <ChevronUp size={18} color={Colors.light.secondaryText} />
+            <ChevronUp size={18} color={colors.secondaryText} />
           ) : (
-            <ChevronDown size={18} color={Colors.light.secondaryText} />
+            <ChevronDown size={18} color={colors.secondaryText} />
           )}
         </TouchableOpacity>
 
@@ -91,6 +109,17 @@ export default function ItemCategoriesAccordion({
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>アイテムカテゴリ</Text>
+        <View style={styles.chipsContainer}>
+          {randomChips.map((chip, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.chip}
+              onPress={() => onChipPress?.(chip)}
+            >
+              <Text style={styles.chipText}>{chip}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
         {selectedItems.length > 0 && (
           <Text style={styles.selectedCount}>
             {selectedItems.length}件選択中
@@ -104,26 +133,44 @@ export default function ItemCategoriesAccordion({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   container: {
-    backgroundColor: Colors.light.background,
+    backgroundColor: colors.background,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: 'column',
     paddingHorizontal: 10,
     paddingVertical: 8,
   },
   headerTitle: {
     fontSize: 12,
     fontWeight: '600',
-    color: Colors.light.text,
+    color: colors.text,
+    marginBottom: 8,
+  },
+  chipsContainer: {
+    flexDirection: 'row',
+    gap: 6,
+    marginBottom: 4,
+  },
+  chip: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+    backgroundColor: colors.shopBackground,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  chipText: {
+    fontSize: 11,
+    fontWeight: '500',
+    color: colors.primary,
   },
   selectedCount: {
     fontSize: 11,
     fontWeight: '500',
-    color: Colors.light.shopPrice,
+    color: colors.shopPrice,
+    alignSelf: 'flex-end',
   },
   categoriesList: {
     paddingHorizontal: 10,
@@ -131,7 +178,7 @@ const styles = StyleSheet.create({
   categoryContainer: {
     marginBottom: 8,
     borderRadius: 8,
-    backgroundColor: Colors.light.shopBackground,
+    backgroundColor: colors.shopBackground,
     overflow: 'hidden',
   },
   categoryHeader: {
@@ -149,10 +196,10 @@ const styles = StyleSheet.create({
   categoryTitle: {
     fontSize: 14,
     fontWeight: '600',
-    color: Colors.light.text,
+    color: colors.text,
   },
   badge: {
-    backgroundColor: Colors.light.shopPrice,
+    backgroundColor: colors.shopPrice,
     borderRadius: 10,
     paddingHorizontal: 6,
     paddingVertical: 2,
@@ -176,13 +223,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.cardBackground,
     borderWidth: 1,
-    borderColor: Colors.light.border,
+    borderColor: colors.border,
   },
   subCategoryButtonSelected: {
-    backgroundColor: Colors.light.shopPrice,
-    borderColor: Colors.light.shopPrice,
+    backgroundColor: colors.shopPrice,
+    borderColor: colors.shopPrice,
   },
   subCategoryButtonLast: {
     // Style for last item if needed
@@ -190,7 +237,7 @@ const styles = StyleSheet.create({
   subCategoryText: {
     fontSize: 12,
     fontWeight: '500',
-    color: Colors.light.text,
+    color: colors.text,
   },
   subCategoryTextSelected: {
     color: '#FFFFFF',

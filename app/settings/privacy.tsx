@@ -62,7 +62,7 @@ export default function PrivacySettingsScreen() {
       }, 500);
     } catch (error) {
       setLoading(false);
-      Alert.alert('Error', 'Failed to load privacy settings');
+      Alert.alert('エラー', 'プライバシー設定の読み込みに失敗しました');
     }
   };
 
@@ -91,7 +91,7 @@ export default function PrivacySettingsScreen() {
       }, 300);
     } catch (error) {
       setSaving(false);
-      Alert.alert('Error', 'Failed to update privacy settings');
+      Alert.alert('エラー', 'プライバシー設定の更新に失敗しました');
       // Revert on error
       setSettings(settings);
     }
@@ -112,7 +112,7 @@ export default function PrivacySettingsScreen() {
           onPress: () => onSelect(option.value),
           style: option.value === currentValue ? 'default' : 'cancel',
         })),
-        { text: 'Cancel', style: 'cancel' },
+        { text: 'キャンセル', style: 'cancel' },
       ]
     );
   };
@@ -264,7 +264,7 @@ export default function PrivacySettingsScreen() {
       >
         {/* Account Privacy */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>ACCOUNT PRIVACY</Text>
+          <Text style={styles.sectionTitle}>アカウントプライバシー</Text>
 
           <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
@@ -272,9 +272,9 @@ export default function PrivacySettingsScreen() {
                 <Lock size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
-                <Text style={styles.settingLabel}>Private Account</Text>
+                <Text style={styles.settingLabel}>非公開アカウント</Text>
                 <Text style={styles.settingDescription}>
-                  Only followers can see your posts
+                  フォロワーのみ投稿を閲覧できます
                 </Text>
               </View>
             </View>
@@ -290,17 +290,17 @@ export default function PrivacySettingsScreen() {
 
         {/* Story Privacy */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>STORY PRIVACY</Text>
+          <Text style={styles.sectionTitle}>ストーリープライバシー</Text>
 
           <TouchableOpacity
             style={styles.settingItem}
             onPress={() =>
               showOptionSelector(
-                'Who can see your stories?',
+                'ストーリーを見ることができるユーザー',
                 [
-                  { label: 'Everyone', value: 'everyone' },
-                  { label: 'Followers Only', value: 'followers' },
-                  { label: 'Close Friends', value: 'close_friends' },
+                  { label: '全員', value: 'everyone' },
+                  { label: 'フォロワーのみ', value: 'followers' },
+                  { label: '親しい友達', value: 'close_friends' },
                 ],
                 settings.storyPrivacy,
                 (value) => updateSetting('storyPrivacy', value as PrivacySettings['storyPrivacy'])
@@ -313,33 +313,33 @@ export default function PrivacySettingsScreen() {
                 <Eye size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
-                <Text style={styles.settingLabel}>Story Visibility</Text>
+                <Text style={styles.settingLabel}>ストーリー表示</Text>
                 <Text style={styles.settingDescription}>
                   {settings.storyPrivacy === 'everyone'
-                    ? 'Everyone'
+                    ? '全員'
                     : settings.storyPrivacy === 'followers'
-                    ? 'Followers Only'
-                    : 'Close Friends'}
+                    ? 'フォロワーのみ'
+                    : '親しい友達'}
                 </Text>
               </View>
             </View>
-            <Text style={styles.valueText}>Change</Text>
+            <Text style={styles.valueText}>変更</Text>
           </TouchableOpacity>
         </View>
 
         {/* Interactions */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>INTERACTIONS</Text>
+          <Text style={styles.sectionTitle}>インタラクション</Text>
 
           <TouchableOpacity
             style={styles.settingItem}
             onPress={() =>
               showOptionSelector(
-                'Who can comment on your posts?',
+                '投稿にコメントできるユーザー',
                 [
-                  { label: 'Everyone', value: 'everyone' },
-                  { label: 'Followers Only', value: 'followers' },
-                  { label: 'Turn Off Comments', value: 'off' },
+                  { label: '全員', value: 'everyone' },
+                  { label: 'フォロワーのみ', value: 'followers' },
+                  { label: 'コメントをオフにする', value: 'off' },
                 ],
                 settings.commentsControl,
                 (value) => updateSetting('commentsControl', value as PrivacySettings['commentsControl'])
@@ -352,17 +352,17 @@ export default function PrivacySettingsScreen() {
                 <MessageCircle size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
-                <Text style={styles.settingLabel}>Comment Controls</Text>
+                <Text style={styles.settingLabel}>コメント制限</Text>
                 <Text style={styles.settingDescription}>
                   {settings.commentsControl === 'everyone'
-                    ? 'Everyone'
+                    ? '全員'
                     : settings.commentsControl === 'followers'
-                    ? 'Followers Only'
-                    : 'Comments Off'}
+                    ? 'フォロワーのみ'
+                    : 'コメントオフ'}
                 </Text>
               </View>
             </View>
-            <Text style={styles.valueText}>Change</Text>
+            <Text style={styles.valueText}>変更</Text>
           </TouchableOpacity>
 
           <View style={styles.settingItem}>
@@ -371,9 +371,9 @@ export default function PrivacySettingsScreen() {
                 <Tag size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
-                <Text style={styles.settingLabel}>Tag Approval</Text>
+                <Text style={styles.settingLabel}>タグの承認</Text>
                 <Text style={styles.settingDescription}>
-                  Approve tags before they appear
+                  タグが表示される前に承認する
                 </Text>
               </View>
             </View>
@@ -389,7 +389,7 @@ export default function PrivacySettingsScreen() {
 
         {/* Activity Status */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>ACTIVITY STATUS</Text>
+          <Text style={styles.sectionTitle}>アクティビティステータス</Text>
 
           <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
@@ -397,9 +397,9 @@ export default function PrivacySettingsScreen() {
                 <Activity size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
-                <Text style={styles.settingLabel}>Show Activity Status</Text>
+                <Text style={styles.settingLabel}>アクティビティステータスを表示</Text>
                 <Text style={styles.settingDescription}>
-                  Let others see when you're active
+                  他のユーザーにオンライン状態を表示
                 </Text>
               </View>
             </View>
@@ -418,9 +418,9 @@ export default function PrivacySettingsScreen() {
                 <CheckCheck size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
-                <Text style={styles.settingLabel}>Read Receipts</Text>
+                <Text style={styles.settingLabel}>既読通知</Text>
                 <Text style={styles.settingDescription}>
-                  Show when you've read messages
+                  メッセージを読んだことを表示
                 </Text>
               </View>
             </View>
@@ -436,17 +436,17 @@ export default function PrivacySettingsScreen() {
 
         {/* Sharing */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>SHARING</Text>
+          <Text style={styles.sectionTitle}>共有</Text>
 
           <TouchableOpacity
             style={styles.settingItem}
             onPress={() =>
               showOptionSelector(
-                'Who can share your content?',
+                'コンテンツを共有できるユーザー',
                 [
-                  { label: 'Everyone', value: 'everyone' },
-                  { label: 'Followers Only', value: 'followers' },
-                  { label: 'Turn Off Sharing', value: 'off' },
+                  { label: '全員', value: 'everyone' },
+                  { label: 'フォロワーのみ', value: 'followers' },
+                  { label: '共有をオフにする', value: 'off' },
                 ],
                 settings.shareSettings,
                 (value) => updateSetting('shareSettings', value as PrivacySettings['shareSettings'])
@@ -459,39 +459,40 @@ export default function PrivacySettingsScreen() {
                 <Share2 size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
-                <Text style={styles.settingLabel}>Share Settings</Text>
+                <Text style={styles.settingLabel}>共有設定</Text>
                 <Text style={styles.settingDescription}>
                   {settings.shareSettings === 'everyone'
-                    ? 'Everyone'
+                    ? '全員'
                     : settings.shareSettings === 'followers'
-                    ? 'Followers Only'
-                    : 'Sharing Off'}
+                    ? 'フォロワーのみ'
+                    : '共有オフ'}
                 </Text>
               </View>
             </View>
-            <Text style={styles.valueText}>Change</Text>
+            <Text style={styles.valueText}>変更</Text>
           </TouchableOpacity>
         </View>
 
         {/* Quick Actions */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>MANAGE</Text>
+          <Text style={styles.sectionTitle}>管理</Text>
 
           <TouchableOpacity
             style={styles.actionItem}
             onPress={() => router.push('/settings/blocked')}
           >
-            <Text style={styles.actionLabel}>Blocked Accounts</Text>
+            <Text style={styles.actionLabel}>ブロック済みアカウント</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.actionItem}
             onPress={() => router.push('/settings/muted')}
           >
-            <Text style={styles.actionLabel}>Muted Accounts</Text>
+            <Text style={styles.actionLabel}>ミュート済みアカウント</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </View>
+      </View>
+    </>
   );
 }

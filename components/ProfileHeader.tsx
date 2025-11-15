@@ -54,7 +54,7 @@ export default function ProfileHeader({
   };
 
   const handleEditProfilePress = () => {
-    router.push('/settings/account');
+    router.push('/settings/edit-profile');
   };
 
   const styles = StyleSheet.create({

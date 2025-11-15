@@ -255,6 +255,12 @@ export default function SearchScreen() {
     });
   };
 
+  const handleChipPress = (keyword: string) => {
+    console.log('Chip pressed:', keyword);
+    setSearchText(keyword);
+    handleSearch(keyword);
+  };
+
   const handleBackFromResearch = () => {
     setShowResearchResults(false);
     setFilteredProducts([]);
@@ -557,8 +563,9 @@ export default function SearchScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <SearchBar 
-        onSearch={handleSearch} 
+      <SearchBar
+        onSearch={handleSearch}
+        value={searchText}
         onFavoritesPress={handleFavoritesPress}
         onCartPress={handleCartPress}
         onSearchPress={handleSearchPress}
@@ -610,6 +617,7 @@ export default function SearchScreen() {
             <ItemCategoriesAccordion
               selectedItems={selectedItemCategories}
               onItemSelect={handleItemCategorySelect}
+              onChipPress={handleChipPress}
             />
           </View>
 

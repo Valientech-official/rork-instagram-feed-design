@@ -87,10 +87,6 @@ export default function DressUpScreen() {
         ]}
         contentFit="cover"
       />
-      <View style={[styles.modeOverlay, { backgroundColor: item.color + '90' }]}>
-        <Text style={styles.modeName}>{item.name}</Text>
-        <Text style={styles.modeDescription}>{item.description}</Text>
-      </View>
     </TouchableOpacity>
   );
 
