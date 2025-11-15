@@ -4,11 +4,13 @@ import { useRouter } from 'expo-router';
 import { ChevronRight, Moon, Globe, Palette, Volume2 } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useThemeStore } from '@/store/themeStore';
 
 export default function SettingsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const [darkMode, setDarkMode] = React.useState(false);
+  const { theme, toggleTheme } = useThemeStore();
+  const colors = Colors[theme];
   const [soundEnabled, setSoundEnabled] = React.useState(true);
 
   const settingsSections = [
@@ -23,7 +25,7 @@ export default function SettingsScreen() {
     {
       title: '表示設定',
       items: [
-        { icon: '🌙', label: 'ダークモード', toggle: true, value: darkMode, onChange: setDarkMode },
+        { icon: '🌙', label: 'ダークモード', toggle: true, value: theme === 'dark', onChange: toggleTheme },
         { icon: '🌐', label: '言語', value: '日本語' },
         { icon: '🎨', label: 'テーマカラー', value: 'デフォルト' },
         { icon: '🔊', label: 'サウンド', toggle: true, value: soundEnabled, onChange: setSoundEnabled },
@@ -52,6 +54,75 @@ export default function SettingsScreen() {
       ],
     },
   ];
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+    },
+    backButton: {
+      fontSize: 16,
+      color: colors.primary,
+    },
+    title: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: colors.text,
+      marginLeft: 16,
+    },
+    content: {
+      flex: 1,
+    },
+    section: {
+      marginTop: 24,
+    },
+    sectionTitle: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.secondaryText,
+      marginLeft: 16,
+      marginBottom: 8,
+      textTransform: 'uppercase',
+    },
+    settingItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      backgroundColor: colors.background,
+    },
+    settingLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1,
+    },
+    settingIcon: {
+      fontSize: 20,
+      marginRight: 12,
+    },
+    settingLabel: {
+      fontSize: 16,
+      color: colors.text,
+    },
+    settingRight: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    settingValue: {
+      fontSize: 14,
+      color: colors.secondaryText,
+      marginRight: 4,
+    },
+  });
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -89,12 +160,12 @@ export default function SettingsScreen() {
                     <Switch
                       value={item.value}
                       onValueChange={item.onChange}
-                      trackColor={{ false: Colors.light.border, true: Colors.light.primary }}
+                      trackColor={{ false: colors.border, true: colors.primary }}
                     />
                   ) : item.value ? (
                     <Text style={styles.settingValue}>{item.value}</Text>
                   ) : (
-                    <ChevronRight size={20} color={Colors.light.secondaryText} />
+                    <ChevronRight size={20} color={colors.secondaryText} />
                   )}
                 </View>
               </TouchableOpacity>
@@ -105,72 +176,3 @@ export default function SettingsScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-  },
-  backButton: {
-    fontSize: 16,
-    color: Colors.light.primary,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.light.text,
-    marginLeft: 16,
-  },
-  content: {
-    flex: 1,
-  },
-  section: {
-    marginTop: 24,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.light.secondaryText,
-    marginLeft: 16,
-    marginBottom: 8,
-    textTransform: 'uppercase',
-  },
-  settingItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: Colors.light.background,
-  },
-  settingLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  settingIcon: {
-    fontSize: 20,
-    marginRight: 12,
-  },
-  settingLabel: {
-    fontSize: 16,
-    color: Colors.light.text,
-  },
-  settingRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  settingValue: {
-    fontSize: 14,
-    color: Colors.light.secondaryText,
-    marginRight: 4,
-  },
-});

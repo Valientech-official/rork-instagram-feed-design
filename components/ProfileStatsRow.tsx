@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import Colors from '@/constants/colors';
+import { useThemeStore } from '@/store/themeStore';
 
 interface ProfileStatsRowProps {
   postsCount: number;
@@ -19,6 +20,8 @@ export default function ProfileStatsRow({
   onPostsPress,
 }: ProfileStatsRowProps) {
   const router = useRouter();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
 
   const handleWavesPress = () => {
     // Navigate to waves/short videos page
@@ -34,6 +37,31 @@ export default function ProfileStatsRow({
     // Navigate to following page
     router.push('/following');
   };
+
+  const styles = StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      paddingHorizontal: 12,
+      paddingVertical: 16,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+      backgroundColor: colors.background,
+    },
+    statItem: {
+      flex: 1,
+      alignItems: 'center',
+    },
+    statNumber: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: colors.text,
+      marginBottom: 2,
+    },
+    statLabel: {
+      fontSize: 13,
+      color: colors.secondaryText,
+    },
+  });
 
   return (
     <View style={styles.container}>
@@ -75,28 +103,3 @@ export default function ProfileStatsRow({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    paddingHorizontal: 12,
-    paddingVertical: 16,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-    backgroundColor: Colors.light.background,
-  },
-  statItem: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  statNumber: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: Colors.light.text,
-    marginBottom: 2,
-  },
-  statLabel: {
-    fontSize: 13,
-    color: Colors.light.secondaryText,
-  },
-});

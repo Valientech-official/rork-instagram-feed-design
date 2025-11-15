@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 import { ChevronLeft, Bell, BellOff } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useThemeStore } from '@/store/themeStore';
 
 interface NotificationPreferences {
   posts: {
@@ -45,6 +46,8 @@ interface NotificationPreferences {
 export default function NotificationSettingsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [preferences, setPreferences] = useState<NotificationPreferences>({
@@ -143,10 +146,125 @@ export default function NotificationSettingsScreen() {
     );
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    centerContent: {
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+    },
+    backButton: {
+      padding: 4,
+    },
+    title: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    headerRight: {
+      width: 32,
+    },
+    content: {
+      flex: 1,
+    },
+    pauseAllSection: {
+      padding: 16,
+      backgroundColor: colors.background,
+    },
+    pauseAllButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 12,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.background,
+    },
+    pauseAllButtonActive: {
+      backgroundColor: colors.secondary,
+      borderColor: colors.secondary,
+    },
+    pauseAllText: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+      marginLeft: 8,
+    },
+    pauseAllTextActive: {
+      color: colors.background,
+    },
+    section: {
+      marginTop: 24,
+      paddingHorizontal: 16,
+    },
+    sectionTitle: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.secondaryText,
+      marginBottom: 12,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+    },
+    sectionDescription: {
+      fontSize: 13,
+      color: colors.secondaryText,
+      marginTop: 8,
+      marginLeft: 16,
+    },
+    settingItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: 12,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+    },
+    settingLabel: {
+      fontSize: 16,
+      color: colors.text,
+      flex: 1,
+    },
+    settingLabelDisabled: {
+      color: colors.secondaryText,
+    },
+    testButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: 16,
+      padding: 12,
+      borderRadius: 8,
+      borderWidth: 1,
+      borderColor: colors.primary,
+      backgroundColor: colors.background,
+    },
+    testButtonText: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.primary,
+      marginLeft: 8,
+    },
+    bottomPadding: {
+      height: 32,
+    },
+  });
+
   if (loading) {
     return (
       <View style={[styles.container, styles.centerContent, { paddingTop: insets.top }]}>
-        <ActivityIndicator size="large" color={Colors.light.primary} />
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
@@ -155,7 +273,7 @@ export default function NotificationSettingsScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <ChevronLeft size={24} color={Colors.light.text} />
+          <ChevronLeft size={24} color={colors.icon} />
         </TouchableOpacity>
         <Text style={styles.title}>Notifications</Text>
         <View style={styles.headerRight} />
@@ -170,9 +288,9 @@ export default function NotificationSettingsScreen() {
             disabled={saving}
           >
             {preferences.pauseAll ? (
-              <BellOff size={20} color={Colors.light.background} />
+              <BellOff size={20} color={colors.background} />
             ) : (
-              <Bell size={20} color={Colors.light.text} />
+              <Bell size={20} color={colors.icon} />
             )}
             <Text style={[styles.pauseAllText, preferences.pauseAll && styles.pauseAllTextActive]}>
               {preferences.pauseAll ? 'Notifications Paused' : 'Pause All Notifications'}
@@ -288,7 +406,7 @@ export default function NotificationSettingsScreen() {
           onPress={handleTestNotification}
           disabled={saving}
         >
-          <Bell size={18} color={Colors.light.primary} />
+          <Bell size={18} color={colors.primary} />
           <Text style={styles.testButtonText}>Send Test Notification</Text>
         </TouchableOpacity>
 
@@ -313,124 +431,10 @@ function SettingItem({ label, value, onChange, disabled }: SettingItemProps) {
         value={value}
         onValueChange={onChange}
         disabled={disabled}
-        trackColor={{ false: Colors.light.border, true: Colors.light.primary }}
-        thumbColor={Colors.light.background}
+        trackColor={{ false: Colors[useThemeStore.getState().theme].border, true: Colors[useThemeStore.getState().theme].primary }}
+        thumbColor={Colors[useThemeStore.getState().theme].background}
       />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  centerContent: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-  },
-  backButton: {
-    padding: 4,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: Colors.light.text,
-  },
-  headerRight: {
-    width: 32,
-  },
-  content: {
-    flex: 1,
-  },
-  pauseAllSection: {
-    padding: 16,
-    backgroundColor: Colors.light.background,
-  },
-  pauseAllButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: Colors.light.border,
-    backgroundColor: Colors.light.background,
-  },
-  pauseAllButtonActive: {
-    backgroundColor: Colors.light.secondary,
-    borderColor: Colors.light.secondary,
-  },
-  pauseAllText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.light.text,
-    marginLeft: 8,
-  },
-  pauseAllTextActive: {
-    color: Colors.light.background,
-  },
-  section: {
-    marginTop: 24,
-    paddingHorizontal: 16,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.light.secondaryText,
-    marginBottom: 12,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  sectionDescription: {
-    fontSize: 13,
-    color: Colors.light.secondaryText,
-    marginTop: 8,
-    marginLeft: 16,
-  },
-  settingItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 12,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-  },
-  settingLabel: {
-    fontSize: 16,
-    color: Colors.light.text,
-    flex: 1,
-  },
-  settingLabelDisabled: {
-    color: Colors.light.secondaryText,
-  },
-  testButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: 16,
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: Colors.light.primary,
-    backgroundColor: Colors.light.background,
-  },
-  testButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.light.primary,
-    marginLeft: 8,
-  },
-  bottomPadding: {
-    height: 32,
-  },
-});

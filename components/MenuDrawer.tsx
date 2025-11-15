@@ -11,7 +11,6 @@ import {
   Switch,
 } from 'react-native';
 import {
-  User,
   Settings,
   Bell,
   Shield,
@@ -27,12 +26,15 @@ import {
   Mail,
   Phone,
   Database,
+  UserCog,
+  UserCircle,
 } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { Image } from 'expo-image';
 import Colors from '@/constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuthStore } from '@/store/authStore';
+import { useThemeStore } from '@/store/themeStore';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const DRAWER_WIDTH = SCREEN_WIDTH * 0.8;
@@ -57,16 +59,18 @@ interface MenuItem {
 interface MenuSection {
   title?: string;
   items: MenuItem[];
+  adminOnly?: boolean; // 管理者のみ表示
 }
 
 export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const { logout } = useAuthStore();
+  const { signOut, user } = useAuthStore();
+  const { theme, toggleTheme } = useThemeStore();
+  const colors = Colors[theme];
   const translateX = useRef(new Animated.Value(-DRAWER_WIDTH)).current;
   const opacity = useRef(new Animated.Value(0)).current;
 
-  const [darkMode, setDarkMode] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
 
   useEffect(() => {
@@ -104,25 +108,38 @@ export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
       title: 'アカウント',
       items: [
         {
-          id: 'profile',
-          icon: User,
-          title: 'プロフィール編集',
-          subtitle: '@username',
-          route: '/profile',
+          id: 'account',
+          icon: Settings,
+          title: 'アカウント設定',
+          subtitle: user?.handle ? `@${user.handle}` : user?.username ? `@${user.username}` : '@username',
+          route: '/settings/account',
         },
         {
           id: 'email',
           icon: Mail,
           title: 'メールアドレス',
-          subtitle: 'user@example.com',
+          subtitle: user?.email || '未設定',
         },
         {
           id: 'phone',
           icon: Phone,
           title: '電話番号',
-          subtitle: '設定なし',
+          subtitle: user?.phoneNumber || '未設定',
         },
       ],
+    },
+    {
+      title: '管理',
+      items: [
+        {
+          id: 'admin-panel',
+          icon: UserCog,
+          title: '管理者パネル',
+          subtitle: 'ユーザー管理・モデレーション',
+          route: '/admin',
+        },
+      ],
+      adminOnly: true, // 管理者のみ表示
     },
     {
       title: '表示設定',
@@ -132,8 +149,8 @@ export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
           icon: Moon,
           title: 'ダークモード',
           toggle: true,
-          value: darkMode,
-          onChange: setDarkMode,
+          value: theme === 'dark',
+          onChange: toggleTheme,
         },
         {
           id: 'language',
@@ -155,18 +172,11 @@ export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
       title: 'プライバシー・セキュリティ',
       items: [
         {
-          id: 'notification',
+          id: 'notifications',
           icon: Bell,
           title: '通知設定',
           subtitle: 'プッシュ通知の管理',
-          route: '/settings/notification',
-        },
-        {
-          id: 'security',
-          icon: Shield,
-          title: 'セキュリティ',
-          subtitle: 'パスワード・認証設定',
-          route: '/settings/security',
+          route: '/settings/notifications',
         },
         {
           id: 'privacy',
@@ -175,17 +185,25 @@ export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
           subtitle: 'アカウント公開設定',
           route: '/settings/privacy',
         },
+        {
+          id: 'blocked',
+          icon: Shield,
+          title: 'ブロック済みアカウント',
+          subtitle: 'ブロックしたユーザー管理',
+          route: '/settings/blocked',
+        },
+        {
+          id: 'muted',
+          icon: Volume2,
+          title: 'ミュート済みアカウント',
+          subtitle: 'ミュートしたユーザー管理',
+          route: '/settings/muted',
+        },
       ],
     },
     {
-      title: 'その他',
+      title: 'サポート & 法的情報',
       items: [
-        {
-          id: 'data',
-          icon: Database,
-          title: 'データ使用量',
-          subtitle: '1.2 GB',
-        },
         {
           id: 'help',
           icon: HelpCircle,
@@ -197,8 +215,19 @@ export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
           id: 'terms',
           icon: FileText,
           title: '利用規約',
-          subtitle: '利用規約・プライバシーポリシー',
-          action: () => console.log('Open terms'),
+          route: '/settings/terms',
+        },
+        {
+          id: 'privacy-policy',
+          icon: Lock,
+          title: 'プライバシーポリシー',
+          route: '/settings/privacy-policy',
+        },
+        {
+          id: 'data',
+          icon: Database,
+          title: 'データ使用量',
+          subtitle: '1.2 GB',
         },
       ],
     },
@@ -209,7 +238,7 @@ export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
           icon: LogOut,
           title: 'ログアウト',
           action: async () => {
-            await logout();
+            await signOut();
             router.replace('/(auth)/login');
           },
         },
@@ -227,6 +256,121 @@ export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
       }
     }, 300);
   };
+
+  const styles = StyleSheet.create({
+    overlay: {
+      ...StyleSheet.absoluteFillObject,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    drawer: {
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      bottom: 0,
+      width: DRAWER_WIDTH,
+      backgroundColor: colors.background,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 2,
+        height: 0,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 10,
+      elevation: 5,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 20,
+      paddingVertical: 20,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+    },
+    userInfo: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1,
+    },
+    avatar: {
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+    },
+    avatarPlaceholder: {
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+      backgroundColor: colors.shopBackground,
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderWidth: 0.5,
+      borderColor: colors.border,
+    },
+    userText: {
+      marginLeft: 12,
+    },
+    userName: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    userHandle: {
+      fontSize: 14,
+      color: colors.secondaryText,
+    },
+    closeButton: {
+      padding: 8,
+    },
+    menuContainer: {
+      flex: 1,
+    },
+    sectionTitle: {
+      fontSize: 12,
+      fontWeight: '600',
+      color: colors.secondaryText,
+      marginLeft: 20,
+      marginTop: 20,
+      marginBottom: 8,
+      textTransform: 'uppercase',
+    },
+    sectionSeparator: {
+      height: 8,
+    },
+    menuItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 20,
+      paddingVertical: 16,
+    },
+    menuTextContainer: {
+      flex: 1,
+      marginLeft: 16,
+    },
+    menuTitle: {
+      fontSize: 16,
+      color: colors.text,
+    },
+    menuSubtitle: {
+      fontSize: 12,
+      color: colors.secondaryText,
+      marginTop: 2,
+    },
+    logoutItem: {
+      marginTop: 8,
+    },
+    logoutText: {
+      color: colors.shopSale,
+    },
+    footer: {
+      padding: 20,
+      alignItems: 'center',
+    },
+    version: {
+      fontSize: 12,
+      color: colors.secondaryText,
+    },
+  });
 
   if (!visible) return null;
 
@@ -254,22 +398,41 @@ export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
       >
         <View style={styles.header}>
           <View style={styles.userInfo}>
-            <Image
-              source={{ uri: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop' }}
-              style={styles.avatar}
-            />
+            {user?.avatar ? (
+              <Image
+                source={{ uri: user.avatar }}
+                style={styles.avatar}
+              />
+            ) : (
+              <View style={styles.avatarPlaceholder}>
+                <UserCircle size={50} color={colors.icon} />
+              </View>
+            )}
             <View style={styles.userText}>
-              <Text style={styles.userName}>ユーザー名</Text>
-              <Text style={styles.userHandle}>@username</Text>
+              <Text style={styles.userName}>
+                {user?.name || user?.username || 'ユーザー名'}
+              </Text>
+              <Text style={styles.userHandle}>
+                @{user?.handle || user?.username || 'username'}
+              </Text>
             </View>
           </View>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <X size={24} color={Colors.light.text} />
+            <X size={24} color={colors.text} />
           </TouchableOpacity>
         </View>
 
         <ScrollView style={styles.menuContainer} showsVerticalScrollIndicator={false}>
-          {menuSections.map((section, sectionIndex) => (
+          {menuSections
+            .filter(section => {
+              // 開発中: 全員に管理者メニューを表示（テスト用）
+              // 本番: user?.accountType === 'admin' の場合のみ表示
+              // if (section.adminOnly && user?.accountType !== 'admin') {
+              //   return false;
+              // }
+              return true; // 開発中は全セクション表示
+            })
+            .map((section, sectionIndex) => (
             <View key={sectionIndex}>
               {section.title && (
                 <Text style={styles.sectionTitle}>{section.title}</Text>
@@ -288,7 +451,7 @@ export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
                   >
                     <Icon
                       size={24}
-                      color={isLogout ? Colors.light.shopSale : Colors.light.icon}
+                      color={isLogout ? colors.shopSale : colors.icon}
                     />
                     <View style={styles.menuTextContainer}>
                       <Text style={[styles.menuTitle, isLogout && styles.logoutText]}>
@@ -302,10 +465,10 @@ export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
                       <Switch
                         value={item.value}
                         onValueChange={item.onChange}
-                        trackColor={{ false: Colors.light.border, true: Colors.light.primary }}
+                        trackColor={{ false: colors.border, true: colors.primary }}
                       />
                     ) : !isLogout && (
-                      <ChevronRight size={20} color={Colors.light.secondaryText} />
+                      <ChevronRight size={20} color={colors.secondaryText} />
                     )}
                   </TouchableOpacity>
                 );
@@ -324,108 +487,3 @@ export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  drawer: {
-    position: 'absolute',
-    left: 0,
-    top: 0,
-    bottom: 0,
-    width: DRAWER_WIDTH,
-    backgroundColor: Colors.light.background,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 2,
-      height: 0,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 10,
-    elevation: 5,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-  },
-  userInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-  },
-  userText: {
-    marginLeft: 12,
-  },
-  userName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.light.text,
-  },
-  userHandle: {
-    fontSize: 14,
-    color: Colors.light.secondaryText,
-  },
-  closeButton: {
-    padding: 8,
-  },
-  menuContainer: {
-    flex: 1,
-  },
-  sectionTitle: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: Colors.light.secondaryText,
-    marginLeft: 20,
-    marginTop: 20,
-    marginBottom: 8,
-    textTransform: 'uppercase',
-  },
-  sectionSeparator: {
-    height: 8,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-  },
-  menuTextContainer: {
-    flex: 1,
-    marginLeft: 16,
-  },
-  menuTitle: {
-    fontSize: 16,
-    color: Colors.light.text,
-  },
-  menuSubtitle: {
-    fontSize: 12,
-    color: Colors.light.secondaryText,
-    marginTop: 2,
-  },
-  logoutItem: {
-    marginTop: 8,
-  },
-  logoutText: {
-    color: Colors.light.shopSale,
-  },
-  footer: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  version: {
-    fontSize: 12,
-    color: Colors.light.secondaryText,
-  },
-});

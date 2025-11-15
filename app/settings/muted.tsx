@@ -16,6 +16,7 @@ import { ChevronLeft, VolumeX, Search } from 'lucide-react-native';
 import { Image } from 'expo-image';
 import Colors from '@/constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useThemeStore } from '@/store/themeStore';
 import * as Haptics from 'expo-haptics';
 
 interface MutedUser {
@@ -32,6 +33,8 @@ type TabType = 'accounts' | 'stories';
 export default function MutedUsersScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [mutedUsers, setMutedUsers] = useState<MutedUser[]>([]);
@@ -167,9 +170,163 @@ export default function MutedUsersScreen() {
         user.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+      backgroundColor: colors.background,
+    },
+    title: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    tabContainer: {
+      flexDirection: 'row',
+      backgroundColor: colors.background,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+    },
+    tab: {
+      flex: 1,
+      paddingVertical: 12,
+      alignItems: 'center',
+      borderBottomWidth: 2,
+      borderBottomColor: 'transparent',
+    },
+    tabActive: {
+      borderBottomColor: colors.primary,
+    },
+    tabText: {
+      fontSize: 15,
+      fontWeight: '500',
+      color: colors.secondaryText,
+    },
+    tabTextActive: {
+      color: colors.text,
+      fontWeight: '600',
+    },
+    searchContainer: {
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      backgroundColor: colors.background,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+    },
+    searchInputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.cardBackground,
+      borderRadius: 10,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+    },
+    searchInput: {
+      flex: 1,
+      fontSize: 16,
+      color: colors.text,
+      marginLeft: 8,
+    },
+    clearButton: {
+      fontSize: 14,
+      color: colors.primary,
+      fontWeight: '500',
+    },
+    listContent: {
+      paddingVertical: 8,
+    },
+    listContentEmpty: {
+      flex: 1,
+    },
+    userItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      backgroundColor: colors.background,
+    },
+    userLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1,
+      marginRight: 12,
+    },
+    avatar: {
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+      backgroundColor: colors.cardBackground,
+    },
+    userInfo: {
+      flex: 1,
+      marginLeft: 12,
+    },
+    userName: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+      marginBottom: 2,
+    },
+    userUsername: {
+      fontSize: 14,
+      color: colors.secondaryText,
+    },
+    unmuteButton: {
+      paddingHorizontal: 20,
+      paddingVertical: 8,
+      borderRadius: 6,
+      borderWidth: 1,
+      borderColor: colors.primary,
+      minWidth: 80,
+      alignItems: 'center',
+    },
+    unmuteButtonDisabled: {
+      opacity: 0.5,
+    },
+    unmuteButtonText: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.primary,
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 24,
+    },
+    emptyTitle: {
+      fontSize: 20,
+      fontWeight: '600',
+      color: colors.text,
+      marginTop: 16,
+      marginBottom: 8,
+    },
+    emptyText: {
+      fontSize: 16,
+      color: colors.secondaryText,
+      textAlign: 'center',
+      lineHeight: 24,
+    },
+  });
+
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
-      <VolumeX size={64} color={Colors.light.secondaryText} />
+      <VolumeX size={64} color={colors.secondaryText} />
       <Text style={styles.emptyTitle}>
         No Muted {activeTab === 'accounts' ? 'Accounts' : 'Stories'}
       </Text>
@@ -183,7 +340,7 @@ export default function MutedUsersScreen() {
 
   const renderSearchEmpty = () => (
     <View style={styles.emptyContainer}>
-      <Search size={48} color={Colors.light.secondaryText} />
+      <Search size={48} color={colors.secondaryText} />
       <Text style={styles.emptyTitle}>No Results</Text>
       <Text style={styles.emptyText}>
         No muted {activeTab === 'accounts' ? 'accounts' : 'stories'} found matching "{searchQuery}"
@@ -218,7 +375,7 @@ export default function MutedUsersScreen() {
           disabled={isUnmuting}
         >
           {isUnmuting ? (
-            <ActivityIndicator size="small" color={Colors.light.primary} />
+            <ActivityIndicator size="small" color={colors.primary} />
           ) : (
             <Text style={styles.unmuteButtonText}>Unmute</Text>
           )}
@@ -232,13 +389,13 @@ export default function MutedUsersScreen() {
       <View style={[styles.container, { paddingTop: insets.top }]}>
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBack}>
-            <ChevronLeft size={24} color={Colors.light.text} />
+            <ChevronLeft size={24} color={colors.text} />
           </TouchableOpacity>
           <Text style={styles.title}>Muted Accounts</Text>
           <View style={{ width: 24 }} />
         </View>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={Colors.light.primary} />
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
       </View>
     );
@@ -248,7 +405,7 @@ export default function MutedUsersScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBack}>
-          <ChevronLeft size={24} color={Colors.light.text} />
+          <ChevronLeft size={24} color={colors.text} />
         </TouchableOpacity>
         <Text style={styles.title}>Muted Accounts</Text>
         <View style={{ width: 24 }} />
@@ -278,11 +435,11 @@ export default function MutedUsersScreen() {
       {filteredUsers.length > 0 && (
         <View style={styles.searchContainer}>
           <View style={styles.searchInputContainer}>
-            <Search size={18} color={Colors.light.secondaryText} />
+            <Search size={18} color={colors.secondaryText} />
             <TextInput
               style={styles.searchInput}
               placeholder={`Search muted ${activeTab}...`}
-              placeholderTextColor={Colors.light.secondaryText}
+              placeholderTextColor={colors.secondaryText}
               value={searchQuery}
               onChangeText={setSearchQuery}
             />
@@ -308,8 +465,8 @@ export default function MutedUsersScreen() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={handleRefresh}
-            tintColor={Colors.light.primary}
-            colors={[Colors.light.primary]}
+            tintColor={colors.primary}
+            colors={[colors.primary]}
           />
         }
         showsVerticalScrollIndicator={false}
@@ -317,157 +474,3 @@ export default function MutedUsersScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-    backgroundColor: Colors.light.background,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: Colors.light.text,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  tabContainer: {
-    flexDirection: 'row',
-    backgroundColor: Colors.light.background,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 12,
-    alignItems: 'center',
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-  },
-  tabActive: {
-    borderBottomColor: Colors.light.primary,
-  },
-  tabText: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: Colors.light.secondaryText,
-  },
-  tabTextActive: {
-    color: Colors.light.text,
-    fontWeight: '600',
-  },
-  searchContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: Colors.light.background,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-  },
-  searchInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.light.cardBackground,
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-    color: Colors.light.text,
-    marginLeft: 8,
-  },
-  clearButton: {
-    fontSize: 14,
-    color: Colors.light.primary,
-    fontWeight: '500',
-  },
-  listContent: {
-    paddingVertical: 8,
-  },
-  listContentEmpty: {
-    flex: 1,
-  },
-  userItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: Colors.light.background,
-  },
-  userLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    marginRight: 12,
-  },
-  avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: Colors.light.cardBackground,
-  },
-  userInfo: {
-    flex: 1,
-    marginLeft: 12,
-  },
-  userName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.light.text,
-    marginBottom: 2,
-  },
-  userUsername: {
-    fontSize: 14,
-    color: Colors.light.secondaryText,
-  },
-  unmuteButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: Colors.light.primary,
-    minWidth: 80,
-    alignItems: 'center',
-  },
-  unmuteButtonDisabled: {
-    opacity: 0.5,
-  },
-  unmuteButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.light.primary,
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-  },
-  emptyTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: Colors.light.text,
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  emptyText: {
-    fontSize: 16,
-    color: Colors.light.secondaryText,
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-});

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity, Text, Platform, Alert } from 'react-native';
 import { Search, X } from 'lucide-react-native';
 import Colors from '@/constants/colors';
+import { useThemeStore } from '@/store/themeStore';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
 
@@ -13,6 +14,8 @@ interface SearchBarProps {
 
 export default function SearchBar({ onSearch, onSearchPress, placeholder = "Search..." }: SearchBarProps) {
   const [searchText, setSearchText] = useState('');
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
 
   const handleClear = () => {
     setSearchText('');
@@ -114,14 +117,98 @@ export default function SearchBar({ onSearch, onSearchPress, placeholder = "Sear
   };
 
 
+  const styles = StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      backgroundColor: colors.background,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+    },
+    searchContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.shopBackground,
+      borderRadius: 10,
+      paddingHorizontal: 12,
+      height: 40,
+      marginRight: 12,
+    },
+    searchIcon: {
+      marginRight: 8,
+    },
+    input: {
+      flex: 1,
+      fontSize: 16,
+      color: colors.text,
+      height: '100%',
+    },
+    clearButton: {
+      padding: 4,
+    },
+    notebookButton: {
+      padding: 8,
+      borderRadius: 8,
+      marginRight: 8,
+    },
+    favoriteButton: {
+      position: 'relative',
+      padding: 8,
+      borderRadius: 8,
+      marginRight: 8,
+    },
+    favoriteBadge: {
+      position: 'absolute',
+      top: 6,
+      right: 6,
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: colors.background,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    favoriteBadgeInner: {
+      width: 6,
+      height: 6,
+      borderRadius: 3,
+      backgroundColor: colors.shopSale,
+    },
+    cartButton: {
+      position: 'relative',
+      padding: 8,
+      borderRadius: 8,
+    },
+    cartBadge: {
+      position: 'absolute',
+      top: 4,
+      right: 4,
+      backgroundColor: colors.shopAccent,
+      borderRadius: 10,
+      minWidth: 16,
+      height: 16,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: 4,
+    },
+    cartBadgeText: {
+      color: 'white',
+      fontSize: 10,
+      fontWeight: '600',
+    },
+  });
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.searchContainer} onPress={handleSearchPress}>
-        <Search size={18} color={Colors.light.secondaryText} style={styles.searchIcon} />
+        <Search size={18} color={colors.secondaryText} style={styles.searchIcon} />
         <TextInput
           style={styles.input}
           placeholder={placeholder}
-          placeholderTextColor={Colors.light.secondaryText}
+          placeholderTextColor={colors.secondaryText}
           value={searchText}
           onChangeText={handleChangeText}
           editable={!onSearchPress}
@@ -129,96 +216,10 @@ export default function SearchBar({ onSearch, onSearchPress, placeholder = "Sear
         />
         {searchText.length > 0 && !onSearchPress && (
           <TouchableOpacity onPress={handleClear} style={styles.clearButton}>
-            <X size={18} color={Colors.light.secondaryText} />
+            <X size={18} color={colors.secondaryText} />
           </TouchableOpacity>
         )}
       </TouchableOpacity>
-      
-
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: Colors.light.background,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-  },
-  searchContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.light.shopBackground,
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    height: 40,
-    marginRight: 12,
-  },
-  searchIcon: {
-    marginRight: 8,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    color: Colors.light.text,
-    height: '100%',
-  },
-  clearButton: {
-    padding: 4,
-  },
-  notebookButton: {
-    padding: 8,
-    borderRadius: 8,
-    marginRight: 8,
-  },
-  favoriteButton: {
-    position: 'relative',
-    padding: 8,
-    borderRadius: 8,
-    marginRight: 8,
-  },
-  favoriteBadge: {
-    position: 'absolute',
-    top: 6,
-    right: 6,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: Colors.light.background,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  favoriteBadgeInner: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: Colors.light.shopSale,
-  },
-  cartButton: {
-    position: 'relative',
-    padding: 8,
-    borderRadius: 8,
-  },
-  cartBadge: {
-    position: 'absolute',
-    top: 4,
-    right: 4,
-    backgroundColor: Colors.light.shopAccent,
-    borderRadius: 10,
-    minWidth: 16,
-    height: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 4,
-  },
-  cartBadgeText: {
-    color: 'white',
-    fontSize: 10,
-    fontWeight: '600',
-  },
-});

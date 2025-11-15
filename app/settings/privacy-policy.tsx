@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 import { ChevronLeft, Share2, Printer, Shield } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useThemeStore } from '@/store/themeStore';
 
 interface PrivacySection {
   id: string;
@@ -23,6 +24,8 @@ interface PrivacySection {
 export default function PrivacyPolicyScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState('');
   const [sections, setSections] = useState<PrivacySection[]>([]);
@@ -141,10 +144,142 @@ export default function PrivacyPolicyScreen() {
     );
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    centerContent: {
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+    },
+    backButton: {
+      padding: 4,
+    },
+    title: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: colors.text,
+      flex: 1,
+      marginLeft: 12,
+    },
+    headerActions: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    iconButton: {
+      padding: 8,
+      marginLeft: 8,
+    },
+    content: {
+      flex: 1,
+    },
+    lastUpdated: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 16,
+      backgroundColor: colors.primaryLight,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+    },
+    lastUpdatedText: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.primary,
+      marginLeft: 8,
+    },
+    complianceNotice: {
+      padding: 16,
+      backgroundColor: colors.cardBackground,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+    },
+    complianceTitle: {
+      fontSize: 16,
+      fontWeight: '700',
+      color: colors.text,
+      marginBottom: 8,
+    },
+    complianceText: {
+      fontSize: 14,
+      lineHeight: 20,
+      color: colors.secondaryText,
+    },
+    section: {
+      flexDirection: 'row',
+      padding: 16,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+    },
+    sectionNumber: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+      marginRight: 8,
+      marginTop: 2,
+    },
+    sectionContent: {
+      flex: 1,
+    },
+    sectionTitle: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: colors.text,
+      marginBottom: 12,
+    },
+    sectionText: {
+      fontSize: 15,
+      lineHeight: 24,
+      color: colors.secondaryText,
+    },
+    footer: {
+      padding: 16,
+      backgroundColor: colors.cardBackground,
+      marginTop: 16,
+    },
+    footerText: {
+      fontSize: 14,
+      lineHeight: 20,
+      color: colors.secondaryText,
+      fontStyle: 'italic',
+      textAlign: 'center',
+    },
+    bottomPadding: {
+      height: 32,
+    },
+    acceptContainer: {
+      padding: 16,
+      borderTopWidth: 0.5,
+      borderTopColor: colors.border,
+      backgroundColor: colors.background,
+    },
+    acceptButton: {
+      backgroundColor: colors.primary,
+      paddingVertical: 16,
+      borderRadius: 12,
+      alignItems: 'center',
+    },
+    acceptButtonText: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.background,
+    },
+  });
+
   if (loading) {
     return (
       <View style={[styles.container, styles.centerContent, { paddingTop: insets.top }]}>
-        <ActivityIndicator size="large" color={Colors.light.primary} />
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
@@ -153,15 +288,15 @@ export default function PrivacyPolicyScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <ChevronLeft size={24} color={Colors.light.text} />
+          <ChevronLeft size={24} color={colors.text} />
         </TouchableOpacity>
         <Text style={styles.title}>Privacy Policy</Text>
         <View style={styles.headerActions}>
           <TouchableOpacity onPress={handleShare} style={styles.iconButton}>
-            <Share2 size={20} color={Colors.light.text} />
+            <Share2 size={20} color={colors.text} />
           </TouchableOpacity>
           <TouchableOpacity onPress={handlePrint} style={styles.iconButton}>
-            <Printer size={20} color={Colors.light.text} />
+            <Printer size={20} color={colors.text} />
           </TouchableOpacity>
         </View>
       </View>
@@ -169,7 +304,7 @@ export default function PrivacyPolicyScreen() {
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Last Updated */}
         <View style={styles.lastUpdated}>
-          <Shield size={20} color={Colors.light.primary} />
+          <Shield size={20} color={colors.primary} />
           <Text style={styles.lastUpdatedText}>Last Updated: {lastUpdated}</Text>
         </View>
 
@@ -217,135 +352,3 @@ export default function PrivacyPolicyScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  centerContent: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-  },
-  backButton: {
-    padding: 4,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: Colors.light.text,
-    flex: 1,
-    marginLeft: 12,
-  },
-  headerActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconButton: {
-    padding: 8,
-    marginLeft: 8,
-  },
-  content: {
-    flex: 1,
-  },
-  lastUpdated: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 16,
-    backgroundColor: Colors.light.primaryLight,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-  },
-  lastUpdatedText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.light.primary,
-    marginLeft: 8,
-  },
-  complianceNotice: {
-    padding: 16,
-    backgroundColor: Colors.light.cardBackground,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-  },
-  complianceTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: Colors.light.text,
-    marginBottom: 8,
-  },
-  complianceText: {
-    fontSize: 14,
-    lineHeight: 20,
-    color: Colors.light.secondaryText,
-  },
-  section: {
-    flexDirection: 'row',
-    padding: 16,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-  },
-  sectionNumber: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.light.text,
-    marginRight: 8,
-    marginTop: 2,
-  },
-  sectionContent: {
-    flex: 1,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: Colors.light.text,
-    marginBottom: 12,
-  },
-  sectionText: {
-    fontSize: 15,
-    lineHeight: 24,
-    color: Colors.light.secondaryText,
-  },
-  footer: {
-    padding: 16,
-    backgroundColor: Colors.light.cardBackground,
-    marginTop: 16,
-  },
-  footerText: {
-    fontSize: 14,
-    lineHeight: 20,
-    color: Colors.light.secondaryText,
-    fontStyle: 'italic',
-    textAlign: 'center',
-  },
-  bottomPadding: {
-    height: 32,
-  },
-  acceptContainer: {
-    padding: 16,
-    borderTopWidth: 0.5,
-    borderTopColor: Colors.light.border,
-    backgroundColor: Colors.light.background,
-  },
-  acceptButton: {
-    backgroundColor: Colors.light.primary,
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  acceptButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.light.background,
-  },
-});

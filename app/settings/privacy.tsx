@@ -15,6 +15,7 @@ import { ChevronLeft, Lock, Eye, MessageCircle, Tag, Activity, CheckCheck, Share
 import Colors from '@/constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import { useThemeStore } from '@/store/themeStore';
 
 interface PrivacySettings {
   accountPrivate: boolean;
@@ -29,6 +30,8 @@ interface PrivacySettings {
 export default function PrivacySettingsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState<PrivacySettings>({
@@ -120,18 +123,119 @@ export default function PrivacySettingsScreen() {
     router.back();
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+      backgroundColor: colors.background,
+    },
+    title: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    content: {
+      flex: 1,
+    },
+    scrollContent: {
+      paddingBottom: 32,
+    },
+    section: {
+      marginTop: 24,
+    },
+    sectionTitle: {
+      fontSize: 13,
+      fontWeight: '600',
+      color: colors.secondaryText,
+      marginLeft: 16,
+      marginBottom: 8,
+      letterSpacing: 0.5,
+    },
+    settingItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      backgroundColor: colors.background,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+    },
+    settingLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1,
+    },
+    iconContainer: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: colors.primaryLight,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: 12,
+    },
+    settingTextContainer: {
+      flex: 1,
+    },
+    settingLabel: {
+      fontSize: 16,
+      fontWeight: '500',
+      color: colors.text,
+      marginBottom: 2,
+    },
+    settingDescription: {
+      fontSize: 13,
+      color: colors.secondaryText,
+    },
+    valueText: {
+      fontSize: 14,
+      color: colors.primary,
+      fontWeight: '500',
+    },
+    actionItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingVertical: 14,
+      backgroundColor: colors.background,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+    },
+    actionLabel: {
+      fontSize: 16,
+      color: colors.primary,
+      fontWeight: '500',
+    },
+  });
+
   if (loading) {
     return (
       <View style={[styles.container, { paddingTop: insets.top }]}>
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBack}>
-            <ChevronLeft size={24} color={Colors.light.text} />
+            <ChevronLeft size={24} color={colors.text} />
           </TouchableOpacity>
           <Text style={styles.title}>Privacy</Text>
           <View style={{ width: 24 }} />
         </View>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={Colors.light.primary} />
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
       </View>
     );
@@ -141,7 +245,7 @@ export default function PrivacySettingsScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBack}>
-          <ChevronLeft size={24} color={Colors.light.text} />
+          <ChevronLeft size={24} color={colors.text} />
         </TouchableOpacity>
         <Text style={styles.title}>Privacy</Text>
         <View style={{ width: 24 }} />
@@ -159,7 +263,7 @@ export default function PrivacySettingsScreen() {
           <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
               <View style={styles.iconContainer}>
-                <Lock size={20} color={Colors.light.primary} />
+                <Lock size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
                 <Text style={styles.settingLabel}>Private Account</Text>
@@ -171,7 +275,7 @@ export default function PrivacySettingsScreen() {
             <Switch
               value={settings.accountPrivate}
               onValueChange={(value) => updateSetting('accountPrivate', value)}
-              trackColor={{ false: Colors.light.border, true: Colors.light.primary }}
+              trackColor={{ false: colors.border, true: colors.primary }}
               thumbColor="white"
               disabled={saving}
             />
@@ -200,7 +304,7 @@ export default function PrivacySettingsScreen() {
           >
             <View style={styles.settingLeft}>
               <View style={styles.iconContainer}>
-                <Eye size={20} color={Colors.light.primary} />
+                <Eye size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
                 <Text style={styles.settingLabel}>Story Visibility</Text>
@@ -239,7 +343,7 @@ export default function PrivacySettingsScreen() {
           >
             <View style={styles.settingLeft}>
               <View style={styles.iconContainer}>
-                <MessageCircle size={20} color={Colors.light.primary} />
+                <MessageCircle size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
                 <Text style={styles.settingLabel}>Comment Controls</Text>
@@ -258,7 +362,7 @@ export default function PrivacySettingsScreen() {
           <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
               <View style={styles.iconContainer}>
-                <Tag size={20} color={Colors.light.primary} />
+                <Tag size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
                 <Text style={styles.settingLabel}>Tag Approval</Text>
@@ -270,7 +374,7 @@ export default function PrivacySettingsScreen() {
             <Switch
               value={settings.tagApproval}
               onValueChange={(value) => updateSetting('tagApproval', value)}
-              trackColor={{ false: Colors.light.border, true: Colors.light.primary }}
+              trackColor={{ false: colors.border, true: colors.primary }}
               thumbColor="white"
               disabled={saving}
             />
@@ -284,7 +388,7 @@ export default function PrivacySettingsScreen() {
           <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
               <View style={styles.iconContainer}>
-                <Activity size={20} color={Colors.light.primary} />
+                <Activity size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
                 <Text style={styles.settingLabel}>Show Activity Status</Text>
@@ -296,7 +400,7 @@ export default function PrivacySettingsScreen() {
             <Switch
               value={settings.activityStatus}
               onValueChange={(value) => updateSetting('activityStatus', value)}
-              trackColor={{ false: Colors.light.border, true: Colors.light.primary }}
+              trackColor={{ false: colors.border, true: colors.primary }}
               thumbColor="white"
               disabled={saving}
             />
@@ -305,7 +409,7 @@ export default function PrivacySettingsScreen() {
           <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
               <View style={styles.iconContainer}>
-                <CheckCheck size={20} color={Colors.light.primary} />
+                <CheckCheck size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
                 <Text style={styles.settingLabel}>Read Receipts</Text>
@@ -317,7 +421,7 @@ export default function PrivacySettingsScreen() {
             <Switch
               value={settings.readReceipts}
               onValueChange={(value) => updateSetting('readReceipts', value)}
-              trackColor={{ false: Colors.light.border, true: Colors.light.primary }}
+              trackColor={{ false: colors.border, true: colors.primary }}
               thumbColor="white"
               disabled={saving}
             />
@@ -346,7 +450,7 @@ export default function PrivacySettingsScreen() {
           >
             <View style={styles.settingLeft}>
               <View style={styles.iconContainer}>
-                <Share2 size={20} color={Colors.light.primary} />
+                <Share2 size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
                 <Text style={styles.settingLabel}>Share Settings</Text>
@@ -385,104 +489,3 @@ export default function PrivacySettingsScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-    backgroundColor: Colors.light.background,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: Colors.light.text,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  content: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 32,
-  },
-  section: {
-    marginTop: 24,
-  },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: Colors.light.secondaryText,
-    marginLeft: 16,
-    marginBottom: 8,
-    letterSpacing: 0.5,
-  },
-  settingItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: Colors.light.background,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-  },
-  settingLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  iconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: Colors.light.primaryLight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  settingTextContainer: {
-    flex: 1,
-  },
-  settingLabel: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: Colors.light.text,
-    marginBottom: 2,
-  },
-  settingDescription: {
-    fontSize: 13,
-    color: Colors.light.secondaryText,
-  },
-  valueText: {
-    fontSize: 14,
-    color: Colors.light.primary,
-    fontWeight: '500',
-  },
-  actionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    backgroundColor: Colors.light.background,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-  },
-  actionLabel: {
-    fontSize: 16,
-    color: Colors.light.primary,
-    fontWeight: '500',
-  },
-});

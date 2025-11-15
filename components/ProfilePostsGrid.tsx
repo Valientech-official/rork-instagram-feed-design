@@ -6,6 +6,7 @@ import { Play, Heart, MessageCircle } from 'lucide-react-native';
 import { ProfilePost } from '@/mocks/profilePosts';
 import { useFavoritesStore } from '@/store/favoritesStore';
 import Colors from '@/constants/colors';
+import { useThemeStore } from '@/store/themeStore';
 import ProfileCommentModal from './ProfileCommentModal';
 
 const { width } = Dimensions.get('window');
@@ -18,6 +19,8 @@ interface ProfilePostsGridProps {
 
 export default function ProfilePostsGrid({ posts }: ProfilePostsGridProps) {
   const router = useRouter();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
   const [commentModalVisible, setCommentModalVisible] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState<string>('');
 
@@ -57,10 +60,70 @@ export default function ProfilePostsGrid({ posts }: ProfilePostsGridProps) {
     );
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      backgroundColor: colors.background,
+    },
+    sectionTitle: {
+      fontSize: 15,
+      fontWeight: '600',
+      color: colors.text,
+      marginBottom: 4,
+      paddingHorizontal: 12,
+    },
+    gridContainer: {
+      width: '100%',
+    },
+    postItem: {
+      width: ITEM_WIDTH,
+      height: ITEM_HEIGHT,
+      position: 'relative',
+    },
+    postImage: {
+      width: '100%',
+      height: '100%',
+      borderWidth: 0.5,
+      borderColor: 'white',
+    },
+    videoIndicator: {
+      position: 'absolute',
+      top: 8,
+      right: 8,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      borderRadius: 12,
+      width: 24,
+      height: 24,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    statsOverlay: {
+      position: 'absolute',
+      bottom: 4,
+      left: 4,
+      right: 4,
+      flexDirection: 'row',
+      gap: 8,
+    },
+    statItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 2,
+      backgroundColor: 'rgba(0, 0, 0, 0.6)',
+      paddingHorizontal: 6,
+      paddingVertical: 2,
+      borderRadius: 10,
+    },
+    statText: {
+      color: 'white',
+      fontSize: 10,
+      fontWeight: '600',
+    },
+  });
+
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>投稿</Text>
-      
+
       <FlatList
         key="profile-posts-grid"
         data={posts}
@@ -79,63 +142,3 @@ export default function ProfilePostsGrid({ posts }: ProfilePostsGridProps) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Colors.light.background,
-  },
-  sectionTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: Colors.light.text,
-    marginBottom: 4,
-    paddingHorizontal: 12,
-  },
-  gridContainer: {
-    width: '100%',
-  },
-  postItem: {
-    width: ITEM_WIDTH,
-    height: ITEM_HEIGHT,
-    position: 'relative',
-  },
-  postImage: {
-    width: '100%',
-    height: '100%',
-    borderWidth: 0.5,
-    borderColor: 'white',
-  },
-  videoIndicator: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    borderRadius: 12,
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  statsOverlay: {
-    position: 'absolute',
-    bottom: 4,
-    left: 4,
-    right: 4,
-    flexDirection: 'row',
-    gap: 8,
-  },
-  statItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 2,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 10,
-  },
-  statText: {
-    color: 'white',
-    fontSize: 10,
-    fontWeight: '600',
-  },
-});

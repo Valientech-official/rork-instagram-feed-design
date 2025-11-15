@@ -15,8 +15,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import MenuDrawer from '@/components/MenuDrawer';
 import { useAuthStore } from '@/store/authStore';
 import { useUsersStore } from '@/store/usersStore';
+import { useThemeStore } from '@/store/themeStore';
 
 export default function ProfileScreen() {
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
   const insets = useSafeAreaInsets();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
@@ -38,11 +41,28 @@ export default function ProfileScreen() {
     });
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    scrollView: {
+      flex: 1,
+    },
+    scrollContent: {
+      flexGrow: 1,
+    },
+    loadingContainer: {
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  });
+
   // ローディング表示
   if (myProfileLoading && !myProfile) {
     return (
       <View style={[styles.container, styles.loadingContainer, { paddingTop: insets.top }]}>
-        <ActivityIndicator size="large" color={Colors.light.primary} />
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
@@ -99,20 +119,3 @@ export default function ProfileScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-  },
-  loadingContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});

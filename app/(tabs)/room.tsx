@@ -8,6 +8,7 @@ import { roomPosts, RoomPost as RoomPostType } from '@/mocks/roomPosts';
 import RoomPostComponent from '@/components/RoomPost';
 import { liveStreams, LiveStream } from '@/mocks/liveStreams';
 import LiveStreamItem from '@/components/LiveStreamItem';
+import { useThemeStore } from '@/store/themeStore';
 
 interface Room {
   id: string;
@@ -31,6 +32,8 @@ const { height } = Dimensions.get('window');
 
 export default function RoomScreen() {
   const router = useRouter();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
   const insets = useSafeAreaInsets();
   const [viewMode, setViewMode] = useState<ViewMode>('rooms');
   const [currentLiveIndex, setCurrentLiveIndex] = useState(0);
@@ -147,23 +150,213 @@ export default function RoomScreen() {
     );
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    scrollContent: {
+      flex: 1,
+    },
+    scrollContentContainer: {
+      padding: 12,
+      paddingBottom: 24,
+    },
+    createButton: {
+      padding: 8,
+      marginRight: 8,
+    },
+    pageHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    pageHeaderTitle: {
+      fontSize: 20,
+      fontWeight: '700',
+      color: colors.text,
+    },
+    liveHeaderButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: colors.shopBackground,
+      paddingHorizontal: 12,
+      paddingVertical: 8,
+      borderRadius: 20,
+      gap: 8,
+    },
+    liveIndicatorPulse: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: '#FF3B30',
+    },
+    liveHeaderButtonText: {
+      fontSize: 13,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    viewToggleContainer: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginHorizontal: 12,
+      marginTop: 12,
+      marginBottom: 16,
+      backgroundColor: colors.shopBackground,
+      borderRadius: 12,
+      padding: 4,
+    },
+    viewToggleButton: {
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      borderRadius: 8,
+      flex: 1,
+      alignItems: 'center',
+    },
+    activeViewToggleButton: {
+      backgroundColor: colors.primary,
+    },
+    viewToggleText: {
+      fontSize: 15,
+      fontWeight: '500',
+      color: colors.secondaryText,
+    },
+    activeViewToggleText: {
+      color: 'white',
+      fontWeight: '600',
+    },
+    sectionHeader: {
+      marginVertical: 12,
+      paddingHorizontal: 4,
+    },
+    sectionTitle: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: colors.text,
+    },
+    roomsGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+      marginBottom: 8,
+    },
+    roomItem: {
+      width: '48%',
+      height: 145,
+      borderRadius: 12,
+      backgroundColor: colors.shopBackground,
+      padding: 12,
+      borderWidth: 1,
+      borderColor: colors.border,
+      marginBottom: 12,
+    },
+    roomHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
+      marginBottom: 10,
+      minHeight: 48,
+    },
+    roomName: {
+      fontSize: 15,
+      fontWeight: '600',
+      color: colors.text,
+      flex: 1,
+      marginRight: 8,
+      lineHeight: 20,
+    },
+    liveIndicator: {
+      backgroundColor: '#FF3B30',
+      paddingHorizontal: 6,
+      paddingVertical: 3,
+      borderRadius: 4,
+      alignSelf: 'flex-start',
+      minWidth: 32,
+      alignItems: 'center',
+    },
+    liveText: {
+      color: 'white',
+      fontSize: 9,
+      fontWeight: '600',
+      textAlign: 'center',
+    },
+    roomContent: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingTop: 2,
+    },
+    membersText: {
+      marginTop: 8,
+      fontSize: 15,
+      color: colors.secondaryText,
+      textAlign: 'center',
+    },
+    postsContainer: {
+      marginTop: 8,
+    },
+    liveStreamContainer: {
+      flex: 1,
+    },
+    liveStreamFullPage: {
+      height: Dimensions.get('window').height - 120,
+      position: 'relative',
+      paddingHorizontal: 12,
+      paddingBottom: 12,
+    },
+    navigationControls: {
+      position: 'absolute',
+      right: 20,
+      top: '50%',
+      transform: [{ translateY: -50 }],
+      zIndex: 10,
+    },
+    navButton: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginVertical: 8,
+    },
+    paginationIndicator: {
+      position: 'absolute',
+      bottom: 20,
+      right: 20,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      paddingHorizontal: 12,
+      paddingVertical: 6,
+      borderRadius: 16,
+    },
+    paginationText: {
+      color: 'white',
+      fontWeight: '600',
+    },
+  });
+
   return (
     <>
-      <Stack.Screen 
+      <Stack.Screen
         options={{
           headerTitle: "Rooms",
           headerStyle: {
-            backgroundColor: Colors.light.background,
+            backgroundColor: colors.background,
           },
           headerTitleStyle: {
             marginTop: insets.top,
           },
           headerRight: () => (
-            <TouchableOpacity 
-              style={[styles.createButton, { marginTop: insets.top }]} 
+            <TouchableOpacity
+              style={[styles.createButton, { marginTop: insets.top }]}
               onPress={handleCreateRoom}
             >
-              <Plus size={20} color={Colors.light.primary} />
+              <Plus size={20} color={colors.primary} />
             </TouchableOpacity>
           ),
         }}
@@ -286,193 +479,3 @@ export default function RoomScreen() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  scrollContent: {
-    flex: 1,
-  },
-  scrollContentContainer: {
-    padding: 12,
-    paddingBottom: 24,
-  },
-  createButton: {
-    padding: 8,
-    marginRight: 8,
-  },
-  pageHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.light.border,
-  },
-  pageHeaderTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: Colors.light.text,
-  },
-  liveHeaderButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.light.shopBackground,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    gap: 8,
-  },
-  liveIndicatorPulse: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#FF3B30',
-  },
-  liveHeaderButtonText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: Colors.light.text,
-  },
-  viewToggleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginHorizontal: 12,
-    marginTop: 12,
-    marginBottom: 16,
-    backgroundColor: Colors.light.shopBackground,
-    borderRadius: 12,
-    padding: 4,
-  },
-  viewToggleButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    flex: 1,
-    alignItems: 'center',
-  },
-  activeViewToggleButton: {
-    backgroundColor: Colors.light.primary,
-  },
-  viewToggleText: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: Colors.light.secondaryText,
-  },
-  activeViewToggleText: {
-    color: 'white',
-    fontWeight: '600',
-  },
-  sectionHeader: {
-    marginVertical: 12,
-    paddingHorizontal: 4,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: Colors.light.text,
-  },
-  roomsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  roomItem: {
-    width: '48%',
-    height: 145,
-    borderRadius: 12,
-    backgroundColor: Colors.light.shopBackground,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: Colors.light.border,
-    marginBottom: 12,
-  },
-  roomHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 10,
-    minHeight: 48,
-  },
-  roomName: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: Colors.light.text,
-    flex: 1,
-    marginRight: 8,
-    lineHeight: 20,
-  },
-  liveIndicator: {
-    backgroundColor: '#FF3B30',
-    paddingHorizontal: 6,
-    paddingVertical: 3,
-    borderRadius: 4,
-    alignSelf: 'flex-start',
-    minWidth: 32,
-    alignItems: 'center',
-  },
-  liveText: {
-    color: 'white',
-    fontSize: 9,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  roomContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 2,
-  },
-  membersText: {
-    marginTop: 8,
-    fontSize: 15,
-    color: Colors.light.secondaryText,
-    textAlign: 'center',
-  },
-  postsContainer: {
-    marginTop: 8,
-  },
-  liveStreamContainer: {
-    flex: 1,
-  },
-  liveStreamFullPage: {
-    height: Dimensions.get('window').height - 120, // Account for header and toggle
-    position: 'relative',
-    paddingHorizontal: 12,
-    paddingBottom: 12,
-  },
-  navigationControls: {
-    position: 'absolute',
-    right: 20,
-    top: '50%',
-    transform: [{ translateY: -50 }],
-    zIndex: 10,
-  },
-  navButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: 8,
-  },
-  paginationIndicator: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  paginationText: {
-    color: 'white',
-    fontWeight: '600',
-  },
-});

@@ -192,12 +192,12 @@ export default function UsersManagementScreen() {
 
   const handleSuspendUser = (userId: string) => {
     Alert.alert(
-      'Suspend User',
-      'Are you sure you want to suspend this user?',
+      'アカウント停止',
+      'このユーザーを停止しますか？',
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: 'キャンセル', style: 'cancel' },
         {
-          text: 'Suspend',
+          text: '停止する',
           style: 'destructive',
           onPress: async () => {
             try {
@@ -206,11 +206,11 @@ export default function UsersManagementScreen() {
               //   method: 'PUT',
               //   body: JSON.stringify({ status: 'suspended' }),
               // });
-              Alert.alert('Success', 'User suspended');
+              Alert.alert('成功', 'ユーザーを停止しました');
               setShowDetailModal(false);
               loadUsers();
             } catch (error) {
-              Alert.alert('Error', 'Failed to suspend user');
+              Alert.alert('エラー', 'ユーザーの停止に失敗しました');
             }
           },
         },
@@ -220,12 +220,12 @@ export default function UsersManagementScreen() {
 
   const handleBanUser = (userId: string) => {
     Alert.alert(
-      'Ban User',
-      'Are you sure you want to permanently ban this user?',
+      'ユーザーBAN',
+      'このユーザーを永久にBANしますか？',
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: 'キャンセル', style: 'cancel' },
         {
-          text: 'Ban',
+          text: 'BANする',
           style: 'destructive',
           onPress: async () => {
             try {
@@ -234,11 +234,11 @@ export default function UsersManagementScreen() {
               //   method: 'PUT',
               //   body: JSON.stringify({ status: 'banned' }),
               // });
-              Alert.alert('Success', 'User banned');
+              Alert.alert('成功', 'ユーザーをBANしました');
               setShowDetailModal(false);
               loadUsers();
             } catch (error) {
-              Alert.alert('Error', 'Failed to ban user');
+              Alert.alert('エラー', 'ユーザーのBANに失敗しました');
             }
           },
         },
@@ -247,19 +247,19 @@ export default function UsersManagementScreen() {
   };
 
   const handleWarnUser = (userId: string) => {
-    Alert.alert('Send Warning', 'Send a warning to this user?', [
-      { text: 'Cancel', style: 'cancel' },
+    Alert.alert('警告を送信', 'このユーザーに警告を送信しますか？', [
+      { text: 'キャンセル', style: 'cancel' },
       {
-        text: 'Send',
+        text: '送信する',
         onPress: async () => {
           try {
             // TODO: API call
             // await fetch(`/admin/user/${userId}/warn`, {
             //   method: 'POST',
             // });
-            Alert.alert('Success', 'Warning sent');
+            Alert.alert('成功', '警告を送信しました');
           } catch (error) {
-            Alert.alert('Error', 'Failed to send warning');
+            Alert.alert('エラー', '警告の送信に失敗しました');
           }
         },
       },
@@ -365,23 +365,23 @@ export default function UsersManagementScreen() {
           <View style={styles.statItem}>
             <Users size={16} color={colors.secondaryText} />
             <Text style={styles.statValue}>{item.followerCount}</Text>
-            <Text style={styles.statLabel}>Followers</Text>
+            <Text style={styles.statLabel}>フォロワー</Text>
           </View>
           <View style={styles.statItem}>
             <User size={16} color={colors.secondaryText} />
             <Text style={styles.statValue}>{item.followingCount}</Text>
-            <Text style={styles.statLabel}>Following</Text>
+            <Text style={styles.statLabel}>フォロー中</Text>
           </View>
           <View style={styles.statItem}>
             <AlertTriangle size={16} color={colors.error} />
             <Text style={styles.statValue}>{item.reportCount}</Text>
-            <Text style={styles.statLabel}>Reports</Text>
+            <Text style={styles.statLabel}>通報</Text>
           </View>
         </View>
 
         <View style={styles.userFooter}>
           <Text style={styles.joinedText}>
-            Joined {formatDate(item.joinedAt)}
+            登録日 {formatDate(item.joinedAt)}
           </Text>
         </View>
       </TouchableOpacity>
@@ -403,9 +403,9 @@ export default function UsersManagementScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.headerTitle}>User Management</Text>
+          <Text style={styles.headerTitle}>ユーザー管理</Text>
           <Text style={styles.headerSubtitle}>
-            {filteredUsers.length} users
+            {filteredUsers.length} 人のユーザー
           </Text>
         </View>
         <TouchableOpacity onPress={() => router.back()} style={styles.closeButton}>
@@ -419,7 +419,7 @@ export default function UsersManagementScreen() {
           <Search size={20} color={colors.secondaryText} />
           <TextInput
             style={styles.searchInput}
-            placeholder="Search users..."
+            placeholder="ユーザーを検索..."
             placeholderTextColor={colors.secondaryText}
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -477,7 +477,7 @@ export default function UsersManagementScreen() {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <User size={48} color={colors.secondaryText} />
-            <Text style={styles.emptyText}>No users found</Text>
+            <Text style={styles.emptyText}>ユーザーが見つかりません</Text>
           </View>
         }
       />
@@ -492,54 +492,64 @@ export default function UsersManagementScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Filter Users</Text>
+              <Text style={styles.modalTitle}>フィルター</Text>
               <TouchableOpacity onPress={() => setShowFilterModal(false)}>
                 <X size={24} color={colors.icon} />
               </TouchableOpacity>
             </View>
 
             <View style={styles.modalBody}>
-              <Text style={styles.filterSectionTitle}>Status</Text>
+              <Text style={styles.filterSectionTitle}>ステータス</Text>
               <View style={styles.filterOptions}>
-                {['all', 'active', 'suspended', 'banned'].map((status) => (
+                {[
+                  { key: 'all', label: 'すべて' },
+                  { key: 'active', label: 'アクティブ' },
+                  { key: 'suspended', label: '停止中' },
+                  { key: 'banned', label: 'BAN済み' }
+                ].map(({ key, label }) => (
                   <TouchableOpacity
-                    key={status}
+                    key={key}
                     style={[
                       styles.filterOption,
-                      filterStatus === status && styles.filterOptionActive,
+                      filterStatus === key && styles.filterOptionActive,
                     ]}
-                    onPress={() => setFilterStatus(status as any)}
+                    onPress={() => setFilterStatus(key as any)}
                   >
                     <Text
                       style={[
                         styles.filterOptionText,
-                        filterStatus === status && styles.filterOptionTextActive,
+                        filterStatus === key && styles.filterOptionTextActive,
                       ]}
                     >
-                      {status.charAt(0).toUpperCase() + status.slice(1)}
+                      {label}
                     </Text>
                   </TouchableOpacity>
                 ))}
               </View>
 
-              <Text style={styles.filterSectionTitle}>Account Type</Text>
+              <Text style={styles.filterSectionTitle}>アカウント種別</Text>
               <View style={styles.filterOptions}>
-                {['all', 'user', 'shop', 'admin'].map((type) => (
+                {[
+                  { key: 'all', label: 'すべて' },
+                  { key: 'user', label: '一般' },
+                  { key: 'shop', label: 'ショップ' },
+                  { key: 'admin', label: '管理者' }
+                ].map(({ key, label }) => (
                   <TouchableOpacity
-                    key={type}
+                    key={key}
                     style={[
                       styles.filterOption,
-                      filterType === type && styles.filterOptionActive,
+                      filterType === key && styles.filterOptionActive,
                     ]}
-                    onPress={() => setFilterType(type as any)}
+                    onPress={() => setFilterType(key as any)}
                   >
                     <Text
                       style={[
                         styles.filterOptionText,
-                        filterType === type && styles.filterOptionTextActive,
+                        filterType === key && styles.filterOptionTextActive,
                       ]}
                     >
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                      {label}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -549,7 +559,7 @@ export default function UsersManagementScreen() {
                 style={styles.applyButton}
                 onPress={() => setShowFilterModal(false)}
               >
-                <Text style={styles.applyButtonText}>Apply Filters</Text>
+                <Text style={styles.applyButtonText}>フィルターを適用</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -566,7 +576,7 @@ export default function UsersManagementScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>User Details</Text>
+              <Text style={styles.modalTitle}>ユーザー詳細</Text>
               <TouchableOpacity onPress={() => setShowDetailModal(false)}>
                 <X size={24} color={colors.icon} />
               </TouchableOpacity>
@@ -591,7 +601,7 @@ export default function UsersManagementScreen() {
                     ]}
                   >
                     <Text style={styles.statusText}>
-                      {selectedUser.status}
+                      {selectedUser.status === 'active' ? 'アクティブ' : selectedUser.status === 'suspended' ? '停止中' : 'BAN済み'}
                     </Text>
                   </View>
                 </View>
@@ -602,19 +612,19 @@ export default function UsersManagementScreen() {
                       <Text style={styles.statBoxValue}>
                         {userStats.totalPosts}
                       </Text>
-                      <Text style={styles.statBoxLabel}>Posts</Text>
+                      <Text style={styles.statBoxLabel}>投稿</Text>
                     </View>
                     <View style={styles.statBox}>
                       <Text style={styles.statBoxValue}>
                         {userStats.totalLikes}
                       </Text>
-                      <Text style={styles.statBoxLabel}>Likes</Text>
+                      <Text style={styles.statBoxLabel}>いいね</Text>
                     </View>
                     <View style={styles.statBox}>
                       <Text style={styles.statBoxValue}>
                         {userStats.avgEngagement}%
                       </Text>
-                      <Text style={styles.statBoxLabel}>Engagement</Text>
+                      <Text style={styles.statBoxLabel}>エンゲージ率</Text>
                     </View>
                   </View>
                 )}
@@ -625,7 +635,7 @@ export default function UsersManagementScreen() {
                     onPress={() => handleWarnUser(selectedUser.id)}
                   >
                     <AlertTriangle size={20} color="#FFF" />
-                    <Text style={styles.actionBtnText}>Send Warning</Text>
+                    <Text style={styles.actionBtnText}>警告を送信</Text>
                   </TouchableOpacity>
 
                   {selectedUser.status === 'active' && (
@@ -634,7 +644,7 @@ export default function UsersManagementScreen() {
                       onPress={() => handleSuspendUser(selectedUser.id)}
                     >
                       <Shield size={20} color="#FFF" />
-                      <Text style={styles.actionBtnText}>Suspend</Text>
+                      <Text style={styles.actionBtnText}>アカウント停止</Text>
                     </TouchableOpacity>
                   )}
 
@@ -643,7 +653,7 @@ export default function UsersManagementScreen() {
                     onPress={() => handleBanUser(selectedUser.id)}
                   >
                     <Ban size={20} color="#FFF" />
-                    <Text style={styles.actionBtnText}>Ban User</Text>
+                    <Text style={styles.actionBtnText}>BAN</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -651,7 +661,7 @@ export default function UsersManagementScreen() {
                     onPress={() => router.push(`/profile/${selectedUser.id}`)}
                   >
                     <Eye size={20} color="#FFF" />
-                    <Text style={styles.actionBtnText}>View Profile</Text>
+                    <Text style={styles.actionBtnText}>プロフィール表示</Text>
                   </TouchableOpacity>
                 </View>
               </View>

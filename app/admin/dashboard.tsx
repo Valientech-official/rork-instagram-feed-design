@@ -94,19 +94,19 @@ export default function AdminDashboard() {
         {
           id: '1',
           type: 'report',
-          message: 'New report: Spam post',
+          message: '新しい通報: スパム投稿',
           timestamp: Date.now() - 300000,
         },
         {
           id: '2',
           type: 'user_join',
-          message: 'New user registered',
+          message: '新規ユーザー登録',
           timestamp: Date.now() - 600000,
         },
         {
           id: '3',
           type: 'content_removed',
-          message: 'Post removed: Violation',
+          message: '投稿削除: 規約違反',
           timestamp: Date.now() - 900000,
         },
       ]);
@@ -170,14 +170,14 @@ export default function AdminDashboard() {
       {/* Header */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.headerTitle}>Admin Dashboard</Text>
-          <Text style={styles.headerSubtitle}>System Overview</Text>
+          <Text style={styles.headerTitle}>管理ダッシュボード</Text>
+          <Text style={styles.headerSubtitle}>システム概要</Text>
         </View>
         <TouchableOpacity
           onPress={() => router.back()}
           style={styles.backButton}
         >
-          <Text style={styles.backButtonText}>Close</Text>
+          <Text style={styles.backButtonText}>閉じる</Text>
         </TouchableOpacity>
       </View>
 
@@ -195,7 +195,7 @@ export default function AdminDashboard() {
             <Text style={styles.metricValue}>
               {metrics.totalUsers.toLocaleString()}
             </Text>
-            <Text style={styles.metricLabel}>Total Users</Text>
+            <Text style={styles.metricLabel}>総ユーザー数</Text>
             <View style={styles.growthBadge}>
               <TrendingUp size={12} color={colors.success} />
               <Text style={[styles.growthText, { color: colors.success }]}>
@@ -209,7 +209,7 @@ export default function AdminDashboard() {
             <Text style={styles.metricValue}>
               {metrics.totalPosts.toLocaleString()}
             </Text>
-            <Text style={styles.metricLabel}>Total Posts</Text>
+            <Text style={styles.metricLabel}>総投稿数</Text>
           </View>
 
           <View style={[styles.metricCard, { backgroundColor: '#FFEBEE' }]}>
@@ -217,7 +217,7 @@ export default function AdminDashboard() {
             <Text style={[styles.metricValue, { color: '#F44336' }]}>
               {metrics.pendingReports}
             </Text>
-            <Text style={styles.metricLabel}>Pending Reports</Text>
+            <Text style={styles.metricLabel}>未処理通報</Text>
           </View>
 
           <View style={[styles.metricCard, { backgroundColor: '#F3E5F5' }]}>
@@ -225,13 +225,13 @@ export default function AdminDashboard() {
             <Text style={styles.metricValue}>
               {metrics.activeLiveStreams}
             </Text>
-            <Text style={styles.metricLabel}>Active Streams</Text>
+            <Text style={styles.metricLabel}>配信中</Text>
           </View>
         </View>
 
         {/* Quick Stats */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Stats</Text>
+          <Text style={styles.sectionTitle}>統計情報</Text>
           <View style={styles.statsCard}>
             <View style={styles.statRow}>
               <View style={styles.statItem}>
@@ -240,7 +240,7 @@ export default function AdminDashboard() {
                   <Text style={styles.statValue}>
                     {metrics.dailyActiveUsers.toLocaleString()}
                   </Text>
-                  <Text style={styles.statLabel}>Daily Active Users</Text>
+                  <Text style={styles.statLabel}>デイリーアクティブユーザー</Text>
                 </View>
               </View>
             </View>
@@ -252,7 +252,7 @@ export default function AdminDashboard() {
                   <Text style={styles.statValue}>
                     {metrics.postEngagementRate}%
                   </Text>
-                  <Text style={styles.statLabel}>Post Engagement Rate</Text>
+                  <Text style={styles.statLabel}>投稿エンゲージメント率</Text>
                 </View>
               </View>
             </View>
@@ -261,14 +261,14 @@ export default function AdminDashboard() {
 
         {/* Quick Actions */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
+          <Text style={styles.sectionTitle}>クイックアクション</Text>
           <View style={styles.actionsGrid}>
             <TouchableOpacity
               style={styles.actionButton}
               onPress={() => router.push('/admin/reports')}
             >
               <AlertTriangle size={24} color={colors.error} />
-              <Text style={styles.actionText}>View Reports</Text>
+              <Text style={styles.actionText}>通報を確認</Text>
               <ChevronRight size={18} color={colors.secondaryText} />
             </TouchableOpacity>
 
@@ -277,7 +277,7 @@ export default function AdminDashboard() {
               onPress={() => router.push('/admin/users')}
             >
               <Users size={24} color={colors.primary} />
-              <Text style={styles.actionText}>Manage Users</Text>
+              <Text style={styles.actionText}>ユーザー管理</Text>
               <ChevronRight size={18} color={colors.secondaryText} />
             </TouchableOpacity>
 
@@ -286,7 +286,7 @@ export default function AdminDashboard() {
               onPress={() => router.push('/admin/moderation')}
             >
               <Shield size={24} color={colors.warning} />
-              <Text style={styles.actionText}>Content Moderation</Text>
+              <Text style={styles.actionText}>コンテンツ審査</Text>
               <ChevronRight size={18} color={colors.secondaryText} />
             </TouchableOpacity>
           </View>
@@ -294,7 +294,7 @@ export default function AdminDashboard() {
 
         {/* Recent Activity */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Recent Activity</Text>
+          <Text style={styles.sectionTitle}>最近のアクティビティ</Text>
           <View style={styles.activityCard}>
             {recentActivity.map((item) => (
               <View key={item.id} style={styles.activityItem}>
@@ -312,11 +312,11 @@ export default function AdminDashboard() {
 
         {/* System Health */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>System Health</Text>
+          <Text style={styles.sectionTitle}>システム稼働状況</Text>
           <View style={styles.healthCard}>
             <View style={styles.healthItem}>
               <Database size={20} color={colors.icon} />
-              <Text style={styles.healthLabel}>API Status</Text>
+              <Text style={styles.healthLabel}>APIステータス</Text>
               <View
                 style={[
                   styles.healthBadge,
@@ -324,14 +324,14 @@ export default function AdminDashboard() {
                 ]}
               >
                 <Text style={styles.healthStatus}>
-                  {systemHealth.apiStatus}
+                  {systemHealth.apiStatus === 'healthy' ? '正常' : systemHealth.apiStatus === 'degraded' ? '低下' : 'ダウン'}
                 </Text>
               </View>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.healthItem}>
               <Database size={20} color={colors.icon} />
-              <Text style={styles.healthLabel}>Database</Text>
+              <Text style={styles.healthLabel}>データベース</Text>
               <View
                 style={[
                   styles.healthBadge,
@@ -339,7 +339,7 @@ export default function AdminDashboard() {
                 ]}
               >
                 <Text style={styles.healthStatus}>
-                  {systemHealth.dbStatus}
+                  {systemHealth.dbStatus === 'healthy' ? '正常' : systemHealth.dbStatus === 'degraded' ? '低下' : 'ダウン'}
                 </Text>
               </View>
             </View>

@@ -9,10 +9,13 @@ import LiveStart from '@/components/LiveStart';
 import CreateModeSelector from '@/components/CreateModeSelector';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { useCallback } from 'react';
+import { useThemeStore } from '@/store/themeStore';
 
 type ModeType = 'post' | 'listing' | 'wave' | 'live' | null;
 
 export default function CreateScreen() {
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
   const [showSelector, setShowSelector] = useState(false);
   const [selectedMode, setSelectedMode] = useState<ModeType>(null);
   const insets = useSafeAreaInsets();
@@ -43,6 +46,17 @@ export default function CreateScreen() {
     setShowSelector(true);
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    modeContainer: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+  });
+
   return (
     <View style={styles.container}>
       <CreateModeSelector
@@ -66,14 +80,3 @@ export default function CreateScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  modeContainer: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-});

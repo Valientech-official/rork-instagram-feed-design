@@ -8,6 +8,7 @@ import Colors from '@/constants/colors';
 import { useFavoritesStore } from '@/store/favoritesStore';
 import { dressUpModes, DressUpMode } from '@/mocks/dressUpItems';
 import AIDressUpModal from '@/components/AIDressUpModal';
+import { useThemeStore } from '@/store/themeStore';
 
 const { width } = Dimensions.get('window');
 const ITEM_WIDTH = (width - 48) / 2;
@@ -16,6 +17,8 @@ type ViewMode = 'horizontal' | 'vertical';
 
 export default function DressUpScreen() {
   const router = useRouter();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
   const insets = useSafeAreaInsets();
   const { items: favoriteItems } = useFavoritesStore();
   const [showAIDressUpModal, setShowAIDressUpModal] = useState(false);
@@ -91,13 +94,220 @@ export default function DressUpScreen() {
     </TouchableOpacity>
   );
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    headerButtonsContainer: {
+      flexDirection: 'row',
+      gap: 12,
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      backgroundColor: colors.background,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    headerButton: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      borderRadius: 12,
+      gap: 6,
+    },
+    favoriteHeaderButton: {
+      backgroundColor: colors.shopBackground,
+      borderWidth: 1.5,
+      borderColor: colors.like,
+    },
+    aiHeaderButton: {
+      backgroundColor: colors.primary,
+    },
+    headerButtonText: {
+      fontSize: 15,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    aiButtonText: {
+      color: 'white',
+    },
+    toggleButton: {
+      backgroundColor: colors.shopCard,
+      padding: 10,
+      borderRadius: 8,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 2,
+      marginLeft: 4,
+    },
+    contentContainer: {
+      flex: 1,
+    },
+    horizontalLayout: {
+      flexDirection: 'column',
+    },
+    verticalLayout: {
+      flexDirection: 'row',
+    },
+    section: {
+      borderColor: colors.border,
+    },
+    halfWidth: {
+      width: '50%',
+      borderRightWidth: 1,
+    },
+    halfHeight: {
+      height: '50%',
+      borderBottomWidth: 1,
+      width: '100%',
+    },
+    sectionHeader: {
+      padding: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+    },
+    sectionHeaderHorizontal: {
+      padding: 8,
+      paddingHorizontal: 12,
+    },
+    titleWithIcon: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+    },
+    sectionTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: colors.text,
+    },
+    sectionTitleHorizontal: {
+      fontSize: 16,
+    },
+    iconContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 4,
+    },
+    itemCount: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.secondaryText,
+    },
+    itemCountHorizontal: {
+      fontSize: 12,
+    },
+    list: {
+      padding: 8,
+    },
+    horizontalList: {
+      paddingHorizontal: 8,
+      paddingBottom: 8,
+    },
+    favoriteItem: {
+      marginBottom: 12,
+      borderRadius: 12,
+      overflow: 'hidden',
+      backgroundColor: colors.shopCard,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.05,
+      shadowRadius: 8,
+      elevation: 2,
+    },
+    favoriteItemHorizontal: {
+      marginBottom: 0,
+      marginRight: 12,
+      width: 280,
+    },
+    favoriteImage: {
+      width: '100%',
+      height: 180,
+    },
+    favoriteImageHorizontal: {
+      width: 280,
+      height: 220,
+    },
+    favoriteInfo: {
+      padding: 12,
+    },
+    favoriteName: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: colors.text,
+      marginBottom: 4,
+    },
+    favoritePrice: {
+      fontSize: 15,
+      fontWeight: '600',
+      color: colors.shopPrice,
+    },
+    modeItem: {
+      marginBottom: 12,
+      borderRadius: 16,
+      overflow: 'hidden',
+      position: 'relative',
+      height: 140,
+    },
+    modeItemHorizontal: {
+      marginBottom: 0,
+      marginRight: 12,
+      width: 280,
+      height: 180,
+    },
+    modeImage: {
+      width: '100%',
+      height: '100%',
+    },
+    modeImageHorizontal: {
+      width: 280,
+      height: 180,
+    },
+    modeOverlay: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      padding: 12,
+    },
+    modeName: {
+      fontSize: 16,
+      fontWeight: '700',
+      color: 'white',
+      marginBottom: 2,
+    },
+    modeDescription: {
+      fontSize: 12,
+      fontWeight: '500',
+      color: 'white',
+    },
+    emptyContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 48,
+    },
+    emptyText: {
+      fontSize: 15,
+      color: colors.secondaryText,
+      marginTop: 12,
+    },
+  });
+
   return (
     <>
       <Stack.Screen
         options={{
           headerTitle: "着せ替え",
           headerStyle: {
-            backgroundColor: Colors.light.background,
+            backgroundColor: colors.background,
           },
           headerShadowVisible: false,
         }}
@@ -112,7 +322,7 @@ export default function DressUpScreen() {
               console.log('お気に入り一覧');
             }}
           >
-            <Heart size={18} color={Colors.light.like} fill={Colors.light.like} />
+            <Heart size={18} color={colors.like} fill={colors.like} />
             <Text style={styles.headerButtonText}>お気に入り</Text>
           </TouchableOpacity>
 
@@ -131,9 +341,9 @@ export default function DressUpScreen() {
             activeOpacity={0.7}
           >
             {viewMode === 'horizontal' ? (
-              <Rows size={22} color={Colors.light.text} />
+              <Rows size={22} color={colors.text} />
             ) : (
-              <LayoutGrid size={22} color={Colors.light.text} />
+              <LayoutGrid size={22} color={colors.text} />
             )}
           </TouchableOpacity>
         </View>
@@ -161,8 +371,8 @@ export default function DressUpScreen() {
                 <View style={styles.iconContainer}>
                   <Heart
                     size={viewMode === 'horizontal' ? 14 : 18}
-                    color={Colors.light.like}
-                    fill={Colors.light.like}
+                    color={colors.like}
+                    fill={colors.like}
                   />
                   <Text style={[
                     styles.itemCount,
@@ -187,14 +397,14 @@ export default function DressUpScreen() {
                 ]}
                 ListEmptyComponent={
                   <View style={styles.emptyContainer}>
-                    <Heart size={48} color={Colors.light.border} />
+                    <Heart size={48} color={colors.border} />
                     <Text style={styles.emptyText}>お気に入りがありません</Text>
                   </View>
                 }
               />
             ) : (
               <View style={styles.emptyContainer}>
-                <Heart size={48} color={Colors.light.border} />
+                <Heart size={48} color={colors.border} />
                 <Text style={styles.emptyText}>お気に入りがありません</Text>
               </View>
             )}
@@ -217,7 +427,7 @@ export default function DressUpScreen() {
                 <View style={styles.iconContainer}>
                   <Sparkles
                     size={viewMode === 'horizontal' ? 14 : 18}
-                    color={Colors.light.primary}
+                    color={colors.primary}
                   />
                   <Text style={[
                     styles.itemCount,
@@ -252,210 +462,3 @@ export default function DressUpScreen() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  headerButtonsContainer: {
-    flexDirection: 'row',
-    gap: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: Colors.light.background,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.light.border,
-  },
-  headerButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    gap: 6,
-  },
-  favoriteHeaderButton: {
-    backgroundColor: Colors.light.shopBackground,
-    borderWidth: 1.5,
-    borderColor: Colors.light.like,
-  },
-  aiHeaderButton: {
-    backgroundColor: Colors.light.primary,
-  },
-  headerButtonText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: Colors.light.text,
-  },
-  aiButtonText: {
-    color: 'white',
-  },
-  toggleButton: {
-    backgroundColor: Colors.light.shopCard,
-    padding: 10,
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-    marginLeft: 4,
-  },
-  contentContainer: {
-    flex: 1,
-  },
-  horizontalLayout: {
-    flexDirection: 'column',
-  },
-  verticalLayout: {
-    flexDirection: 'row',
-  },
-  section: {
-    borderColor: Colors.light.border,
-  },
-  halfWidth: {
-    width: '50%',
-    borderRightWidth: 1,
-  },
-  halfHeight: {
-    height: '50%',
-    borderBottomWidth: 1,
-    width: '100%',
-  },
-  sectionHeader: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.light.border,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  sectionHeaderHorizontal: {
-    padding: 8,
-    paddingHorizontal: 12,
-  },
-  titleWithIcon: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.light.text,
-  },
-  sectionTitleHorizontal: {
-    fontSize: 16,
-  },
-  iconContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  itemCount: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.light.secondaryText,
-  },
-  itemCountHorizontal: {
-    fontSize: 12,
-  },
-  list: {
-    padding: 8,
-  },
-  horizontalList: {
-    paddingHorizontal: 8,
-    paddingBottom: 8,
-  },
-  favoriteItem: {
-    marginBottom: 12,
-    borderRadius: 12,
-    overflow: 'hidden',
-    backgroundColor: Colors.light.shopCard,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
-  },
-  favoriteItemHorizontal: {
-    marginBottom: 0,
-    marginRight: 12,
-    width: 280,
-  },
-  favoriteImage: {
-    width: '100%',
-    height: 180,
-  },
-  favoriteImageHorizontal: {
-    width: 280,
-    height: 220,
-  },
-  favoriteInfo: {
-    padding: 12,
-  },
-  favoriteName: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: Colors.light.text,
-    marginBottom: 4,
-  },
-  favoritePrice: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: Colors.light.shopPrice,
-  },
-  modeItem: {
-    marginBottom: 12,
-    borderRadius: 16,
-    overflow: 'hidden',
-    position: 'relative',
-    height: 140,
-  },
-  modeItemHorizontal: {
-    marginBottom: 0,
-    marginRight: 12,
-    width: 280,
-    height: 180,
-  },
-  modeImage: {
-    width: '100%',
-    height: '100%',
-  },
-  modeImageHorizontal: {
-    width: 280,
-    height: 180,
-  },
-  modeOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 12,
-  },
-  modeName: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: 'white',
-    marginBottom: 2,
-  },
-  modeDescription: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: 'white',
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 48,
-  },
-  emptyText: {
-    fontSize: 15,
-    color: Colors.light.secondaryText,
-    marginTop: 12,
-  },
-});

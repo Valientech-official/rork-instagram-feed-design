@@ -25,6 +25,7 @@ import {
 } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useThemeStore } from '@/store/themeStore';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 
@@ -45,6 +46,8 @@ interface HelpCategory {
 export default function HelpSupportScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedFAQ, setExpandedFAQ] = useState<string | null>(null);
@@ -200,10 +203,173 @@ export default function HelpSupportScreen() {
 
   const systemInfo = getSystemInfo();
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    centerContent: {
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+    },
+    backButton: {
+      padding: 4,
+    },
+    title: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    headerRight: {
+      width: 32,
+    },
+    content: {
+      flex: 1,
+    },
+    searchSection: {
+      padding: 16,
+      backgroundColor: colors.background,
+    },
+    searchBar: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 12,
+      backgroundColor: colors.cardBackground,
+      borderRadius: 10,
+    },
+    searchInput: {
+      flex: 1,
+      marginLeft: 8,
+      fontSize: 16,
+      color: colors.text,
+    },
+    section: {
+      marginTop: 24,
+      paddingHorizontal: 16,
+    },
+    sectionTitle: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.secondaryText,
+      marginBottom: 12,
+      textTransform: 'uppercase',
+      letterSpacing: 0.5,
+    },
+    categoryItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 16,
+      backgroundColor: colors.background,
+      borderRadius: 12,
+      marginBottom: 12,
+      borderWidth: 0.5,
+      borderColor: colors.border,
+    },
+    categoryIcon: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      backgroundColor: colors.primaryLight,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: 12,
+    },
+    categoryContent: {
+      flex: 1,
+    },
+    categoryTitle: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.text,
+      marginBottom: 4,
+    },
+    categoryDescription: {
+      fontSize: 14,
+      color: colors.secondaryText,
+    },
+    faqItem: {
+      marginBottom: 12,
+      borderWidth: 0.5,
+      borderColor: colors.border,
+      borderRadius: 8,
+      overflow: 'hidden',
+    },
+    faqQuestion: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: 16,
+      backgroundColor: colors.background,
+    },
+    faqQuestionText: {
+      flex: 1,
+      fontSize: 15,
+      fontWeight: '500',
+      color: colors.text,
+      marginRight: 8,
+    },
+    faqAnswer: {
+      padding: 16,
+      paddingTop: 0,
+      backgroundColor: colors.cardBackground,
+    },
+    faqAnswerText: {
+      fontSize: 14,
+      lineHeight: 20,
+      color: colors.secondaryText,
+    },
+    actionButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 16,
+      backgroundColor: colors.background,
+      borderRadius: 12,
+      marginBottom: 12,
+      borderWidth: 0.5,
+      borderColor: colors.border,
+    },
+    actionButtonText: {
+      flex: 1,
+      fontSize: 16,
+      fontWeight: '500',
+      color: colors.text,
+      marginLeft: 12,
+    },
+    systemInfo: {
+      margin: 16,
+      padding: 16,
+      backgroundColor: colors.cardBackground,
+      borderRadius: 12,
+    },
+    systemInfoTitle: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.text,
+      marginBottom: 8,
+    },
+    systemInfoText: {
+      fontSize: 13,
+      color: colors.secondaryText,
+      marginTop: 4,
+    },
+    bottomPadding: {
+      height: 32,
+    },
+  });
+
   if (loading) {
     return (
       <View style={[styles.container, styles.centerContent, { paddingTop: insets.top }]}>
-        <ActivityIndicator size="large" color={Colors.light.primary} />
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
@@ -212,7 +378,7 @@ export default function HelpSupportScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <ChevronLeft size={24} color={Colors.light.text} />
+          <ChevronLeft size={24} color={colors.text} />
         </TouchableOpacity>
         <Text style={styles.title}>Help & Support</Text>
         <View style={styles.headerRight} />
@@ -222,11 +388,11 @@ export default function HelpSupportScreen() {
         {/* Search Bar */}
         <View style={styles.searchSection}>
           <View style={styles.searchBar}>
-            <Search size={20} color={Colors.light.secondaryText} />
+            <Search size={20} color={colors.secondaryText} />
             <TextInput
               style={styles.searchInput}
               placeholder="Search help topics..."
-              placeholderTextColor={Colors.light.secondaryText}
+              placeholderTextColor={colors.secondaryText}
               value={searchQuery}
               onChangeText={setSearchQuery}
             />
@@ -247,13 +413,13 @@ export default function HelpSupportScreen() {
               }}
             >
               <View style={styles.categoryIcon}>
-                <HelpCircle size={24} color={Colors.light.primary} />
+                <HelpCircle size={24} color={colors.primary} />
               </View>
               <View style={styles.categoryContent}>
                 <Text style={styles.categoryTitle}>{category.title}</Text>
                 <Text style={styles.categoryDescription}>{category.description}</Text>
               </View>
-              <ChevronRight size={20} color={Colors.light.secondaryText} />
+              <ChevronRight size={20} color={colors.secondaryText} />
             </TouchableOpacity>
           ))}
         </View>
@@ -269,9 +435,9 @@ export default function HelpSupportScreen() {
               >
                 <Text style={styles.faqQuestionText}>{faq.question}</Text>
                 {expandedFAQ === faq.id ? (
-                  <ChevronUp size={20} color={Colors.light.secondaryText} />
+                  <ChevronUp size={20} color={colors.secondaryText} />
                 ) : (
-                  <ChevronDown size={20} color={Colors.light.secondaryText} />
+                  <ChevronDown size={20} color={colors.secondaryText} />
                 )}
               </TouchableOpacity>
               {expandedFAQ === faq.id && (
@@ -286,21 +452,21 @@ export default function HelpSupportScreen() {
         {/* Action Buttons */}
         <View style={styles.section}>
           <TouchableOpacity style={styles.actionButton} onPress={handleContactSupport}>
-            <MessageCircle size={20} color={Colors.light.primary} />
+            <MessageCircle size={20} color={colors.primary} />
             <Text style={styles.actionButtonText}>Contact Support</Text>
-            <ChevronRight size={20} color={Colors.light.secondaryText} />
+            <ChevronRight size={20} color={colors.secondaryText} />
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.actionButton} onPress={handleReportProblem}>
-            <AlertCircle size={20} color={Colors.light.secondary} />
+            <AlertCircle size={20} color={colors.secondary} />
             <Text style={styles.actionButtonText}>Report a Problem</Text>
-            <ChevronRight size={20} color={Colors.light.secondaryText} />
+            <ChevronRight size={20} color={colors.secondaryText} />
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.actionButton} onPress={handleCommunityGuidelines}>
-            <Book size={20} color={Colors.light.text} />
+            <Book size={20} color={colors.text} />
             <Text style={styles.actionButtonText}>Community Guidelines</Text>
-            <ChevronRight size={20} color={Colors.light.secondaryText} />
+            <ChevronRight size={20} color={colors.secondaryText} />
           </TouchableOpacity>
         </View>
 
@@ -319,166 +485,3 @@ export default function HelpSupportScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  centerContent: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-  },
-  backButton: {
-    padding: 4,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: Colors.light.text,
-  },
-  headerRight: {
-    width: 32,
-  },
-  content: {
-    flex: 1,
-  },
-  searchSection: {
-    padding: 16,
-    backgroundColor: Colors.light.background,
-  },
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    backgroundColor: Colors.light.cardBackground,
-    borderRadius: 10,
-  },
-  searchInput: {
-    flex: 1,
-    marginLeft: 8,
-    fontSize: 16,
-    color: Colors.light.text,
-  },
-  section: {
-    marginTop: 24,
-    paddingHorizontal: 16,
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.light.secondaryText,
-    marginBottom: 12,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  categoryItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: Colors.light.background,
-    borderRadius: 12,
-    marginBottom: 12,
-    borderWidth: 0.5,
-    borderColor: Colors.light.border,
-  },
-  categoryIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: Colors.light.primaryLight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  categoryContent: {
-    flex: 1,
-  },
-  categoryTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.light.text,
-    marginBottom: 4,
-  },
-  categoryDescription: {
-    fontSize: 14,
-    color: Colors.light.secondaryText,
-  },
-  faqItem: {
-    marginBottom: 12,
-    borderWidth: 0.5,
-    borderColor: Colors.light.border,
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  faqQuestion: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 16,
-    backgroundColor: Colors.light.background,
-  },
-  faqQuestionText: {
-    flex: 1,
-    fontSize: 15,
-    fontWeight: '500',
-    color: Colors.light.text,
-    marginRight: 8,
-  },
-  faqAnswer: {
-    padding: 16,
-    paddingTop: 0,
-    backgroundColor: Colors.light.cardBackground,
-  },
-  faqAnswerText: {
-    fontSize: 14,
-    lineHeight: 20,
-    color: Colors.light.secondaryText,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: Colors.light.background,
-    borderRadius: 12,
-    marginBottom: 12,
-    borderWidth: 0.5,
-    borderColor: Colors.light.border,
-  },
-  actionButtonText: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: '500',
-    color: Colors.light.text,
-    marginLeft: 12,
-  },
-  systemInfo: {
-    margin: 16,
-    padding: 16,
-    backgroundColor: Colors.light.cardBackground,
-    borderRadius: 12,
-  },
-  systemInfoTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.light.text,
-    marginBottom: 8,
-  },
-  systemInfoText: {
-    fontSize: 13,
-    color: Colors.light.secondaryText,
-    marginTop: 4,
-  },
-  bottomPadding: {
-    height: 32,
-  },
-});

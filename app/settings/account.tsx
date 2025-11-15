@@ -28,6 +28,7 @@ import {
 import Colors from '@/constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
+import { useThemeStore } from '@/store/themeStore';
 
 interface AccountSettings {
   email: string;
@@ -53,6 +54,8 @@ interface LoginSession {
 export default function AccountSettingsScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
   const [loading, setLoading] = useState(true);
   const [settings, setSettings] = useState<AccountSettings>({
     email: 'user@example.com',
@@ -222,18 +225,124 @@ export default function AccountSettingsScreen() {
     router.back();
   };
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    header: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+      backgroundColor: colors.background,
+    },
+    title: {
+      fontSize: 18,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    content: {
+      flex: 1,
+    },
+    scrollContent: {
+      paddingBottom: 32,
+    },
+    section: {
+      marginTop: 24,
+    },
+    sectionTitle: {
+      fontSize: 13,
+      fontWeight: '600',
+      color: colors.secondaryText,
+      marginLeft: 16,
+      marginBottom: 8,
+      letterSpacing: 0.5,
+    },
+    settingItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      backgroundColor: colors.background,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+    },
+    settingLeft: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      flex: 1,
+    },
+    iconContainer: {
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: colors.primaryLight,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: 12,
+    },
+    iconContainerWarning: {
+      backgroundColor: '#FFF9E6',
+    },
+    iconContainerDanger: {
+      backgroundColor: '#FFE6E6',
+    },
+    settingTextContainer: {
+      flex: 1,
+    },
+    settingLabel: {
+      fontSize: 16,
+      fontWeight: '500',
+      color: colors.text,
+      marginBottom: 2,
+    },
+    settingDescription: {
+      fontSize: 13,
+      color: colors.secondaryText,
+    },
+    dangerItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      backgroundColor: colors.background,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+    },
+    dangerLabel: {
+      fontSize: 16,
+      fontWeight: '500',
+      color: colors.warning,
+      marginBottom: 2,
+    },
+    dangerLabelDelete: {
+      color: colors.error,
+    },
+  });
+
   if (loading) {
     return (
       <View style={[styles.container, { paddingTop: insets.top }]}>
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBack}>
-            <ChevronLeft size={24} color={Colors.light.text} />
+            <ChevronLeft size={24} color={colors.icon} />
           </TouchableOpacity>
           <Text style={styles.title}>Account Settings</Text>
           <View style={{ width: 24 }} />
         </View>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={Colors.light.primary} />
+          <ActivityIndicator size="large" color={colors.primary} />
         </View>
       </View>
     );
@@ -243,7 +352,7 @@ export default function AccountSettingsScreen() {
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBack}>
-          <ChevronLeft size={24} color={Colors.light.text} />
+          <ChevronLeft size={24} color={colors.icon} />
         </TouchableOpacity>
         <Text style={styles.title}>Account Settings</Text>
         <View style={{ width: 24 }} />
@@ -264,11 +373,11 @@ export default function AccountSettingsScreen() {
           >
             <View style={styles.settingLeft}>
               <View style={styles.iconContainer}>
-                <User size={20} color={Colors.light.primary} />
+                <User size={20} color={colors.primary} />
               </View>
               <Text style={styles.settingLabel}>Edit Profile</Text>
             </View>
-            <ChevronRight size={20} color={Colors.light.secondaryText} />
+            <ChevronRight size={20} color={colors.icon} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -279,11 +388,11 @@ export default function AccountSettingsScreen() {
           >
             <View style={styles.settingLeft}>
               <View style={styles.iconContainer}>
-                <Lock size={20} color={Colors.light.primary} />
+                <Lock size={20} color={colors.primary} />
               </View>
               <Text style={styles.settingLabel}>Change Password</Text>
             </View>
-            <ChevronRight size={20} color={Colors.light.secondaryText} />
+            <ChevronRight size={20} color={colors.icon} />
           </TouchableOpacity>
         </View>
 
@@ -294,7 +403,7 @@ export default function AccountSettingsScreen() {
           <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
               <View style={styles.iconContainer}>
-                <Shield size={20} color={Colors.light.primary} />
+                <Shield size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
                 <Text style={styles.settingLabel}>Two-Factor Authentication</Text>
@@ -306,7 +415,7 @@ export default function AccountSettingsScreen() {
             <Switch
               value={settings.twoFactorEnabled}
               onValueChange={handleToggle2FA}
-              trackColor={{ false: Colors.light.border, true: Colors.light.primary }}
+              trackColor={{ false: colors.border, true: colors.primary }}
               thumbColor="white"
               disabled={toggling2FA}
             />
@@ -320,7 +429,7 @@ export default function AccountSettingsScreen() {
           >
             <View style={styles.settingLeft}>
               <View style={styles.iconContainer}>
-                <Smartphone size={20} color={Colors.light.primary} />
+                <Smartphone size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
                 <Text style={styles.settingLabel}>Login Activity</Text>
@@ -329,7 +438,7 @@ export default function AccountSettingsScreen() {
                 </Text>
               </View>
             </View>
-            <ChevronRight size={20} color={Colors.light.secondaryText} />
+            <ChevronRight size={20} color={colors.icon} />
           </TouchableOpacity>
         </View>
 
@@ -345,14 +454,14 @@ export default function AccountSettingsScreen() {
           >
             <View style={styles.settingLeft}>
               <View style={styles.iconContainer}>
-                <Mail size={20} color={Colors.light.primary} />
+                <Mail size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
                 <Text style={styles.settingLabel}>Email</Text>
                 <Text style={styles.settingDescription}>{settings.email}</Text>
               </View>
             </View>
-            <ChevronRight size={20} color={Colors.light.secondaryText} />
+            <ChevronRight size={20} color={colors.icon} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -363,7 +472,7 @@ export default function AccountSettingsScreen() {
           >
             <View style={styles.settingLeft}>
               <View style={styles.iconContainer}>
-                <Phone size={20} color={Colors.light.primary} />
+                <Phone size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
                 <Text style={styles.settingLabel}>Phone Number</Text>
@@ -372,7 +481,7 @@ export default function AccountSettingsScreen() {
                 </Text>
               </View>
             </View>
-            <ChevronRight size={20} color={Colors.light.secondaryText} />
+            <ChevronRight size={20} color={colors.icon} />
           </TouchableOpacity>
         </View>
 
@@ -388,7 +497,7 @@ export default function AccountSettingsScreen() {
           >
             <View style={styles.settingLeft}>
               <View style={styles.iconContainer}>
-                <Link2 size={20} color={Colors.light.primary} />
+                <Link2 size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
                 <Text style={styles.settingLabel}>Social Accounts</Text>
@@ -397,7 +506,7 @@ export default function AccountSettingsScreen() {
                 </Text>
               </View>
             </View>
-            <ChevronRight size={20} color={Colors.light.secondaryText} />
+            <ChevronRight size={20} color={colors.icon} />
           </TouchableOpacity>
         </View>
 
@@ -413,14 +522,14 @@ export default function AccountSettingsScreen() {
           >
             <View style={styles.settingLeft}>
               <View style={styles.iconContainer}>
-                <Globe size={20} color={Colors.light.primary} />
+                <Globe size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
                 <Text style={styles.settingLabel}>Language</Text>
                 <Text style={styles.settingDescription}>{settings.language}</Text>
               </View>
             </View>
-            <ChevronRight size={20} color={Colors.light.secondaryText} />
+            <ChevronRight size={20} color={colors.icon} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -431,14 +540,14 @@ export default function AccountSettingsScreen() {
           >
             <View style={styles.settingLeft}>
               <View style={styles.iconContainer}>
-                <Globe size={20} color={Colors.light.primary} />
+                <Globe size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
                 <Text style={styles.settingLabel}>Region</Text>
                 <Text style={styles.settingDescription}>{settings.region}</Text>
               </View>
             </View>
-            <ChevronRight size={20} color={Colors.light.secondaryText} />
+            <ChevronRight size={20} color={colors.icon} />
           </TouchableOpacity>
         </View>
 
@@ -452,7 +561,7 @@ export default function AccountSettingsScreen() {
           >
             <View style={styles.settingLeft}>
               <View style={[styles.iconContainer, styles.iconContainerWarning]}>
-                <UserX size={20} color={Colors.light.warning} />
+                <UserX size={20} color={colors.warning} />
               </View>
               <View style={styles.settingTextContainer}>
                 <Text style={styles.dangerLabel}>Deactivate Account</Text>
@@ -469,7 +578,7 @@ export default function AccountSettingsScreen() {
           >
             <View style={styles.settingLeft}>
               <View style={[styles.iconContainer, styles.iconContainerDanger]}>
-                <Trash2 size={20} color={Colors.light.error} />
+                <Trash2 size={20} color={colors.error} />
               </View>
               <View style={styles.settingTextContainer}>
                 <Text style={[styles.dangerLabel, styles.dangerLabelDelete]}>
@@ -489,108 +598,3 @@ export default function AccountSettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-    backgroundColor: Colors.light.background,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: Colors.light.text,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  content: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 32,
-  },
-  section: {
-    marginTop: 24,
-  },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: Colors.light.secondaryText,
-    marginLeft: 16,
-    marginBottom: 8,
-    letterSpacing: 0.5,
-  },
-  settingItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: Colors.light.background,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-  },
-  settingLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  iconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: Colors.light.primaryLight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  iconContainerWarning: {
-    backgroundColor: '#FFF9E6',
-  },
-  iconContainerDanger: {
-    backgroundColor: '#FFE6E6',
-  },
-  settingTextContainer: {
-    flex: 1,
-  },
-  settingLabel: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: Colors.light.text,
-    marginBottom: 2,
-  },
-  settingDescription: {
-    fontSize: 13,
-    color: Colors.light.secondaryText,
-  },
-  dangerItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: Colors.light.background,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-  },
-  dangerLabel: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: Colors.light.warning,
-    marginBottom: 2,
-  },
-  dangerLabelDelete: {
-    color: Colors.light.error,
-  },
-});

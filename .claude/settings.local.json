@@ -16,7 +16,13 @@
       "Bash(npm uninstall:*)",
       "Bash(npx expo start:*)",
       "Bash(npm cache clean:*)",
-      "Bash(npx cdk deploy:*)"
+      "Bash(npx cdk deploy:*)",
+      "Bash(awk:*)",
+      "Bash(tail:*)",
+      "Bash(find:*)",
+      "Bash(chmod:*)",
+      "Bash(./scripts/update_dark_mode_batch.sh:*)",
+      "Bash(./scripts/fix_styles_scope.sh:*)"
     ],
     "deny": [],
     "ask": []

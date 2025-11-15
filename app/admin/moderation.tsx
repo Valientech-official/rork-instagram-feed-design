@@ -440,9 +440,9 @@ export default function ContentModerationScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.headerTitle}>Content Moderation</Text>
+          <Text style={styles.headerTitle}>コンテンツ審査</Text>
           <Text style={styles.headerSubtitle}>
-            {filteredContent.length} flagged items
+            {filteredContent.length} 件のフラグ済みアイテム
           </Text>
         </View>
         <View style={styles.headerActions}>
@@ -460,19 +460,24 @@ export default function ContentModerationScreen() {
 
       {/* Tabs */}
       <View style={styles.tabs}>
-        {(['post', 'comment', 'user', 'live'] as ContentType[]).map((tab) => (
+        {[
+          { key: 'post', label: '投稿' },
+          { key: 'comment', label: 'コメント' },
+          { key: 'user', label: 'ユーザー' },
+          { key: 'live', label: 'ライブ' }
+        ].map(({key, label}) => (
           <TouchableOpacity
-            key={tab}
-            style={[styles.tab, activeTab === tab && styles.activeTab]}
-            onPress={() => setActiveTab(tab)}
+            key={key}
+            style={[styles.tab, activeTab === key && styles.activeTab]}
+            onPress={() => setActiveTab(key as ContentType)}
           >
             <Text
               style={[
                 styles.tabText,
-                activeTab === tab && styles.activeTabText,
+                activeTab === key && styles.activeTabText,
               ]}
             >
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}s
+              {label}
             </Text>
           </TouchableOpacity>
         ))}
@@ -517,7 +522,7 @@ export default function ContentModerationScreen() {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Shield size={48} color={colors.secondaryText} />
-            <Text style={styles.emptyText}>No flagged content</Text>
+            <Text style={styles.emptyText}>フラグ済みコンテンツはありません</Text>
           </View>
         }
       />
@@ -532,7 +537,7 @@ export default function ContentModerationScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Filter Content</Text>
+              <Text style={styles.modalTitle}>フィルター</Text>
               <TouchableOpacity onPress={() => setShowFilterModal(false)}>
                 <X size={24} color={colors.icon} />
               </TouchableOpacity>
@@ -619,7 +624,7 @@ export default function ContentModerationScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Review Content</Text>
+              <Text style={styles.modalTitle}>コンテンツ確認</Text>
               <TouchableOpacity onPress={() => setShowDetailModal(false)}>
                 <X size={24} color={colors.icon} />
               </TouchableOpacity>
@@ -695,7 +700,7 @@ export default function ContentModerationScreen() {
                     onPress={() => handleApprove(selectedContent.contentId)}
                   >
                     <Check size={20} color="#FFF" />
-                    <Text style={styles.actionBtnText}>Approve</Text>
+                    <Text style={styles.actionBtnText}>承認</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -703,7 +708,7 @@ export default function ContentModerationScreen() {
                     onPress={() => handleRemove(selectedContent.contentId)}
                   >
                     <XCircle size={20} color="#FFF" />
-                    <Text style={styles.actionBtnText}>Remove</Text>
+                    <Text style={styles.actionBtnText}>削除</Text>
                   </TouchableOpacity>
                 </View>
 
@@ -716,7 +721,7 @@ export default function ContentModerationScreen() {
                     onPress={() => handleWarnUser(selectedContent.contentId)}
                   >
                     <AlertTriangle size={20} color="#FFF" />
-                    <Text style={styles.actionBtnText}>Warn User</Text>
+                    <Text style={styles.actionBtnText}>警告を送信</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -724,7 +729,7 @@ export default function ContentModerationScreen() {
                     onPress={() => handleBanUser(selectedContent.contentId)}
                   >
                     <Ban size={20} color="#FFF" />
-                    <Text style={styles.actionBtnText}>Ban User</Text>
+                    <Text style={styles.actionBtnText}>ユーザーをBAN</Text>
                   </TouchableOpacity>
                 </View>
               </View>

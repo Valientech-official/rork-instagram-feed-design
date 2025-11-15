@@ -18,6 +18,7 @@ import { users } from '@/mocks/users';
 import { itemCategories } from '@/mocks/itemCategories';
 import { styleGenres } from '@/mocks/styleGenres';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useThemeStore } from '@/store/themeStore';
 
 type SearchResult = {
   id: string;
@@ -39,6 +40,8 @@ const genderColors = {
 
 export default function SearchScreen() {
   const router = useRouter();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [selectedBudget, setSelectedBudget] = useState<string | null>(null);
@@ -261,6 +264,196 @@ export default function SearchScreen() {
     router.push(`/product/${productId}`);
   };
 
+  // Create styles with current theme colors
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+    },
+    listContent: {
+      padding: 16,
+    },
+    resultItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingVertical: 12,
+      borderBottomWidth: 0.5,
+      borderBottomColor: colors.border,
+    },
+    resultImage: {
+      width: 50,
+      height: 50,
+      borderRadius: 25,
+      marginRight: 12,
+    },
+    resultInfo: {
+      flex: 1,
+    },
+    resultTitle: {
+      fontSize: 16,
+      fontWeight: '500',
+      color: colors.text,
+      marginBottom: 2,
+    },
+    resultSubtitle: {
+      fontSize: 14,
+      color: colors.secondaryText,
+    },
+    emptyState: {
+      padding: 24,
+      alignItems: 'center',
+    },
+    emptyStateText: {
+      fontSize: 16,
+      color: colors.secondaryText,
+      textAlign: 'center',
+    },
+    // Section container for items
+    sectionContainer: {
+      backgroundColor: colors.background,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      paddingBottom: 8,
+    },
+    // New gender section container
+    genderSectionContainer: {
+      backgroundColor: colors.background,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      paddingBottom: 8,
+    },
+    // Research section container with top border
+    researchSectionContainer: {
+      backgroundColor: colors.background,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    // Adjusted styles for items section to match StyleCategories
+    itemsSection: {
+      paddingHorizontal: 10,
+      paddingVertical: 3,
+    },
+    itemsHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 2,
+    },
+    itemsTitle: {
+      fontSize: 12,
+      fontWeight: '600',
+      color: colors.text,
+      marginLeft: 4,
+    },
+    // Gender selection styles - moved to separate section
+    genderSelectionContainer: {
+      flexDirection: 'row',
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      gap: 8,
+    },
+    genderOption: {
+      flex: 1,
+      paddingVertical: 8,
+      paddingHorizontal: 12,
+      borderRadius: 16,
+      backgroundColor: colors.shopBackground,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    genderOptionText: {
+      fontSize: 12,
+      fontWeight: '500',
+      color: colors.text,
+    },
+    genderOptionTextSelected: {
+      color: colors.text,
+      fontWeight: '600',
+    },
+    // Research results styles
+    researchHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 16,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+    },
+    backButton: {
+      marginRight: 12,
+    },
+    researchTitle: {
+      fontSize: 18,
+      fontWeight: '600',
+    },
+    productsGrid: {
+      padding: 16,
+    },
+    productRow: {
+      justifyContent: 'space-between',
+    },
+    productItem: {
+      width: '48%',
+      backgroundColor: colors.shopCard,
+      borderRadius: 12,
+      marginBottom: 16,
+      overflow: 'hidden',
+    },
+    productImage: {
+      width: '100%',
+      height: 200,
+    },
+    productInfo: {
+      padding: 12,
+    },
+    productName: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: colors.text,
+      marginBottom: 8,
+    },
+    priceContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 4,
+    },
+    price: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.shopPrice,
+    },
+    salePrice: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: colors.shopSale,
+      marginRight: 8,
+    },
+    originalPrice: {
+      fontSize: 14,
+      color: colors.secondaryText,
+      textDecorationLine: 'line-through',
+    },
+    ratingContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    rating: {
+      fontSize: 12,
+      color: colors.warning,
+      marginRight: 4,
+    },
+    reviews: {
+      fontSize: 12,
+      color: colors.secondaryText,
+    },
+    // Keeping the separator style definition in case it's needed elsewhere
+    separator: {
+      height: 1,
+      backgroundColor: colors.border,
+      marginTop: 6,
+      marginBottom: 0,
+    },
+  });
+
   const renderSearchResult = ({ item }: { item: SearchResult }) => (
     <TouchableOpacity 
       style={styles.resultItem}
@@ -336,13 +529,13 @@ export default function SearchScreen() {
     return (
       <View style={[styles.container, { paddingTop: insets.top }]}>
         <View style={styles.researchHeader}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.backButton}
             onPress={handleBackFromResearch}
           >
-            <ArrowLeft size={24} color={Colors.light.text} />
+            <ArrowLeft size={24} color={colors.text} />
           </TouchableOpacity>
-          <Text style={styles.researchTitle}>検索結果 ({filteredProducts.length}件)</Text>
+          <Text style={[styles.researchTitle, { color: colors.text }]}>検索結果 ({filteredProducts.length}件)</Text>
         </View>
         
         <FlatList
@@ -442,193 +635,3 @@ export default function SearchScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.background,
-  },
-  listContent: {
-    padding: 16,
-  },
-  resultItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
-    borderBottomWidth: 0.5,
-    borderBottomColor: Colors.light.border,
-  },
-  resultImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 12,
-  },
-  resultInfo: {
-    flex: 1,
-  },
-  resultTitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: Colors.light.text,
-    marginBottom: 2,
-  },
-  resultSubtitle: {
-    fontSize: 14,
-    color: Colors.light.secondaryText,
-  },
-  emptyState: {
-    padding: 24,
-    alignItems: 'center',
-  },
-  emptyStateText: {
-    fontSize: 16,
-    color: Colors.light.secondaryText,
-    textAlign: 'center',
-  },
-  // Section container for items
-  sectionContainer: {
-    backgroundColor: Colors.light.background,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.light.border,
-    paddingBottom: 8,
-  },
-  // New gender section container
-  genderSectionContainer: {
-    backgroundColor: Colors.light.background,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.light.border,
-    paddingBottom: 8,
-  },
-  // Research section container with top border
-  researchSectionContainer: {
-    backgroundColor: Colors.light.background,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.light.border,
-  },
-  // Adjusted styles for items section to match StyleCategories
-  itemsSection: {
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-  },
-  itemsHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 2,
-  },
-  itemsTitle: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: Colors.light.text,
-    marginLeft: 4,
-  },
-  // Gender selection styles - moved to separate section
-  genderSelectionContainer: {
-    flexDirection: 'row',
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    gap: 8,
-  },
-  genderOption: {
-    flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 16,
-    backgroundColor: Colors.light.shopBackground,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  genderOptionText: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: Colors.light.text,
-  },
-  genderOptionTextSelected: {
-    color: Colors.light.text,
-    fontWeight: '600',
-  },
-  // Research results styles
-  researchHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.light.border,
-  },
-  backButton: {
-    marginRight: 12,
-  },
-  researchTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: Colors.light.text,
-  },
-  productsGrid: {
-    padding: 16,
-  },
-  productRow: {
-    justifyContent: 'space-between',
-  },
-  productItem: {
-    width: '48%',
-    backgroundColor: Colors.light.shopCard,
-    borderRadius: 12,
-    marginBottom: 16,
-    overflow: 'hidden',
-  },
-  productImage: {
-    width: '100%',
-    height: 200,
-  },
-  productInfo: {
-    padding: 12,
-  },
-  productName: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: Colors.light.text,
-    marginBottom: 8,
-  },
-  priceContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  price: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.light.shopPrice,
-  },
-  salePrice: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.light.shopSale,
-    marginRight: 8,
-  },
-  originalPrice: {
-    fontSize: 14,
-    color: Colors.light.secondaryText,
-    textDecorationLine: 'line-through',
-  },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  rating: {
-    fontSize: 12,
-    color: Colors.light.warning,
-    marginRight: 4,
-  },
-  reviews: {
-    fontSize: 12,
-    color: Colors.light.secondaryText,
-  },
-  // Keeping the separator style definition in case it's needed elsewhere
-  separator: {
-    height: 1,
-    backgroundColor: Colors.light.border,
-    marginTop: 6,
-    marginBottom: 0,
-  },
-});
