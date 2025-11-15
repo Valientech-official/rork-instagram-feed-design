@@ -1,0 +1,13 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark mode background with rounded corners -->
+  <rect width="1024" height="1024" rx="226.667" fill="#1A1A1A"/>
+
+  <!-- Colorful "Pièce" text with matching font -->
+  <text x="512" y="620" font-family="Quicksand, Nunito, Fredoka One, Comfortaa, Poppins, 'Marker Felt', cursive, sans-serif" font-size="280" font-weight="800" text-anchor="middle" letter-spacing="2">
+    <tspan fill="#9ACD32">P</tspan>
+    <tspan fill="#FF69B4">i</tspan>
+    <tspan fill="#87CEEB">è</tspan>
+    <tspan fill="#FFD700">c</tspan>
+    <tspan fill="#DDA0DD">e</tspan>
+  </text>
+</svg>

@@ -10,7 +10,7 @@ import {
   Alert,
   Platform,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Stack } from 'expo-router';
 import {
   ChevronLeft,
   ChevronRight,
@@ -89,7 +89,7 @@ export default function AccountSettingsScreen() {
       }, 500);
     } catch (error) {
       setLoading(false);
-      Alert.alert('Error', 'Failed to load account settings');
+      Alert.alert('エラー', 'アカウント設定の読み込みに失敗しました');
     }
   };
 
@@ -129,12 +129,12 @@ export default function AccountSettingsScreen() {
 
     const action = settings.twoFactorEnabled ? 'disable' : 'enable';
     Alert.alert(
-      `${action === 'enable' ? 'Enable' : 'Disable'} Two-Factor Authentication`,
-      `Are you sure you want to ${action} 2FA?`,
+      `二段階認証を${action === 'enable' ? '有効化' : '無効化'}`,
+      `二段階認証を${action === 'enable' ? '有効' : '無効'}にしますか？`,
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: 'キャンセル', style: 'cancel' },
         {
-          text: action === 'enable' ? 'Enable' : 'Disable',
+          text: action === 'enable' ? '有効化' : '無効化',
           onPress: async () => {
             try {
               setToggling2FA(true);
@@ -155,7 +155,7 @@ export default function AccountSettingsScreen() {
               }, 500);
             } catch (error) {
               setToggling2FA(false);
-              Alert.alert('Error', `Failed to ${action} 2FA`);
+              Alert.alert('エラー', `二段階認証の${action === 'enable' ? '有効化' : '無効化'}に失敗しました`);
             }
           },
         },
@@ -169,15 +169,15 @@ export default function AccountSettingsScreen() {
     }
 
     Alert.alert(
-      'Deactivate Account',
-      'Your account will be temporarily disabled. You can reactivate it by logging in again.',
+      'アカウントを無効化',
+      'アカウントが一時的に無効になります。再度ログインすることで再有効化できます。',
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: 'キャンセル', style: 'cancel' },
         {
-          text: 'Deactivate',
+          text: '無効化',
           style: 'destructive',
           onPress: () => {
-            Alert.alert('Deactivate Account', 'This feature is not yet implemented.');
+            Alert.alert('アカウントを無効化', 'この機能はまだ実装されていません。');
           },
         },
       ]
@@ -190,24 +190,24 @@ export default function AccountSettingsScreen() {
     }
 
     Alert.alert(
-      'Delete Account',
-      'This action cannot be undone. All your data will be permanently deleted.',
+      'アカウントを削除',
+      'この操作は取り消せません。すべてのデータが完全に削除されます。',
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: 'キャンセル', style: 'cancel' },
         {
-          text: 'Delete',
+          text: '削除',
           style: 'destructive',
           onPress: () => {
             Alert.alert(
-              'Are you absolutely sure?',
-              'Please type "DELETE" to confirm account deletion.',
+              '本当によろしいですか？',
+              'アカウント削除を確定するには「削除」と入力してください。',
               [
-                { text: 'Cancel', style: 'cancel' },
+                { text: 'キャンセル', style: 'cancel' },
                 {
-                  text: 'I understand',
+                  text: '理解しました',
                   style: 'destructive',
                   onPress: () => {
-                    Alert.alert('Delete Account', 'This feature is not yet implemented.');
+                    Alert.alert('アカウントを削除', 'この機能はまだ実装されていません。');
                   },
                 },
               ]
@@ -240,7 +240,10 @@ export default function AccountSettingsScreen() {
       borderBottomColor: colors.border,
       backgroundColor: colors.background,
     },
-    title: {
+    backButton: {
+      padding: 4,
+    },
+    headerTitle: {
       fontSize: 18,
       fontWeight: '600',
       color: colors.text,
@@ -333,39 +336,43 @@ export default function AccountSettingsScreen() {
 
   if (loading) {
     return (
-      <View style={[styles.container, { paddingTop: insets.top }]}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={handleBack}>
-            <ChevronLeft size={24} color={colors.icon} />
-          </TouchableOpacity>
-          <Text style={styles.title}>Account Settings</Text>
-          <View style={{ width: 24 }} />
+      <>
+        <Stack.Screen options={{ headerShown: false }} />
+        <View style={[styles.container, { paddingTop: insets.top }]}>
+          <View style={styles.header}>
+            <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+              <ChevronLeft size={24} color={colors.icon} />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>アカウント設定</Text>
+            <View style={{ width: 32 }} />
+          </View>
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={colors.primary} />
+          </View>
         </View>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.primary} />
-        </View>
-      </View>
+      </>
     );
   }
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={handleBack}>
-          <ChevronLeft size={24} color={colors.icon} />
-        </TouchableOpacity>
-        <Text style={styles.title}>Account Settings</Text>
-        <View style={{ width: 24 }} />
-      </View>
-
-      <ScrollView
-        style={styles.content}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <View style={[styles.container, { paddingTop: insets.top }]}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+            <ChevronLeft size={24} color={colors.icon} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>アカウント設定</Text>
+          <View style={{ width: 32 }} />
+        </View>
+        <ScrollView
+          style={styles.content}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
         {/* Profile Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>PROFILE</Text>
+          <Text style={styles.sectionTitle}>プロフィール</Text>
 
           <TouchableOpacity
             style={styles.settingItem}
@@ -375,7 +382,7 @@ export default function AccountSettingsScreen() {
               <View style={styles.iconContainer}>
                 <User size={20} color={colors.primary} />
               </View>
-              <Text style={styles.settingLabel}>Edit Profile</Text>
+              <Text style={styles.settingLabel}>プロフィール編集</Text>
             </View>
             <ChevronRight size={20} color={colors.icon} />
           </TouchableOpacity>
@@ -383,14 +390,14 @@ export default function AccountSettingsScreen() {
           <TouchableOpacity
             style={styles.settingItem}
             onPress={() => {
-              Alert.alert('Change Password', 'This feature is not yet implemented.');
+              Alert.alert('パスワード変更', 'この機能はまだ実装されていません。');
             }}
           >
             <View style={styles.settingLeft}>
               <View style={styles.iconContainer}>
                 <Lock size={20} color={colors.primary} />
               </View>
-              <Text style={styles.settingLabel}>Change Password</Text>
+              <Text style={styles.settingLabel}>パスワード変更</Text>
             </View>
             <ChevronRight size={20} color={colors.icon} />
           </TouchableOpacity>
@@ -398,7 +405,7 @@ export default function AccountSettingsScreen() {
 
         {/* Security Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>SECURITY</Text>
+          <Text style={styles.sectionTitle}>セキュリティ</Text>
 
           <View style={styles.settingItem}>
             <View style={styles.settingLeft}>
@@ -406,9 +413,9 @@ export default function AccountSettingsScreen() {
                 <Shield size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
-                <Text style={styles.settingLabel}>Two-Factor Authentication</Text>
+                <Text style={styles.settingLabel}>二段階認証</Text>
                 <Text style={styles.settingDescription}>
-                  {settings.twoFactorEnabled ? 'Enabled' : 'Add extra security'}
+                  {settings.twoFactorEnabled ? '有効' : 'セキュリティを強化'}
                 </Text>
               </View>
             </View>
@@ -424,7 +431,7 @@ export default function AccountSettingsScreen() {
           <TouchableOpacity
             style={styles.settingItem}
             onPress={() => {
-              Alert.alert('Login Activity', 'Viewing active sessions...');
+              Alert.alert('ログイン履歴', 'アクティブなセッションを表示中...');
             }}
           >
             <View style={styles.settingLeft}>
@@ -432,9 +439,9 @@ export default function AccountSettingsScreen() {
                 <Smartphone size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
-                <Text style={styles.settingLabel}>Login Activity</Text>
+                <Text style={styles.settingLabel}>ログイン履歴</Text>
                 <Text style={styles.settingDescription}>
-                  {loginSessions.length} active session(s)
+                  {loginSessions.length} 件のアクティブセッション
                 </Text>
               </View>
             </View>
@@ -444,12 +451,12 @@ export default function AccountSettingsScreen() {
 
         {/* Contact Information */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>CONTACT INFORMATION</Text>
+          <Text style={styles.sectionTitle}>連絡先情報</Text>
 
           <TouchableOpacity
             style={styles.settingItem}
             onPress={() => {
-              Alert.alert('Change Email', 'This feature is not yet implemented.');
+              Alert.alert('メールアドレス変更', 'この機能はまだ実装されていません。');
             }}
           >
             <View style={styles.settingLeft}>
@@ -457,7 +464,7 @@ export default function AccountSettingsScreen() {
                 <Mail size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
-                <Text style={styles.settingLabel}>Email</Text>
+                <Text style={styles.settingLabel}>メールアドレス</Text>
                 <Text style={styles.settingDescription}>{settings.email}</Text>
               </View>
             </View>
@@ -467,7 +474,7 @@ export default function AccountSettingsScreen() {
           <TouchableOpacity
             style={styles.settingItem}
             onPress={() => {
-              Alert.alert('Change Phone Number', 'This feature is not yet implemented.');
+              Alert.alert('電話番号変更', 'この機能はまだ実装されていません。');
             }}
           >
             <View style={styles.settingLeft}>
@@ -475,9 +482,9 @@ export default function AccountSettingsScreen() {
                 <Phone size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
-                <Text style={styles.settingLabel}>Phone Number</Text>
+                <Text style={styles.settingLabel}>電話番号</Text>
                 <Text style={styles.settingDescription}>
-                  {settings.phoneNumber || 'Not set'}
+                  {settings.phoneNumber || '未設定'}
                 </Text>
               </View>
             </View>
@@ -487,12 +494,12 @@ export default function AccountSettingsScreen() {
 
         {/* Connected Accounts */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>CONNECTED ACCOUNTS</Text>
+          <Text style={styles.sectionTitle}>連携アカウント</Text>
 
           <TouchableOpacity
             style={styles.settingItem}
             onPress={() => {
-              Alert.alert('Connected Accounts', 'Manage your connected social accounts.');
+              Alert.alert('連携アカウント', '連携されたソーシャルアカウントを管理します。');
             }}
           >
             <View style={styles.settingLeft}>
@@ -500,9 +507,9 @@ export default function AccountSettingsScreen() {
                 <Link2 size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
-                <Text style={styles.settingLabel}>Social Accounts</Text>
+                <Text style={styles.settingLabel}>ソーシャルアカウント</Text>
                 <Text style={styles.settingDescription}>
-                  {Object.values(settings.connectedAccounts).filter(Boolean).length} connected
+                  {Object.values(settings.connectedAccounts).filter(Boolean).length} 件連携中
                 </Text>
               </View>
             </View>
@@ -512,12 +519,12 @@ export default function AccountSettingsScreen() {
 
         {/* Language & Region */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>PREFERENCES</Text>
+          <Text style={styles.sectionTitle}>設定</Text>
 
           <TouchableOpacity
             style={styles.settingItem}
             onPress={() => {
-              Alert.alert('Language', 'This feature is not yet implemented.');
+              Alert.alert('言語', 'この機能はまだ実装されていません。');
             }}
           >
             <View style={styles.settingLeft}>
@@ -525,7 +532,7 @@ export default function AccountSettingsScreen() {
                 <Globe size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
-                <Text style={styles.settingLabel}>Language</Text>
+                <Text style={styles.settingLabel}>言語</Text>
                 <Text style={styles.settingDescription}>{settings.language}</Text>
               </View>
             </View>
@@ -535,7 +542,7 @@ export default function AccountSettingsScreen() {
           <TouchableOpacity
             style={styles.settingItem}
             onPress={() => {
-              Alert.alert('Region', 'This feature is not yet implemented.');
+              Alert.alert('地域', 'この機能はまだ実装されていません。');
             }}
           >
             <View style={styles.settingLeft}>
@@ -543,7 +550,7 @@ export default function AccountSettingsScreen() {
                 <Globe size={20} color={colors.primary} />
               </View>
               <View style={styles.settingTextContainer}>
-                <Text style={styles.settingLabel}>Region</Text>
+                <Text style={styles.settingLabel}>地域</Text>
                 <Text style={styles.settingDescription}>{settings.region}</Text>
               </View>
             </View>
@@ -553,7 +560,7 @@ export default function AccountSettingsScreen() {
 
         {/* Account Management */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>ACCOUNT MANAGEMENT</Text>
+          <Text style={styles.sectionTitle}>アカウント管理</Text>
 
           <TouchableOpacity
             style={styles.dangerItem}
@@ -564,9 +571,9 @@ export default function AccountSettingsScreen() {
                 <UserX size={20} color={colors.warning} />
               </View>
               <View style={styles.settingTextContainer}>
-                <Text style={styles.dangerLabel}>Deactivate Account</Text>
+                <Text style={styles.dangerLabel}>アカウントを無効化</Text>
                 <Text style={styles.settingDescription}>
-                  Temporarily disable your account
+                  アカウントを一時的に無効にする
                 </Text>
               </View>
             </View>
@@ -582,19 +589,20 @@ export default function AccountSettingsScreen() {
               </View>
               <View style={styles.settingTextContainer}>
                 <Text style={[styles.dangerLabel, styles.dangerLabelDelete]}>
-                  Delete Account
+                  アカウントを削除
                 </Text>
                 <Text style={styles.settingDescription}>
-                  Permanently delete your account and data
+                  アカウントとデータを完全に削除する
                 </Text>
               </View>
             </View>
           </TouchableOpacity>
         </View>
 
-        <View style={{ height: 40 }} />
-      </ScrollView>
-    </View>
+          <View style={{ height: 40 }} />
+        </ScrollView>
+      </View>
+    </>
   );
 }
 

@@ -22,7 +22,10 @@
       "Bash(find:*)",
       "Bash(chmod:*)",
       "Bash(./scripts/update_dark_mode_batch.sh:*)",
-      "Bash(./scripts/fix_styles_scope.sh:*)"
+      "Bash(./scripts/fix_styles_scope.sh:*)",
+      "Bash(grep:*)",
+      "Bash(node scripts/convert-icon.js:*)",
+      "Bash(xcodebuild:*)"
     ],
     "deny": [],
     "ask": []

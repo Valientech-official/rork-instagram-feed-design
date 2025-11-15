@@ -11,6 +11,7 @@ import {
   Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Stack } from 'expo-router';
 import { ChevronLeft, Lock, Eye, MessageCircle, Tag, Activity, CheckCheck, Share2 } from 'lucide-react-native';
 import Colors from '@/constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -226,30 +227,35 @@ export default function PrivacySettingsScreen() {
 
   if (loading) {
     return (
-      <View style={[styles.container, { paddingTop: insets.top }]}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={handleBack}>
-            <ChevronLeft size={24} color={colors.text} />
-          </TouchableOpacity>
-          <Text style={styles.title}>Privacy</Text>
-          <View style={{ width: 24 }} />
+      <>
+        <Stack.Screen options={{ headerShown: false }} />
+        <View style={[styles.container, { paddingTop: insets.top }]}>
+          <View style={styles.header}>
+            <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+              <ChevronLeft size={24} color={colors.icon} />
+            </TouchableOpacity>
+            <Text style={styles.title}>プライバシー設定</Text>
+            <View style={{ width: 32 }} />
+          </View>
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={colors.primary} />
+          </View>
         </View>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.primary} />
-        </View>
-      </View>
+      </>
     );
   }
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={handleBack}>
-          <ChevronLeft size={24} color={colors.text} />
-        </TouchableOpacity>
-        <Text style={styles.title}>Privacy</Text>
-        <View style={{ width: 24 }} />
-      </View>
+    <>
+      <Stack.Screen options={{ headerShown: false }} />
+      <View style={[styles.container, { paddingTop: insets.top }]}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+            <ChevronLeft size={24} color={colors.icon} />
+          </TouchableOpacity>
+          <Text style={styles.title}>プライバシー設定</Text>
+          <View style={{ width: 32 }} />
+        </View>
 
       <ScrollView
         style={styles.content}

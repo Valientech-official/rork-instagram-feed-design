@@ -354,9 +354,9 @@ export default function ReportsScreen() {
       {/* Header */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.headerTitle}>Report Management</Text>
+          <Text style={styles.headerTitle}>通報管理</Text>
           <Text style={styles.headerSubtitle}>
-            {filteredReports.length} reports
+            {filteredReports.length} 件の通報
           </Text>
         </View>
         <TouchableOpacity onPress={() => router.back()} style={styles.closeButton}>
@@ -369,7 +369,7 @@ export default function ReportsScreen() {
         <Search size={20} color={colors.secondaryText} />
         <TextInput
           style={styles.searchInput}
-          placeholder="Search reports..."
+          placeholder="通報を検索..."
           placeholderTextColor={colors.secondaryText}
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -417,7 +417,7 @@ export default function ReportsScreen() {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <AlertTriangle size={48} color={colors.secondaryText} />
-            <Text style={styles.emptyText}>No reports found</Text>
+            <Text style={styles.emptyText}>通報が見つかりません</Text>
           </View>
         }
       />
@@ -432,7 +432,7 @@ export default function ReportsScreen() {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Report Details</Text>
+              <Text style={styles.modalTitle}>通報詳細</Text>
               <TouchableOpacity onPress={() => setShowDetailModal(false)}>
                 <X size={24} color={colors.icon} />
               </TouchableOpacity>

@@ -61,7 +61,7 @@ function RootLayoutNav() {
       <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
       <Stack
         screenOptions={{
-          headerBackTitle: "Back",
+          headerBackTitle: "戻る",
         }}
       >
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
@@ -78,6 +78,12 @@ function RootLayoutNav() {
         <Stack.Screen name="post/[id]" options={{ title: "Post" }} />
         <Stack.Screen name="saved" options={{ title: "Saved Items" }} />
         <Stack.Screen name="split-view" options={{ title: "Split View" }} />
+        <Stack.Screen name="settings/account" options={{ headerShown: false }} />
+        <Stack.Screen name="admin/index" options={{ headerShown: false }} />
+        <Stack.Screen name="admin/dashboard" options={{ headerShown: false }} />
+        <Stack.Screen name="admin/users" options={{ headerShown: false }} />
+        <Stack.Screen name="admin/moderation" options={{ headerShown: false }} />
+        <Stack.Screen name="admin/reports" options={{ headerShown: false }} />
         <Stack.Screen name="offline" options={{ headerShown: false, presentation: "modal" }} />
         <Stack.Screen name="error" options={{ headerShown: false }} />
       </Stack>

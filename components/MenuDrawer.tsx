@@ -114,18 +114,6 @@ export default function MenuDrawer({ visible, onClose }: MenuDrawerProps) {
           subtitle: user?.handle ? `@${user.handle}` : user?.username ? `@${user.username}` : '@username',
           route: '/settings/account',
         },
-        {
-          id: 'email',
-          icon: Mail,
-          title: 'メールアドレス',
-          subtitle: user?.email || '未設定',
-        },
-        {
-          id: 'phone',
-          icon: Phone,
-          title: '電話番号',
-          subtitle: user?.phoneNumber || '未設定',
-        },
       ],
     },
     {

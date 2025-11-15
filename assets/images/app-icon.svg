@@ -1,0 +1,20 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with gradient -->
+  <rect width="1024" height="1024" rx="226.667" fill="url(#gradient)"/>
+
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="gradient" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#9ACD32"/>
+      <stop offset="25%" stop-color="#FF69B4"/>
+      <stop offset="50%" stop-color="#87CEEB"/>
+      <stop offset="75%" stop-color="#FFD700"/>
+      <stop offset="100%" stop-color="#DDA0DD"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Large "P" letter centered with matching font -->
+  <text x="512" y="700" font-family="Quicksand, Nunito, Fredoka One, Comfortaa, Poppins, 'Marker Felt', cursive, sans-serif" font-size="600" font-weight="800" text-anchor="middle" fill="white" letter-spacing="2">
+    P
+  </text>
+</svg>

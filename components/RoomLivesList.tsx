@@ -6,6 +6,7 @@ import { roomPosts } from '@/mocks/roomPosts';
 import LiveStreamItem from './LiveStreamItem';
 import Colors from '@/constants/colors';
 import { Image } from 'expo-image';
+import { useThemeStore } from '@/store/themeStore';
 
 // Convert room posts to live stream format for display
 const convertRoomPostsToLiveStreams = () => {
@@ -30,6 +31,8 @@ const convertRoomPostsToLiveStreams = () => {
 
 export default function RoomLivesList() {
   const router = useRouter();
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
   const roomLiveStreams = convertRoomPostsToLiveStreams();
 
   const handleSeeAllPress = () => {
@@ -40,13 +43,15 @@ export default function RoomLivesList() {
     router.push(`/room/${roomId}`);
   };
 
+  const styles = createStyles(colors);
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Room Live</Text>
         <TouchableOpacity style={styles.seeAllButton} onPress={handleSeeAllPress}>
           <Text style={styles.seeAllText}>すべて見る</Text>
-          <ChevronRight size={16} color={Colors.light.primary} />
+          <ChevronRight size={16} color={colors.primary} />
         </TouchableOpacity>
       </View>
       
@@ -89,7 +94,7 @@ export default function RoomLivesList() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   container: {
     marginVertical: 16,
   },
@@ -103,7 +108,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '600',
-    color: Colors.light.text,
+    color: colors.text,
   },
   seeAllButton: {
     flexDirection: 'row',
@@ -111,7 +116,7 @@ const styles = StyleSheet.create({
   },
   seeAllText: {
     fontSize: 14,
-    color: Colors.light.primary,
+    color: colors.primary,
     marginRight: 2,
   },
   contentRow: {

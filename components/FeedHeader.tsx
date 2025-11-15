@@ -140,7 +140,7 @@ export default function FeedHeader({ onMenuPress }: FeedHeaderProps) {
   const styles = createStyles(colors);
 
   return (
-    <View style={[styles.container, { paddingTop: Math.max(insets.top + 8, 16) }]}>
+    <View style={styles.container}>
       <View style={styles.logoContainer}>
         <Text style={styles.logo}>
           <Text style={styles.logoP}>P</Text>
@@ -186,8 +186,6 @@ const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingBottom: 12,
-    borderBottomWidth: 0.5,
-    borderBottomColor: colors.border,
     backgroundColor: colors.background,
   },
   logoContainer: {
