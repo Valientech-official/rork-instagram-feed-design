@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SubscriptionStatus, PurchaseHistory } from '@/types/api';
 import { apiClient } from '@/lib/api/client';
 import { handleError } from '@/lib/utils/errorHandler';
+import { FREE_GENERATION_COUNT } from '@/constants/products';
 
 // サブスクリプションプラン
 export type SubscriptionPlan = 'free' | 'premium_monthly' | 'premium_yearly';
@@ -29,6 +30,10 @@ interface IAPState {
   // 購入処理中フラグ
   purchasing: boolean;
 
+  // AI生成回数管理
+  aiGenerationCount: number;
+  totalPurchasedCount: number;
+
   // アクション
   checkSubscriptionStatus: () => Promise<void>;
   purchaseProduct: (productId: string, platform: 'ios' | 'android', receiptData: string) => Promise<void>;
@@ -36,6 +41,12 @@ interface IAPState {
   fetchPurchaseHistory: () => Promise<void>;
   setPremium: (isPremium: boolean) => void;
   clear: () => void;
+
+  // AI生成関連アクション
+  canUseAIGeneration: () => boolean;
+  useAIGeneration: () => boolean;
+  addAIGeneration: (count: number) => void;
+  resetAIGeneration: () => void;
 }
 
 export const useIAPStore = create<IAPState>()(
@@ -53,6 +64,10 @@ export const useIAPStore = create<IAPState>()(
       historyError: null,
 
       purchasing: false,
+
+      // AI生成回数の初期値
+      aiGenerationCount: FREE_GENERATION_COUNT,
+      totalPurchasedCount: 0,
 
       /**
        * サブスクリプション状態確認
@@ -237,7 +252,71 @@ export const useIAPStore = create<IAPState>()(
           purchaseHistory: [],
           statusError: null,
           historyError: null,
+          aiGenerationCount: FREE_GENERATION_COUNT,
+          totalPurchasedCount: 0,
         });
+      },
+
+      /**
+       * AI生成が使用可能かチェック
+       */
+      canUseAIGeneration: () => {
+        const state = get();
+        // プレミアムユーザーは無制限
+        if (state.isPremium) return true;
+        // 無料ユーザーは残り回数をチェック
+        return state.aiGenerationCount > 0;
+      },
+
+      /**
+       * AI生成を1回使用
+       * @returns 使用成功ならtrue、失敗（残り0回）ならfalse
+       */
+      useAIGeneration: () => {
+        const state = get();
+
+        // プレミアムユーザーは常に使用可能
+        if (state.isPremium) return true;
+
+        // 残り回数チェック
+        if (state.aiGenerationCount <= 0) {
+          return false;
+        }
+
+        // 回数を1減らす
+        set({ aiGenerationCount: state.aiGenerationCount - 1 });
+
+        if (__DEV__) {
+          console.log('[iapStore] AI generation used. Remaining:', state.aiGenerationCount - 1);
+        }
+
+        return true;
+      },
+
+      /**
+       * AI生成回数を追加（パック購入後）
+       */
+      addAIGeneration: (count: number) => {
+        const state = get();
+        set({
+          aiGenerationCount: state.aiGenerationCount + count,
+          totalPurchasedCount: state.totalPurchasedCount + count,
+        });
+
+        if (__DEV__) {
+          console.log(`[iapStore] Added ${count} generations. Total: ${state.aiGenerationCount + count}`);
+        }
+      },
+
+      /**
+       * AI生成回数をリセット（開発/テスト用）
+       */
+      resetAIGeneration: () => {
+        set({ aiGenerationCount: FREE_GENERATION_COUNT });
+
+        if (__DEV__) {
+          console.log('[iapStore] AI generation count reset to:', FREE_GENERATION_COUNT);
+        }
       },
     }),
     {
@@ -248,6 +327,8 @@ export const useIAPStore = create<IAPState>()(
         isPremium: state.isPremium,
         currentPlan: state.currentPlan,
         subscriptionStatus: state.subscriptionStatus,
+        aiGenerationCount: state.aiGenerationCount,
+        totalPurchasedCount: state.totalPurchasedCount,
       }),
     }
   )

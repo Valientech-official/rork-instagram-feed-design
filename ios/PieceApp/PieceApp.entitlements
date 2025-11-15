@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-  <dict/>
+<dict>
+	<key>aps-environment</key>
+	<string>development</string>
+	<key>com.apple.developer.associated-domains</key>
+	<array/>
+	<key>com.apple.developer.avfoundation.multitasking-camera-access</key>
+	<true/>
+	<key>com.apple.developer.background-tasks.continued-processing.gpu</key>
+	<true/>
+	<key>com.apple.developer.default-data-protection</key>
+	<string>NSFileProtectionComplete</string>
+	<key>com.apple.developer.networking.slicing.appcategory</key>
+	<array>
+		<string>communication-9000</string>
+		<string>streaming-9001</string>
+	</array>
+	<key>com.apple.developer.networking.slicing.trafficcategory</key>
+	<array>
+		<string>voice-4</string>
+		<string>responsivedata-6</string>
+		<string>background-3</string>
+		<string>avstreaming-7</string>
+		<string>video-2</string>
+	</array>
+	<key>com.apple.developer.networking.wifi-info</key>
+	<true/>
+</dict>
 </plist>

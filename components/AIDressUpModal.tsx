@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView, Dimensions, Platform } from 'react-native';
+import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView, Dimensions, Platform, Alert } from 'react-native';
 import { Image } from 'expo-image';
 import { X, Camera, Heart, Library, ChevronLeft, ChevronRight } from 'lucide-react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -10,6 +10,9 @@ import Colors from '@/constants/colors';
 import { avatars, Avatar } from '@/mocks/avatars';
 import { dressUpItems, sizeOptions, SizeOption, DressUpItem } from '@/mocks/dressUpItems';
 import SevenElevenLoading from './SevenElevenLoading';
+import { useThemeStore } from '@/store/themeStore';
+import { useIAPStore } from '@/store/iapStore';
+import PurchaseModal from './PurchaseModal';
 
 const { width } = Dimensions.get('window');
 
@@ -21,17 +24,22 @@ interface AIDressUpModalProps {
 type Step = 1 | 2 | 3 | 4;
 
 export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps) {
+  const { theme } = useThemeStore();
+  const colors = Colors[theme];
+  const { aiGenerationCount, canUseAIGeneration, useAIGeneration, isPremium } = useIAPStore();
+
   const [currentStep, setCurrentStep] = useState<Step>(1);
   const [selectedAvatar, setSelectedAvatar] = useState<Avatar | null>(null);
   const [selectedItem, setSelectedItem] = useState<DressUpItem | null>(null);
   const [selectedSize, setSelectedSize] = useState<SizeOption>('just');
   const [generatedImageUrl, setGeneratedImageUrl] = useState<string>('');
-  const [remainingCount, setRemainingCount] = useState(5);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
 
   const favoriteAvatars = avatars.filter(a => a.isFavorite);
   const allItems = dressUpItems;
+  const styles = createStyles(colors);
 
   useEffect(() => {
     if (!visible) {
@@ -88,6 +96,19 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
 
   const handleGenerate = async () => {
     if (!selectedItem || !selectedAvatar) return;
+
+    // 残り回数チェック
+    if (!canUseAIGeneration()) {
+      Alert.alert(
+        '残り回数がありません',
+        'AI着せ替えを使用するには回数を購入してください。',
+        [
+          { text: 'キャンセル', style: 'cancel' },
+          { text: '購入する', onPress: () => setShowPurchaseModal(true) },
+        ]
+      );
+      return;
+    }
 
     setCurrentStep(3);
     setIsGenerating(true);
@@ -185,7 +206,8 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
         setGeneratedImageUrl(imageDataUrl);
       }
 
-      setRemainingCount(prev => prev - 1);
+      // AI生成回数を消費
+      useAIGeneration();
       setCurrentStep(4);
     } catch (err: any) {
       console.error('Generation error:', err);
@@ -297,8 +319,20 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
           ここではあなたのアバターが着せ替えをすることができます。
         </Text>
         <Text style={styles.remainingText}>
-          残り<Text style={styles.remainingCount}>{remainingCount}</Text>回まで無料です
+          {isPremium ? (
+            <Text style={styles.remainingCount}>無制限</Text>
+          ) : (
+            <>残り<Text style={styles.remainingCount}>{aiGenerationCount}</Text>回まで無料です</>
+          )}
         </Text>
+        {!isPremium && aiGenerationCount === 0 && (
+          <TouchableOpacity
+            style={styles.purchaseButton}
+            onPress={() => setShowPurchaseModal(true)}
+          >
+            <Text style={styles.purchaseButtonText}>回数を購入する</Text>
+          </TouchableOpacity>
+        )}
         <Text style={styles.warningText}>
           ※AI生成機能を使用しているため理想とは違うものができる可能性があります。
         </Text>
@@ -309,7 +343,7 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
       {/* お気に入りから選ぶ */}
       <View style={styles.selectionSection}>
         <View style={styles.sectionHeader}>
-          <Heart size={18} color={Colors.light.like} fill={Colors.light.like} />
+          <Heart size={18} color={colors.like} fill={colors.like} />
           <Text style={styles.sectionTitle}>お気に入りから選ぶ</Text>
         </View>
         <View style={styles.avatarsGrid}>
@@ -341,7 +375,7 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
           style={styles.actionButton}
           onPress={handleTakePhoto}
         >
-          <Camera size={24} color={Colors.light.primary} />
+          <Camera size={24} color={colors.primary} />
           <Text style={styles.actionButtonText}>写真を撮る</Text>
         </TouchableOpacity>
 
@@ -349,7 +383,7 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
           style={styles.actionButton}
           onPress={handlePickImage}
         >
-          <Library size={24} color={Colors.light.primary} />
+          <Library size={24} color={colors.primary} />
           <Text style={styles.actionButtonText}>ライブラリから選ぶ</Text>
         </TouchableOpacity>
       </View>
@@ -417,7 +451,7 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
           style={styles.actionButton}
           onPress={handleTakeItemPhoto}
         >
-          <Camera size={24} color={Colors.light.primary} />
+          <Camera size={24} color={colors.primary} />
           <Text style={styles.actionButtonText}>写真を撮る</Text>
         </TouchableOpacity>
 
@@ -425,7 +459,7 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
           style={styles.actionButton}
           onPress={handlePickItemFromLibrary}
         >
-          <Library size={24} color={Colors.light.primary} />
+          <Library size={24} color={colors.primary} />
           <Text style={styles.actionButtonText}>ライブラリから選ぶ</Text>
         </TouchableOpacity>
       </View>
@@ -548,7 +582,7 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
         <View style={styles.modalHeader}>
           {currentStep > 1 && currentStep < 3 && (
             <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-              <ChevronLeft size={24} color={Colors.light.text} />
+              <ChevronLeft size={24} color={colors.text} />
             </TouchableOpacity>
           )}
 
@@ -566,7 +600,7 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
           </View>
 
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <X size={24} color={Colors.light.text} />
+            <X size={24} color={colors.text} />
           </TouchableOpacity>
         </View>
 
@@ -576,14 +610,20 @@ export default function AIDressUpModal({ visible, onClose }: AIDressUpModalProps
         {currentStep === 3 && renderStep3()}
         {currentStep === 4 && renderStep4()}
       </View>
+
+      {/* 購入モーダル */}
+      <PurchaseModal
+        visible={showPurchaseModal}
+        onClose={() => setShowPurchaseModal(false)}
+      />
     </Modal>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: typeof Colors.light) => StyleSheet.create({
   modalContainer: {
     flex: 1,
-    backgroundColor: Colors.light.background,
+    backgroundColor: colors.background,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -592,7 +632,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.light.border,
+    borderBottomColor: colors.border,
   },
   backButton: {
     width: 40,
@@ -614,14 +654,14 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: Colors.light.border,
+    backgroundColor: colors.border,
   },
   stepDotActive: {
     width: 24,
-    backgroundColor: Colors.light.primary,
+    backgroundColor: colors.primary,
   },
   stepDotCompleted: {
-    backgroundColor: Colors.light.primary,
+    backgroundColor: colors.primary,
   },
   stepContainer: {
     flex: 1,
@@ -630,42 +670,54 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: '700',
-    color: Colors.light.text,
+    color: colors.text,
     marginBottom: 16,
   },
   subtitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: Colors.light.text,
+    color: colors.text,
     marginTop: 20,
     marginBottom: 12,
   },
   infoBox: {
-    backgroundColor: Colors.light.shopBackground,
+    backgroundColor: colors.shopBackground,
     padding: 16,
     borderRadius: 12,
     marginBottom: 20,
   },
   infoText: {
     fontSize: 15,
-    color: Colors.light.text,
+    color: colors.text,
     lineHeight: 22,
     marginBottom: 8,
   },
   remainingText: {
     fontSize: 16,
     fontWeight: '600',
-    color: Colors.light.text,
+    color: colors.text,
     marginBottom: 8,
   },
   remainingCount: {
     fontSize: 20,
-    color: Colors.light.primary,
+    color: colors.primary,
   },
   warningText: {
     fontSize: 12,
-    color: Colors.light.secondaryText,
+    color: colors.secondaryText,
     fontStyle: 'italic',
+  },
+  purchaseButton: {
+    marginTop: 12,
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+  },
+  purchaseButtonText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: 'white',
   },
   selectionSection: {
     marginBottom: 20,
@@ -678,7 +730,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: Colors.light.text,
+    color: colors.text,
     marginLeft: 8,
   },
   avatarsGrid: {
@@ -695,7 +747,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   avatarCardSelected: {
-    borderColor: Colors.light.primary,
+    borderColor: colors.primary,
   },
   avatarImage: {
     width: '100%',
@@ -712,13 +764,13 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: Colors.light.primary,
-    backgroundColor: 'white',
+    borderColor: colors.primary,
+    backgroundColor: colors.cardBackground,
   },
   actionButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: Colors.light.primary,
+    color: colors.primary,
     marginLeft: 8,
   },
   comparisonContainer: {
@@ -732,7 +784,7 @@ const styles = StyleSheet.create({
   comparisonLabel: {
     fontSize: 13,
     fontWeight: '600',
-    color: Colors.light.secondaryText,
+    color: colors.secondaryText,
     marginBottom: 8,
   },
   comparisonImage: {
@@ -744,16 +796,16 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     borderRadius: 12,
-    backgroundColor: Colors.light.shopBackground,
+    backgroundColor: colors.shopBackground,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: Colors.light.border,
+    borderColor: colors.border,
     borderStyle: 'dashed',
   },
   placeholderText: {
     fontSize: 14,
-    color: Colors.light.secondaryText,
+    color: colors.secondaryText,
   },
   itemsGrid: {
     flexDirection: 'row',
@@ -766,10 +818,10 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 2,
     borderColor: 'transparent',
-    backgroundColor: 'white',
+    backgroundColor: colors.cardBackground,
   },
   itemCardSelected: {
-    borderColor: Colors.light.primary,
+    borderColor: colors.primary,
   },
   itemImage: {
     width: '100%',
@@ -778,7 +830,7 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 12,
     fontWeight: '500',
-    color: Colors.light.text,
+    color: colors.text,
     padding: 8,
     textAlign: 'center',
   },
@@ -790,13 +842,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderRadius: 12,
-    backgroundColor: 'white',
+    backgroundColor: colors.cardBackground,
     borderWidth: 2,
-    borderColor: Colors.light.border,
+    borderColor: colors.border,
   },
   sizeButtonSelected: {
-    borderColor: Colors.light.primary,
-    backgroundColor: Colors.light.shopBackground,
+    borderColor: colors.primary,
+    backgroundColor: colors.shopBackground,
   },
   sizeEmoji: {
     fontSize: 24,
@@ -805,18 +857,18 @@ const styles = StyleSheet.create({
   sizeLabel: {
     fontSize: 16,
     fontWeight: '500',
-    color: Colors.light.text,
+    color: colors.text,
   },
   sizeLabelSelected: {
     fontWeight: '700',
-    color: Colors.light.primary,
+    color: colors.primary,
   },
   generateButton: {
     marginTop: 24,
     marginBottom: 40,
     padding: 16,
     borderRadius: 12,
-    backgroundColor: Colors.light.primary,
+    backgroundColor: colors.primary,
     alignItems: 'center',
   },
   generateButtonText: {
@@ -841,18 +893,18 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: Colors.light.border,
-    backgroundColor: 'white',
+    borderColor: colors.border,
+    backgroundColor: colors.cardBackground,
     alignItems: 'center',
   },
   resultButtonPrimary: {
-    borderColor: Colors.light.primary,
-    backgroundColor: Colors.light.primary,
+    borderColor: colors.primary,
+    backgroundColor: colors.primary,
   },
   resultButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: Colors.light.text,
+    color: colors.text,
   },
   resultButtonTextPrimary: {
     color: 'white',
@@ -865,7 +917,7 @@ const styles = StyleSheet.create({
   tryAgainText: {
     fontSize: 15,
     fontWeight: '600',
-    color: Colors.light.primary,
+    color: colors.primary,
   },
   errorContainer: {
     backgroundColor: '#FEE2E2',
@@ -882,7 +934,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   retryButton: {
-    backgroundColor: Colors.light.primary,
+    backgroundColor: colors.primary,
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',

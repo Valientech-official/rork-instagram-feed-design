@@ -1,5 +1,8 @@
 module.exports = {
   ...require('./app.json').expo,
+  plugins: [
+    'react-native-iap',
+  ],
   extra: {
     ...require('./app.json').expo.extra,
     geminiApiKey: process.env.EXPO_PUBLIC_GEMINI_API_KEY,
